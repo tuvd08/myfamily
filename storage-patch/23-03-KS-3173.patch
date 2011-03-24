@@ -1,0 +1,1348 @@
+Index: eXoApplication/forum/service/src/main/java/org/exoplatform/forum/service/ForumPageList.java
+===================================================================
+--- eXoApplication/forum/service/src/main/java/org/exoplatform/forum/service/ForumPageList.java	(revision 67546)
++++ eXoApplication/forum/service/src/main/java/org/exoplatform/forum/service/ForumPageList.java	(working copy)
+@@ -55,9 +55,9 @@
+       if (iter == null) {
+         sessionManager.openSession();
+         iter = setQuery(isQuery_, value_);
++        iter_ = iter;
+       }
+       if (iter != null) {
+-        iter_ = iter;
+         setAvailablePage((int) iter.getSize());
+       }
+     } finally {
+@@ -98,6 +98,7 @@
+ 		} else {
+ 			pageSize = iter_.getSize() ;
+ 		}
++		
+ 		currentListPage_ = new ArrayList<Object>() ;
+ 		for(int i = 0; i < pageSize; i ++) {
+ 			if(iter_.hasNext()){
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicDetail.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicDetail.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicDetail.java	(working copy)
+@@ -189,7 +189,7 @@
+ 
+   private List<String>               listContactsGotten      = new ArrayList<String>();
+ 
+-  private List<Watch>                listWatches             = new ArrayList<Watch>();
++//  private List<Watch>                listWatches             = new ArrayList<Watch>();
+ 
+   private Map<String, Integer>       pagePostRemember        = new HashMap<String, Integer>();
+ 
+@@ -529,18 +529,6 @@
+     return isMod;
+   }
+ 
+-  private String getScreenName(String screenName) throws Exception {
+-    if (screenName != null && screenName.length() > 17 && !screenName.trim().contains(" ")) {
+-      boolean isDelted = false;
+-      if (screenName.indexOf("<s>") >= 0) {
+-        screenName = screenName.replaceAll("<s>", "").replaceAll("</s>", "");
+-        isDelted = true;
+-      }
+-      screenName = "<span title=\"" + screenName + "\">" + ((isDelted) ? "<s>" : "") + ForumUtils.getSubString(screenName, 15) + ((isDelted) ? "</s></span>" : "</span>");
+-    }
+-    return screenName;
+-  }
+-
+   private Topic getTopic() throws Exception {
+     try {
+       if (this.isEditTopic || this.topic == null) {
+@@ -769,29 +757,6 @@
+     return mapUserProfile.get(userName);
+   }
+ 
+-  public void setListWatches(List<Watch> listWatches) {
+-    this.listWatches = listWatches;
+-  }
+-
+-  private boolean isWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
+-        return true;
+-    }
+-    return false;
+-  }
+-
+-  private String getEmailWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      try {
+-        if (watch.getNodePath().endsWith(path))
+-          return watch.getEmail();
+-      } catch (Exception e) {
+-      }
+-    }
+-    return "";
+-  }
+-
+   private void renderPoll() throws Exception {
+     UITopicDetailContainer container = this.getParent();
+     container.setRederPoll(false);
+@@ -1707,24 +1672,12 @@
+ 
+   static public class AddWatchingActionListener extends BaseEventListener<UITopicDetail> {
+     public void onEvent(Event<UITopicDetail> event, UITopicDetail topicDetail, final String objectId) throws Exception {
+-
+       if (topicDetail.getTopic() != null) {
+-        topicDetail.isEditTopic = true;
+-        StringBuffer buffer = new StringBuffer();
+-        buffer.append(topicDetail.categoryId).append("/").append(topicDetail.forumId).append("/").append(topicDetail.topicId);
+-        List<String> values = new ArrayList<String>();
+-        try {
+-          values.add(topicDetail.userProfile.getEmail());
+-          topicDetail.getForumService().addWatch(1, buffer.toString(), values, topicDetail.userProfile.getUserId());
+-          UIForumPortlet forumPortlet = topicDetail.getAncestorOfType(UIForumPortlet.class);
+-          forumPortlet.updateWatching();
+-          topicDetail.listWatches = forumPortlet.getWatchingByCurrentUser();
+-          topicDetail.info("UIAddWatchingForm.msg.successfully");
+-
++        StringBuffer buffer = new StringBuffer().append(topicDetail.categoryId).append("/")
++                              .append(topicDetail.forumId).append("/").append(topicDetail.topicId);
++        if(topicDetail.addWatch(buffer.toString(), topicDetail.userProfile)) {
++          topicDetail.isEditTopic = true;
+           refresh();
+-        } catch (Exception e) {
+-          topicDetail.log.warn("Failed to add watch: " + e.getMessage(), e);
+-          warning("UIAddWatchingForm.msg.fall");
+         }
+       } else {
+         warning("UIForumPortlet.msg.topicEmpty");
+@@ -1737,19 +1690,12 @@
+     public void onEvent(Event<UITopicDetail> event, UITopicDetail topicDetail, final String objectId) throws Exception {
+       if (topicDetail.getTopic() != null) {
+         topicDetail.isEditTopic = true;
+-        String path = topicDetail.categoryId + "/" + topicDetail.forumId + "/" + topicDetail.topicId;
+-        try {
+-          topicDetail.getForumService().removeWatch(1, path, topicDetail.userProfile.getUserId() + "/" + topicDetail.getEmailWatching(path));
+-          UIForumPortlet forumPortlet = topicDetail.getAncestorOfType(UIForumPortlet.class);
+-          forumPortlet.updateWatching();
+-          topicDetail.listWatches = forumPortlet.getWatchingByCurrentUser();
+-          topicDetail.info("UIAddWatchingForm.msg.UnWatchSuccessfully");
+-
+-        } catch (Exception e) {
+-          topicDetail.log.warn("Failed to unwatch: " + e.getMessage(), e);
+-          warning("UIAddWatchingForm.msg.UnWatchfall");
++        StringBuffer buffer = new StringBuffer().append(topicDetail.categoryId).append("/")
++                              .append(topicDetail.forumId).append("/").append(topicDetail.topicId);
++        if(topicDetail.unWatch(buffer.toString(), topicDetail.userProfile)) {
++          topicDetail.isEditTopic = true;
++          refresh();
+         }
+-        refresh();
+       } else {
+         warning("UIForumPortlet.msg.topicEmpty");
+         topicDetail.refreshPortlet();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategory.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategory.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategory.java	(working copy)
+@@ -101,22 +101,18 @@
+ 
+   private List<Forum>        forums          = new ArrayList<Forum>();
+ 
+-  private List<Watch>        listWatches     = new ArrayList<Watch>();
+-
+   private Map<String, Topic> MaptopicLast    = new HashMap<String, Topic>();
+ 
+   private String             linkUserInfo    = "";
+ 
+   static public boolean      isUnWatch       = false;
+ 
+-  public static String       unwatchEmail    = "";
+-
+   public UICategory() throws Exception {
+     addUIFormInput(new UIFormStringInput(ForumUtils.SEARCHFORM_ID, null));
+     setActions(new String[] { "EditCategory", "ExportCategory", "ImportForum", "DeleteCategory", "WatchOption", "AddForum", "EditForum", "SetLocked", "SetUnLock", "SetOpen", "SetClose", "MoveForum", "RemoveForum" });
+   }
+ 
+-  private UserProfile getUserProfile() throws Exception {
++  public UserProfile getUserProfile() throws Exception {
+     UIForumPortlet forumPortlet = this.getAncestorOfType(UIForumPortlet.class);
+     useAjax = forumPortlet.isUseAjax();
+     dayForumNewPost = forumPortlet.getDayForumNewPost();
+@@ -144,10 +140,6 @@
+     return userProfile.getLastPostIdReadOfForum(forumId);
+   }
+ 
+-  private String getScreenName(String userName) throws Exception {
+-    return getForumService().getScreenName(userName);
+-  }
+-
+   public void update(Category category, List<Forum> forums) throws Exception {
+     this.category = category;
+     if (forums == null) {
+@@ -283,25 +275,18 @@
+     return null;
+   }
+ 
+-  private boolean isWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      // KS-2573
+-      // check: is watching by email
+-      if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
+-        return true;
+-    }
+-    return false;
+-  }
+-
+-  private String getEmailWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      try {
+-        if (watch.getNodePath().endsWith(path))
+-          return watch.getEmail();
+-      } catch (Exception e) {
++  private List<Forum> getForumsChecked(boolean isBreak) throws Exception {
++    List<UIComponent> children = this.getChildren();
++    List<Forum> forums = new ArrayList<Forum>();
++    for (UIComponent child : children) {
++      if (child instanceof UIFormCheckBoxInput) {
++        if (((UIFormCheckBoxInput) child).isChecked()) {
++          forums.add(this.getForum(((UIFormCheckBoxInput) child).getName()));
++          if(isBreak) break;
++        }
+       }
+     }
+-    return "";
++    return forums;
+   }
+ 
+   static public class EditCategoryActionListener extends BaseEventListener<UICategory> {
+@@ -341,21 +326,13 @@
+   static public class EditForumActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+       List<UIComponent> children = uiCategory.getChildren();
+-      Forum forum = null;
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forum = uiCategory.getForum(((UIFormCheckBoxInput) child).getName());
+-            break;
+-          }
+-        }
+-      }
+-      if (forum != null) {
++      List<Forum> forums = uiCategory.getForumsChecked(true);
++      if (forums.size() > 0) {
+         UIForumForm forumForm = uiCategory.openPopup(UIForumForm.class, "EditForumForm", 650, 480);
+         forumForm.setMode(false);
+         forumForm.initForm();
+         forumForm.setCategoryValue(uiCategory.categoryId, false);
+-        forumForm.setForumValue(forum, true);
++        forumForm.setForumValue(forums.get(0), true);
+         forumForm.setForumUpdate(false);
+         uiCategory.isEditForum = true;
+       } else {
+@@ -367,15 +344,7 @@
+ 
+   static public class SetLockedActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if (forums.size() > 0) {
+         try {
+           for (Forum forum : forums) {
+@@ -396,15 +365,7 @@
+ 
+   static public class SetUnLockActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if (forums.size() > 0) {
+         try {
+           for (Forum forum : forums) {
+@@ -425,15 +386,7 @@
+ 
+   static public class SetOpenActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if (forums.size() > 0) {
+         try {
+           for (Forum forum : forums) {
+@@ -452,15 +405,7 @@
+ 
+   static public class SetCloseActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if (forums.size() > 0) {
+         try {
+           for (Forum forum : forums) {
+@@ -479,15 +424,7 @@
+ 
+   static public class MoveForumActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if ((forums.size() > 0)) {
+         UIMoveForumForm moveForumForm = uiCategory.openPopup(UIMoveForumForm.class, 315, 365);
+         moveForumForm.setListForum(forums, uiCategory.categoryId);
+@@ -501,15 +438,7 @@
+ 
+   static public class RemoveForumActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String objectId) throws Exception {
+-      List<UIComponent> children = uiCategory.getChildren();
+-      List<Forum> forums = new ArrayList<Forum>();
+-      for (UIComponent child : children) {
+-        if (child instanceof UIFormCheckBoxInput) {
+-          if (((UIFormCheckBoxInput) child).isChecked()) {
+-            forums.add(uiCategory.getForum(((UIFormCheckBoxInput) child).getName()));
+-          }
+-        }
+-      }
++      List<Forum> forums = uiCategory.getForumsChecked(false);
+       if ((forums.size() > 0)) {
+         try {
+           for (Forum forum : forums) {
+@@ -709,35 +638,18 @@
+   }
+ 
+   static public class AddWatchingActionListener extends BaseEventListener<UICategory> {
+-    public void onEvent(Event<UICategory> event, UICategory uiCategory, final String path) throws Exception {
+-      List<String> values = new ArrayList<String>();
+-      try {
+-        values.add(uiCategory.userProfile.getEmail());
+-        uiCategory.getForumService().addWatch(1, path, values, uiCategory.userProfile.getUserId());
+-        uiCategory.isEditCategory = true;
+-        UIForumPortlet forumPortlet = uiCategory.getAncestorOfType(UIForumPortlet.class);
+-        forumPortlet.updateWatching();
+-        isUnWatch = false;
+-        info("UIAddWatchingForm.msg.successfully");
+-        event.getRequestContext().addUIComponentToUpdateByAjax(uiCategory);
+-      } catch (Exception e) {
+-        warning("UIAddWatchingForm.msg.fall");
+-      }
+-      event.getRequestContext().addUIComponentToUpdateByAjax(uiCategory);
++    public void onEvent(Event<UICategory> event, UICategory uiform, final String path) throws Exception {
++      isUnWatch = !uiform.addWatch(path, uiform.userProfile);
++      if(!isUnWatch) uiform.isEditCategory = true;
++      event.getRequestContext().addUIComponentToUpdateByAjax(uiform);
+     }
+   }
+ 
+   static public class UnWatchActionListener extends BaseEventListener<UICategory> {
+     public void onEvent(Event<UICategory> event, UICategory uiCategory, final String path) throws Exception {
+-      try {
+-        unwatchEmail = uiCategory.getEmailWatching(path);
+-        uiCategory.getForumService().removeWatch(1, path, uiCategory.userProfile.getUserId() + "/" + uiCategory.getEmailWatching(path));
+-        UIForumPortlet forumPortlet = uiCategory.getAncestorOfType(UIForumPortlet.class);
+-        forumPortlet.updateWatching();
++      if(uiCategory.unWatch(path, uiCategory.userProfile)) {
+         isUnWatch = true;
+-        info("UIAddWatchingForm.msg.UnWatchSuccessfully");
+-      } catch (Exception e) {
+-        warning("UIAddWatchingForm.msg.UnWatchfall");
++        uiCategory.isEditCategory = true;
+       }
+       event.getRequestContext().addUIComponentToUpdateByAjax(uiCategory);
+     }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicsTag.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicsTag.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicsTag.java	(working copy)
+@@ -121,19 +121,6 @@
+     listWatches = forumPortlet.getWatchingByCurrentUser();
+   }
+ 
+-  private UserProfile getUserProfile() {
+-    return userProfile;
+-  }
+-
+-  public void setUserProfile(UserProfile userProfile) throws Exception {
+-    this.userProfile = userProfile;
+-  }
+-
+-  @SuppressWarnings("unused")
+-  private String getScreenName(String userName) throws Exception {
+-    return getForumService().getScreenName(userName);
+-  }
+-
+   public String getRSSLink(String cateId) {
+     PortalContainer pcontainer = PortalContainer.getInstance();
+     return org.exoplatform.ks.common.Utils.getRSSLink("forum", pcontainer.getPortalContainerInfo().getContainerName(), cateId);
+@@ -235,28 +222,6 @@
+     return this.getForumService().getForum(categoryId, forumId);
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private boolean isWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      // KS-2573
+-      // check: is watching by email watch
+-      if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
+-        return true;
+-    }
+-    return false;
+-  }
+-
+-  private String getEmailWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      try {
+-        if (watch.getNodePath().endsWith(path))
+-          return watch.getEmail();
+-      } catch (Exception e) {
+-      }
+-    }
+-    return "";
+-  }
+-
+   static public class OpenTopicActionListener extends BaseEventListener<UITopicsTag> {
+     public void onEvent(Event<UITopicsTag> event, UITopicsTag uiTopicsTag, final String idAndNumber) throws Exception {
+       String[] id = idAndNumber.split(",");
+@@ -380,11 +345,10 @@
+           forumPortlet.updateWatching();
+           topicTag.listWatches = forumPortlet.getWatchingByCurrentUser();
+           info("UIAddWatchingForm.msg.successfully");
+-          event.getRequestContext().addUIComponentToUpdateByAjax(topicTag);
+         } catch (Exception e) {
+-          event.getSource().log.warn("Adding watching topic fail. \nCaused by: " + e.getCause());
+           warning("UIAddWatchingForm.msg.fall");
+         }
++        event.getRequestContext().addUIComponentToUpdateByAjax(topicTag);
+       }
+     }
+   }
+@@ -397,11 +361,10 @@
+         forumPortlet.updateWatching();
+         topicTag.listWatches = forumPortlet.getWatchingByCurrentUser();
+         info("UIAddWatchingForm.msg.UnWatchSuccessfully");
+-        event.getRequestContext().addUIComponentToUpdateByAjax(topicTag);
+       } catch (Exception e) {
+-        event.getSource().log.warn("Fail to unwatch tag topic. Caused by: " + e.getCause());
+         warning("UIAddWatchingForm.msg.UnWatchfall");
+       }
++      event.getRequestContext().addUIComponentToUpdateByAjax(topicTag);
+     }
+   }
+ 
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicPoll.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicPoll.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicPoll.java	(working copy)
+@@ -89,8 +89,7 @@
+     pollService = (PollService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PollService.class);
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() throws Exception {
++  public UserProfile getUserProfile() throws Exception {
+     userProfile = new UserProfile();
+     try {
+       userProfile = this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/BaseForumForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/BaseForumForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/BaseForumForm.java	(working copy)
+@@ -16,8 +16,14 @@
+  */
+ package org.exoplatform.forum.webui;
+ 
++import java.util.ArrayList;
++import java.util.List;
++
+ import org.exoplatform.container.ExoContainerContext;
++import org.exoplatform.forum.ForumUtils;
+ import org.exoplatform.forum.service.ForumService;
++import org.exoplatform.forum.service.UserProfile;
++import org.exoplatform.forum.service.Watch;
+ import org.exoplatform.ks.common.webui.BaseUIForm;
+ import org.exoplatform.webui.core.UIComponent;
+ 
+@@ -31,6 +37,10 @@
+ 
+   private ForumService forumService;
+ 
++  public UserProfile userProfile;
++
++  public List<Watch>  listWatches = new ArrayList<Watch>();
++
+   /**
+    * Get a reference to the forum service
+    * @return
+@@ -49,7 +59,57 @@
+   protected void setForumService(ForumService forumService) {
+     this.forumService = forumService;
+   }
++  
++  public UserProfile getUserProfile() throws Exception {
++    return userProfile;
++  }
+ 
++  public void setUserProfile(UserProfile userProfile) throws Exception {
++    this.userProfile = userProfile;
++    if (this.userProfile == null) {
++      this.userProfile = this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
++    }
++  }
++  
++  public void setListWatches(List<Watch> listWatches) {
++    this.listWatches = listWatches;
++  }
++  
++  protected boolean isWatching(String path) throws Exception {
++    for (Watch watch : listWatches) {
++      if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
++        return true;
++    }
++    return false;
++  }
++
++  protected String getEmailWatching(String path) throws Exception {
++    for (Watch watch : listWatches) {
++      try {
++        if (watch.getNodePath().endsWith(path))
++          return watch.getEmail();
++      } catch (Exception e) {
++      }
++    }
++    return "";
++  }
++
++  protected String getScreenName(String userName) throws Exception {
++    return getForumService().getScreenName(userName);
++  }
++  
++  protected String getShortScreenName(String screenName) throws Exception {
++    if (screenName != null && screenName.length() > 17 && !screenName.trim().contains(" ")) {
++      boolean isDelted = false;
++      if (screenName.indexOf("<s>") >= 0) {
++        screenName = screenName.replaceAll("<s>", "").replaceAll("</s>", "");
++        isDelted = true;
++      }
++      screenName = "<span title=\"" + screenName + "\">" + ((isDelted) ? "<s>" : "") + ForumUtils.getSubString(screenName, 15) + ((isDelted) ? "</s></span>" : "</span>");
++    }
++    return screenName;
++  }
++  
+   protected <T extends UIComponent> T openPopup(Class<T> componentType, String popupId, int width, int height) throws Exception {
+     UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
+     return openPopup(forumPortlet, componentType, popupId, width, height);
+@@ -67,4 +127,35 @@
+   protected <T extends UIComponent> T openPopup(Class<T> componentType, String popupId, int width) throws Exception {
+     return openPopup(componentType, popupId, width, 0);
+   }
++
++  protected boolean addWatch(String path, UserProfile userProfile) {
++    List<String> values = new ArrayList<String>();
++    try {
++      values.add(userProfile.getEmail());
++      getForumService().addWatch(1, path, values, userProfile.getUserId());
++      UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
++      forumPortlet.updateWatching();
++      this.listWatches = forumPortlet.getWatchingByCurrentUser();
++      info("UIAddWatchingForm.msg.successfully");
++      return true;
++    } catch (Exception e) {
++      warning("UIAddWatchingForm.msg.fall");
++      return false;
++    }
++  }
++
++  protected boolean unWatch(String path, UserProfile userProfile) {
++    try {
++      getForumService().removeWatch(1, path, userProfile.getUserId() + "/" + getEmailWatching(path));
++      UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
++      forumPortlet.updateWatching();
++      this.listWatches = forumPortlet.getWatchingByCurrentUser();
++      info("UIAddWatchingForm.msg.UnWatchSuccessfully");
++      return true;
++    } catch (Exception e) {
++      warning("UIAddWatchingForm.msg.UnWatchfall");
++      return false;
++    }
++  }
++
+ }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicContainer.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicContainer.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UITopicContainer.java	(working copy)
+@@ -131,7 +131,7 @@
+ 
+   private boolean                canAddNewThread   = true;
+ 
+-  private UserProfile            userProfile       = null;
++//  private UserProfile            userProfile       = null;
+ 
+   private String                 strOrderBy        = "";
+ 
+@@ -147,8 +147,6 @@
+ 
+   private String                 DEFAULT_ID        = TopicType.DEFAULT_ID;
+ 
+-  private List<Watch>            listWatches       = new ArrayList<Watch>();
+-
+   private Map<String, TopicType> topicTypeM        = new HashMap<String, TopicType>();
+ 
+   private Map<String, Integer>   pageTopicRemember = new HashMap<String, Integer>();
+@@ -180,14 +178,6 @@
+     this.isLogin = isLogin;
+   }
+ 
+-  public UserProfile getUserProfile() {
+-    return userProfile;
+-  }
+-
+-  public void setUserProfile(UserProfile userProfile) throws Exception {
+-    this.userProfile = userProfile;
+-  }
+-
+   public String getRSSLink(String cateId) {
+     PortalContainer pcontainer = PortalContainer.getInstance();
+     return org.exoplatform.ks.common.Utils.getRSSLink("forum", pcontainer.getPortalContainerInfo().getContainerName(), cateId);
+@@ -262,10 +252,6 @@
+     }
+   }
+ 
+-  public String getScreenName(String userName) throws Exception {
+-    return getForumService().getScreenName(userName);
+-  }
+-
+   public String getTitleInHTMLCode(String s) {
+     return ForumTransformHTML.getTitleInHTMLCode(s, new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
+   }
+@@ -528,29 +514,6 @@
+     return isModerator;
+   }
+ 
+-  public void setListWatches(List<Watch> listWatches) {
+-    this.listWatches = listWatches;
+-  }
+-
+-  public boolean isWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
+-        return true;
+-    }
+-    return false;
+-  }
+-
+-  private String getEmailWatching(String path) throws Exception {
+-    for (Watch watch : listWatches) {
+-      try {
+-        if (watch.getNodePath().endsWith(path))
+-          return watch.getEmail();
+-      } catch (Exception e) {
+-      }
+-    }
+-    return "";
+-  }
+-
+   static public class SearchFormActionListener extends BaseEventListener<UITopicContainer> {
+     public void onEvent(Event<UITopicContainer> event, UITopicContainer uiTopicContainer, final String objectId) throws Exception {
+       String path = uiTopicContainer.forum.getPath();
+@@ -826,7 +789,6 @@
+     public void onEvent(Event<UITopicContainer> event, UITopicContainer uiTopicContainer, final String objectId) throws Exception {
+       try {
+         uiTopicContainer.forum = uiTopicContainer.getForumService().getForum(uiTopicContainer.categoryId, uiTopicContainer.forumId);
+-        ;
+         UIWatchToolsForm watchToolsForm = uiTopicContainer.openPopup(UIWatchToolsForm.class, 500, 365);
+         watchToolsForm.setPath(uiTopicContainer.forum.getPath());
+         watchToolsForm.setEmails(uiTopicContainer.forum.getEmailNotification());
+@@ -1253,17 +1215,7 @@
+       } else {
+         path = uiTopicContainer.categoryId + "/" + uiTopicContainer.forumId + "/" + path;
+       }
+-      List<String> values = new ArrayList<String>();
+-      try {
+-        values.add(uiTopicContainer.getForumService().getUserInformations(uiTopicContainer.userProfile).getEmail());
+-        uiTopicContainer.getForumService().addWatch(1, path, values, uiTopicContainer.userProfile.getUserId());
+-        UIForumPortlet forumPortlet = uiTopicContainer.getAncestorOfType(UIForumPortlet.class);
+-        forumPortlet.updateWatching();
+-        uiTopicContainer.listWatches = forumPortlet.getWatchingByCurrentUser();
+-        info("UIAddWatchingForm.msg.successfully");
+-      } catch (Exception e) {
+-        warning("UIAddWatchingForm.msg.fall");
+-      }
++      uiTopicContainer.addWatch(path, uiTopicContainer.userProfile);
+       event.getRequestContext().addUIComponentToUpdateByAjax(uiTopicContainer);
+     }
+   }
+@@ -1276,16 +1228,7 @@
+       } else {
+         path = uiTopicContainer.categoryId + "/" + uiTopicContainer.forumId + "/" + path;
+       }
+-      try {
+-        uiTopicContainer.getForumService().removeWatch(1, path, uiTopicContainer.userProfile.getUserId() + "/" + uiTopicContainer.getEmailWatching(path));
+-        UIForumPortlet forumPortlet = uiTopicContainer.getAncestorOfType(UIForumPortlet.class);
+-        forumPortlet.updateWatching();
+-        uiTopicContainer.listWatches = forumPortlet.getWatchingByCurrentUser();
+-        info("UIAddWatchingForm.msg.UnWatchSuccessfully");
+-      } catch (Exception e) {
+-        event.getSource().log.warn("Unwatching, caused by: " + e.getCause());
+-        warning("UIAddWatchingForm.msg.UnWatchfall");
+-      }
++      uiTopicContainer.unWatch(path, uiTopicContainer.userProfile);
+       event.getRequestContext().addUIComponentToUpdateByAjax(uiTopicContainer);
+     }
+   }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostByIP.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostByIP.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostByIP.java	(working copy)
+@@ -32,6 +32,7 @@
+ import org.exoplatform.forum.service.Topic;
+ import org.exoplatform.forum.service.UserProfile;
+ import org.exoplatform.forum.service.Utils;
++import org.exoplatform.forum.webui.BaseForumForm;
+ import org.exoplatform.forum.webui.UIForumPageIterator;
+ import org.exoplatform.forum.webui.UIForumPortlet;
+ import org.exoplatform.ks.bbcode.core.ExtendedBBCodeProvider;
+@@ -61,11 +62,7 @@
+ 			@EventConfig(listeners = UIPageListPostByIP.DeletePostLinkActionListener.class)
+ 		}
+ )
+-public class UIPageListPostByIP extends BaseUIForm implements UIPopupComponent {
+-  private ForumService forumService;
+-
+-  private UserProfile  userProfile        = null;
+-
++public class UIPageListPostByIP extends BaseForumForm implements UIPopupComponent {
+   private String       userName           = "";
+ 
+   private String       ip_                = null;
+@@ -77,7 +74,6 @@
+   private List<Post>   posts              = new ArrayList<Post>();
+ 
+   public UIPageListPostByIP() throws Exception {
+-    forumService = (ForumService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ForumService.class);
+     this.userName = null;
+     addChild(UIForumPageIterator.class, null, "PageListPostByUser");
+     this.setActions(new String[] { "Cancel" });
+@@ -87,8 +83,7 @@
+     return hasEnableIPLogging;
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() throws Exception {
++  public UserProfile getUserProfile() throws Exception {
+     if (this.userProfile == null) {
+       UIForumPortlet forumPortlet = this.getAncestorOfType(UIForumPortlet.class);
+       this.userProfile = forumPortlet.getUserProfile();
+@@ -123,7 +118,7 @@
+       boolean isMod = false;
+       if (this.userProfile.getUserRole() < 2)
+         isMod = true;
+-      JCRPageList pageList = forumService.getListPostsByIP(ip_, strOrderBy);
++      JCRPageList pageList = getForumService().getListPostsByIP(ip_, strOrderBy);
+       forumPageIterator.updatePageList(pageList);
+       if (pageList != null)
+         pageList.setPageSize(6);
+@@ -160,7 +155,7 @@
+         String forumId = ids[leng - 3];
+         String topicId = ids[leng - 2];
+         try {
+-          Category category = uiForm.forumService.getCategory(categoryId);
++          Category category = uiForm.getForumService().getCategory(categoryId);
+           if (category == null) {
+             warning("UIShowBookMarkForm.msg.link-not-found");
+             return;
+@@ -175,10 +170,10 @@
+           }
+           if (isRead) {
+             String path_ = "";
+-            Forum forum = uiForm.forumService.getForum(categoryId, forumId);
++            Forum forum = uiForm.getForumService().getForum(categoryId, forumId);
+             if (forum != null)
+               path_ = forum.getPath() + "/" + topicId;
+-            Topic topic = uiForm.forumService.getTopicByPath(path_, false);
++            Topic topic = uiForm.getForumService().getTopicByPath(path_, false);
+             if (forum == null || topic == null) {
+               warning("UIForumPortlet.msg.do-not-permission");
+               return;
+@@ -239,12 +234,12 @@
+       String categoryId = path[length - 4];
+       if (topicId.replaceFirst(Utils.TOPIC, Utils.POST).equals(postId)) {
+         try {
+-          uiForm.forumService.removeTopic(categoryId, forumId, topicId);
++          uiForm.getForumService().removeTopic(categoryId, forumId, topicId);
+         } catch (Exception e) {
+         }
+       } else {
+         try {
+-          uiForm.forumService.removePost(categoryId, forumId, topicId, postId);
++          uiForm.getForumService().removePost(categoryId, forumId, topicId, postId);
+         } catch (Exception e) {
+         }
+       }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIForumUserSettingForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIForumUserSettingForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIForumUserSettingForm.java	(working copy)
+@@ -138,8 +138,6 @@
+   @SuppressWarnings("unused")
+   private String             tabId                              = "ForumUserProfile";
+ 
+-  private UserProfile        userProfile                        = null;
+-
+   private String[]           permissionUser                     = null;
+ 
+   private List<Watch>        listWatches                        = new ArrayList<Watch>();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModerationForum.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModerationForum.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModerationForum.java	(working copy)
+@@ -23,12 +23,12 @@
+ import org.exoplatform.forum.ForumTransformHTML;
+ import org.exoplatform.forum.service.ForumPageList;
+ import org.exoplatform.forum.service.ForumSearch;
+-import org.exoplatform.forum.service.ForumService;
+ import org.exoplatform.forum.service.JCRPageList;
+ import org.exoplatform.forum.service.Post;
+ import org.exoplatform.forum.service.Topic;
+ import org.exoplatform.forum.service.UserProfile;
+ import org.exoplatform.forum.service.Utils;
++import org.exoplatform.forum.webui.BaseForumForm;
+ import org.exoplatform.forum.webui.UIForumPageIterator;
+ import org.exoplatform.forum.webui.UIForumPortlet;
+ import org.exoplatform.ks.bbcode.core.ExtendedBBCodeProvider;
+@@ -59,11 +59,7 @@
+ 		}
+ )
+ @SuppressWarnings("unchecked")
+-public class UIModerationForum extends BaseUIForm implements UIPopupComponent {
+-  private UserProfile         userProfile;
+-
+-  private ForumService        forumService;
+-
++public class UIModerationForum extends BaseForumForm implements UIPopupComponent {
+   private String[]            path            = new String[] {};
+ 
+   List<ForumSearch>           list_;
+@@ -79,7 +75,6 @@
+   private UIForumPageIterator pageIterator;
+ 
+   public UIModerationForum() throws Exception {
+-    forumService = (ForumService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ForumService.class);
+     pageIterator = addChild(UIForumPageIterator.class, null, SEARCH_ITERATOR);
+     setActions(new String[] { "Close" });
+   }
+@@ -127,7 +122,7 @@
+   @SuppressWarnings( { "unused" })
+   private List<ForumSearch> getListObject() throws Exception {
+     try {
+-      list_ = forumService.getJobWattingForModerator(getPath());
++      list_ = getForumService().getJobWattingForModerator(getPath());
+     } catch (Exception e) {
+       list_ = new ArrayList<ForumSearch>();
+       log.error("list of forum search must not null: ", e);
+@@ -162,7 +157,7 @@
+       UIPopupAction popupAction = popupContainer.getChild(UIPopupAction.class);
+       if (forumSearch.getType().equals(Utils.TOPIC)) {
+         try {
+-          Topic topic = moderationForum.forumService.getTopicByPath(forumSearch.getPath(), false);
++          Topic topic = moderationForum.getForumService().getTopicByPath(forumSearch.getPath(), false);
+           UIViewTopic viewTopic = popupAction.activate(UIViewTopic.class, 700);
+           viewTopic.setTopic(topic);
+           viewTopic.setActionForm(new String[] { "Approve", "DeleteTopic", "Close" });
+@@ -172,7 +167,7 @@
+         }
+       } else {
+         try {
+-          Post post = moderationForum.forumService.getPost("", "", "", forumSearch.getPath());
++          Post post = moderationForum.getForumService().getPost("", "", "", forumSearch.getPath());
+           UIViewPost viewPost = popupAction.activate(UIViewPost.class, 700);
+           viewPost.setPostView(post);
+           viewPost.setViewUserInfo(false);
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIAddBBCodeForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIAddBBCodeForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIAddBBCodeForm.java	(working copy)
+@@ -125,6 +125,24 @@
+     this.getUIFormCheckBoxInput(FIELD_USEOPTION_CHECKBOX).setChecked(bbcode.isOption());
+   }
+ 
++  private void setBBcode() throws Exception {
++    String tagName = getUIStringInput(FIELD_TAGNAME_INPUT).getValue();
++    String replacement = getUIFormTextAreaInput(FIELD_REPLACEMENT_TEXTARE).getValue();
++    String description = getUIFormTextAreaInput(FIELD_DESCRIPTION_TEXTARE).getValue();
++    String example = getUIFormTextAreaInput(FIELD_EXAMPLE_TEXTARE).getValue();
++    boolean isOption = (Boolean) getUIFormCheckBoxInput(FIELD_USEOPTION_CHECKBOX).getValue();
++    if (ForumUtils.isEmpty(description))
++      description = " ";
++    bbcode.setTagName(tagName.toUpperCase());
++    bbcode.setReplacement(replacement);
++    bbcode.setDescription(description);
++    bbcode.setExample(example);
++    bbcode.setOption(isOption);
++    if (bbcode.getId() == null)
++      bbcode.setId(bbcode.getTagName() + ((bbcode.isOption()) ? "=" : ""));
++    this.example = example;
++  }
++  
+   @SuppressWarnings("unused")
+   private String getReplaceByBBCode() throws Exception {
+     return (new BBCodeRenderer()).renderExample(example, bbcode);
+@@ -133,20 +151,7 @@
+   static public class SaveActionListener extends EventListener<UIAddBBCodeForm> {
+     public void execute(Event<UIAddBBCodeForm> event) throws Exception {
+       UIAddBBCodeForm uiForm = event.getSource();
+-      String tagName = uiForm.getUIStringInput(FIELD_TAGNAME_INPUT).getValue();
+-      String replacement = uiForm.getUIFormTextAreaInput(FIELD_REPLACEMENT_TEXTARE).getValue();
+-      String description = uiForm.getUIFormTextAreaInput(FIELD_DESCRIPTION_TEXTARE).getValue();
+-      String example = uiForm.getUIFormTextAreaInput(FIELD_EXAMPLE_TEXTARE).getValue();
+-      boolean isOption = (Boolean) uiForm.getUIFormCheckBoxInput(FIELD_USEOPTION_CHECKBOX).getValue();
+-      if (ForumUtils.isEmpty(description))
+-        description = " ";
+-      uiForm.bbcode.setTagName(tagName.toUpperCase());
+-      uiForm.bbcode.setReplacement(replacement);
+-      uiForm.bbcode.setDescription(description);
+-      uiForm.bbcode.setExample(example);
+-      uiForm.bbcode.setOption(isOption);
+-      if (uiForm.bbcode.getId() == null)
+-        uiForm.bbcode.setId(uiForm.bbcode.getTagName() + ((uiForm.bbcode.isOption()) ? "=" : ""));
++      uiForm.setBBcode();
+       uiForm.listBBCode = new ArrayList<BBCode>();
+       try {
+         uiForm.listBBCode.addAll(uiForm.bbCodeService.getAll());
+@@ -163,7 +168,7 @@
+         bbcodes.add(uiForm.bbcode);
+         uiForm.bbCodeService.save(bbcodes);
+       } catch (Exception e) {
+-        uiForm.log.error("Can not save BBCode has name: " + uiForm.bbcode.getTagName(), e);
++        log.error("Can not save BBCode has name: " + uiForm.bbcode.getTagName(), e);
+       }
+       uiForm.cancelChildPopupAction();
+       try {
+@@ -172,7 +177,7 @@
+         codeManagerForm.initCheckBoxActiveBBCode();
+         event.getRequestContext().addUIComponentToUpdateByAjax(codeManagerForm);
+       } catch (Exception e) {
+-        uiForm.log.error("Can not update from: UIBBCodeManagerForm");
++        log.error("Can not update from: UIBBCodeManagerForm");
+       }
+     }
+   }
+@@ -183,21 +188,7 @@
+       String priview = event.getRequestContext().getRequestParameter(OBJECTID);
+       if (priview.equals(PREVIEW)) {
+         uiForm.isPriview = true;
+-        String tagName = uiForm.getUIStringInput(FIELD_TAGNAME_INPUT).getValue();
+-        String replacement = uiForm.getUIFormTextAreaInput(FIELD_REPLACEMENT_TEXTARE).getValue();
+-        String description = uiForm.getUIFormTextAreaInput(FIELD_DESCRIPTION_TEXTARE).getValue();
+-        String example = uiForm.getUIFormTextAreaInput(FIELD_EXAMPLE_TEXTARE).getValue();
+-        boolean isOption = (Boolean) uiForm.getUIFormCheckBoxInput(FIELD_USEOPTION_CHECKBOX).getValue();
+-        if (ForumUtils.isEmpty(description))
+-          description = " ";
+-        uiForm.bbcode.setTagName(tagName.toUpperCase());
+-        uiForm.bbcode.setReplacement(replacement);
+-        uiForm.bbcode.setDescription(description);
+-        uiForm.bbcode.setExample(example);
+-        uiForm.bbcode.setOption(isOption);
+-        if (uiForm.bbcode.getId() == null)
+-          uiForm.bbcode.setId(uiForm.bbcode.getTagName() + ((uiForm.bbcode.isOption()) ? "=" : ""));
+-        uiForm.example = example;
++        uiForm.setBBcode();
+       } else {
+         uiForm.isPriview = false;
+         uiForm.listBBCode = new ArrayList<BBCode>();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostUnApprove.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostUnApprove.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostUnApprove.java	(working copy)
+@@ -79,11 +79,6 @@
+     return ForumTransformHTML.getTitleInHTMLCode(s, new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() throws Exception {
+-    return this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+-  }
+-
+   public void setUpdateContainer(String categoryId, String forumId, String topicId) {
+     this.categoryId = categoryId;
+     this.forumId = forumId;
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIViewUserProfile.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIViewUserProfile.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIViewUserProfile.java	(working copy)
+@@ -20,6 +20,7 @@
+ import org.exoplatform.forum.ForumSessionUtils;
+ import org.exoplatform.forum.service.ForumService;
+ import org.exoplatform.forum.service.UserProfile;
++import org.exoplatform.forum.webui.BaseForumForm;
+ import org.exoplatform.forum.webui.UIForumPortlet;
+ import org.exoplatform.ks.common.user.CommonContact;
+ import org.exoplatform.ks.common.webui.BaseUIForm;
+@@ -47,7 +48,7 @@
+ 		}
+ )
+ @SuppressWarnings("unused")
+-public class UIViewUserProfile extends BaseUIForm implements UIPopupComponent {
++public class UIViewUserProfile extends BaseForumForm implements UIPopupComponent {
+ 
+   private UserProfile   userProfile;
+ 
+@@ -83,10 +84,6 @@
+     return forumService.isOnline(userId);
+   }
+ 
+-  private String getScreenName(String userName) throws Exception {
+-    return forumService.getScreenName(userName);
+-  }
+-
+   public void setUserProfile(UserProfile userProfile) {
+     this.userProfile = userProfile;
+   }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListTopicUnApprove.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListTopicUnApprove.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListTopicUnApprove.java	(working copy)
+@@ -83,11 +83,6 @@
+     this.typeApprove = typeApprove;
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() throws Exception {
+-    return this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+-  }
+-
+   public void setUpdateContainer(String categoryId, String forumId) {
+     this.categoryId = categoryId;
+     this.forumId = forumId;
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModeratorManagementForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModeratorManagementForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIModeratorManagementForm.java	(working copy)
+@@ -99,8 +99,6 @@
+ 
+   private boolean             isEdit                             = false;
+ 
+-  private UserProfile         userProfile                        = new UserProfile();
+-
+   private List<ForumLinkData> forumLinks                         = null;
+ 
+   private List<String>        listModerate                       = new ArrayList<String>();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UISplitTopicForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UISplitTopicForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UISplitTopicForm.java	(working copy)
+@@ -138,15 +138,7 @@
+     this.topic = topic;
+   }
+ 
+-  @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() {
+-    return userProfile;
+-  }
+ 
+-  public void setUserProfile(UserProfile userProfile) {
+-    this.userProfile = userProfile;
+-  }
+-
+   static public class SaveActionListener extends EventListener<UISplitTopicForm> {
+     public void execute(Event<UISplitTopicForm> event) throws Exception {
+       UISplitTopicForm uiForm = event.getSource();
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMoveTopicForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMoveTopicForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMoveTopicForm.java	(working copy)
+@@ -29,6 +29,7 @@
+ import org.exoplatform.forum.service.ForumService;
+ import org.exoplatform.forum.service.Topic;
+ import org.exoplatform.forum.service.UserProfile;
++import org.exoplatform.forum.webui.BaseForumForm;
+ import org.exoplatform.forum.webui.UIForumContainer;
+ import org.exoplatform.forum.webui.UIForumDescription;
+ import org.exoplatform.forum.webui.UIForumPortlet;
+@@ -59,9 +60,7 @@
+ 			@EventConfig(listeners = UIMoveTopicForm.CancelActionListener.class,phase = Phase.DECODE)
+ 		}
+ )
+-public class UIMoveTopicForm extends BaseUIForm implements UIPopupComponent {
+-  private ForumService   forumService;
+-
++public class UIMoveTopicForm extends BaseForumForm implements UIPopupComponent {
+   private String         forumId;
+ 
+   private List<Topic>    topics;
+@@ -72,8 +71,6 @@
+ 
+   private boolean        isAdmin     = false;
+ 
+-  private UserProfile    userProfile;
+-
+   private String         link        = "";
+ 
+   private String         pathTopic   = "";
+@@ -94,19 +91,7 @@
+     this.isAdmin = isAdmin;
+   }
+ 
+-  public UserProfile getUserProfile() throws Exception {
+-    return this.userProfile;
+-  }
+-
+-  public void setUserProfile(UserProfile userProfile) throws Exception {
+-    this.userProfile = userProfile;
+-    if (this.userProfile == null) {
+-      this.userProfile = this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+-    }
+-  }
+-
+   public UIMoveTopicForm() throws Exception {
+-    forumService = (ForumService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ForumService.class);
+   }
+ 
+   public void activate() throws Exception {
+@@ -129,7 +114,7 @@
+ 
+   private void setCategories() throws Exception {
+     this.categories = new ArrayList<Category>();
+-    for (Category category : this.forumService.getCategories()) {
++    for (Category category : getForumService().getCategories()) {
+       if (this.userProfile.getUserRole() == 1) {
+         String[] list = category.getUserPrivate();
+         if (list != null && list.length > 0 && !list[0].equals(" ")) {
+@@ -158,7 +143,7 @@
+   @SuppressWarnings("unused")
+   private List<Forum> getForums(String categoryId) throws Exception {
+     List<Forum> forums = new ArrayList<Forum>();
+-    for (Forum forum : this.forumService.getForumSummaries(categoryId, "")) {
++    for (Forum forum : this.getForumService().getForumSummaries(categoryId, "")) {
+       if (forum.getId().equalsIgnoreCase(this.forumId)) {
+         if (pathTopic.indexOf(categoryId) >= 0)
+           continue;
+@@ -190,7 +175,7 @@
+           // set link
+           String link = ForumUtils.createdForumLink(ForumUtils.TOPIC, "pathId").replaceFirst("private", "public");
+           //
+-          uiForm.forumService.moveTopic(uiForm.topics, forumPath, res.getString("UINotificationForm.label.EmailToAuthorMoved"), link);
++          uiForm.getForumService().moveTopic(uiForm.topics, forumPath, res.getString("UINotificationForm.label.EmailToAuthorMoved"), link);
+           UIForumPortlet forumPortlet = uiForm.getAncestorOfType(UIForumPortlet.class);
+           forumPortlet.updateUserProfileInfo();
+           forumPortlet.cancelAction();
+@@ -202,7 +187,7 @@
+             UIForumDescription forumDescription = forumContainer.getChild(UIForumDescription.class);
+             forumDescription.setForumIds(temp[temp.length - 2], temp[temp.length - 1]);
+             UITopicDetail topicDetail = topicDetailContainer.getChild(UITopicDetail.class);
+-            topicDetail.setUpdateForum(uiForm.forumService.getForum(temp[temp.length - 2], temp[temp.length - 1]));
++            topicDetail.setUpdateForum(uiForm.getForumService().getForum(temp[temp.length - 2], temp[temp.length - 1]));
+             topicDetail.setUpdateTopic(temp[temp.length - 2], temp[temp.length - 1], uiForm.topics.get(0).getId());
+             event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
+           } else {
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostHidden.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostHidden.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIPageListPostHidden.java	(working copy)
+@@ -75,11 +75,6 @@
+   }
+ 
+   @SuppressWarnings("unused")
+-  private UserProfile getUserProfile() throws Exception {
+-    return this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+-  }
+-
+-  @SuppressWarnings("unused")
+   private String getTitleInHTMLCode(String s) {
+     return ForumTransformHTML.getTitleInHTMLCode(s, new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
+   }
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMovePostForm.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMovePostForm.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/popup/UIMovePostForm.java	(working copy)
+@@ -23,16 +23,15 @@
+ 
+ import javax.jcr.ItemExistsException;
+ 
+-import org.exoplatform.container.ExoContainerContext;
+ import org.exoplatform.forum.ForumTransformHTML;
+ import org.exoplatform.forum.ForumUtils;
+ import org.exoplatform.forum.service.Category;
+ import org.exoplatform.forum.service.Forum;
+-import org.exoplatform.forum.service.ForumService;
+ import org.exoplatform.forum.service.ForumServiceUtils;
+ import org.exoplatform.forum.service.Post;
+ import org.exoplatform.forum.service.Topic;
+ import org.exoplatform.forum.service.UserProfile;
++import org.exoplatform.forum.webui.BaseForumForm;
+ import org.exoplatform.forum.webui.UIForumContainer;
+ import org.exoplatform.forum.webui.UIForumDescription;
+ import org.exoplatform.forum.webui.UIForumPortlet;
+@@ -41,7 +40,6 @@
+ import org.exoplatform.forum.webui.UITopicPoll;
+ import org.exoplatform.ks.bbcode.core.ExtendedBBCodeProvider;
+ import org.exoplatform.ks.common.webui.BaseEventListener;
+-import org.exoplatform.ks.common.webui.BaseUIForm;
+ import org.exoplatform.webui.application.WebuiRequestContext;
+ import org.exoplatform.webui.config.annotation.ComponentConfig;
+ import org.exoplatform.webui.config.annotation.EventConfig;
+@@ -64,15 +62,11 @@
+ 			@EventConfig(listeners = UIMovePostForm.CancelActionListener.class,phase = Phase.DECODE)
+ 		}
+ )
+-public class UIMovePostForm extends BaseUIForm implements UIPopupComponent {
+-  private ForumService   forumService;
+-
++public class UIMovePostForm extends BaseForumForm implements UIPopupComponent {
+   private String         topicId;
+ 
+   private List<Post>     posts;
+ 
+-  private UserProfile    userProfile;
+-
+   private List<Category> categories;
+ 
+   private String         link;
+@@ -80,7 +74,6 @@
+   private String         pathPost = "";
+ 
+   public UIMovePostForm() throws Exception {
+-    forumService = (ForumService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ForumService.class);
+   }
+ 
+   public void activate() throws Exception {
+@@ -112,20 +105,9 @@
+     setCategories();
+   }
+ 
+-  public UserProfile getUserProfile() throws Exception {
+-    return this.userProfile;
+-  }
+-
+-  public void setUserProfile(UserProfile userProfile) throws Exception {
+-    this.userProfile = userProfile;
+-    if (this.userProfile == null) {
+-      this.userProfile = this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+-    }
+-  }
+-
+   private void setCategories() throws Exception {
+     this.categories = new ArrayList<Category>();
+-    for (Category category : this.forumService.getCategories()) {
++    for (Category category : this.getForumService().getCategories()) {
+       if (this.userProfile.getUserRole() == 1) {
+         String[] list = category.getUserPrivate();
+         if (list != null && list.length > 0 && !list[0].equals(" ")) {
+@@ -154,7 +136,7 @@
+   @SuppressWarnings("unused")
+   private List<Forum> getForums(String categoryId) throws Exception {
+     List<Forum> forums = new ArrayList<Forum>();
+-    for (Forum forum : this.forumService.getForums(categoryId, "")) {
++    for (Forum forum : this.getForumService().getForums(categoryId, "")) {
+       if (this.userProfile.getUserRole() == 1) {
+         String[] moderators = forum.getModerators();
+         if (!ForumServiceUtils.hasPermission(moderators, this.userProfile.getUserId())) {
+@@ -169,7 +151,7 @@
+   @SuppressWarnings("unused")
+   private List<Topic> getTopics(String categoryId, String forumId, boolean isMode) throws Exception {
+     List<Topic> topics = new ArrayList<Topic>();
+-    List<Topic> topics_ = this.forumService.getTopics(categoryId, forumId);
++    List<Topic> topics_ = this.getForumService().getTopics(categoryId, forumId);
+     for (Topic topic : topics_) {
+       if (topic.getId().equalsIgnoreCase(this.topicId)) {
+         if (pathPost.indexOf(categoryId) >= 0 && pathPost.indexOf(forumId) > 0)
+@@ -205,7 +187,7 @@
+             postPath[i] = post.getPath();
+             ++i;
+           }
+-          uiForm.forumService.movePost(postPath, topicPath, false, res.getString("UINotificationForm.label.EmailToAuthorMoved"), link);
++          uiForm.getForumService().movePost(postPath, topicPath, false, res.getString("UINotificationForm.label.EmailToAuthorMoved"), link);
+           UIForumPortlet forumPortlet = uiForm.getAncestorOfType(UIForumPortlet.class);
+           forumPortlet.cancelAction();
+           UIForumContainer forumContainer = forumPortlet.findFirstComponentOfType(UIForumContainer.class);
+Index: eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategories.java
+===================================================================
+--- eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategories.java	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/java/org/exoplatform/forum/webui/UICategories.java	(working copy)
+@@ -150,8 +150,6 @@
+   @SuppressWarnings("unused")
+   private boolean isWatching(String path) throws Exception {
+     for (Watch watch : listWatches) {
+-      // KS-2573
+-      // check: is watching by email
+       if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
+         return true;
+     }
+@@ -540,22 +538,19 @@
+     public void execute(Event<UICategories> event) throws Exception {
+       UICategories uiContainer = event.getSource();
+       String path = event.getRequestContext().getRequestParameter(OBJECTID);
+-      List<String> values = new ArrayList<String>();
+       String userName = uiContainer.userProfile.getUserId();
+       try {
++        List<String> values = new ArrayList<String>();
+         values.add(uiContainer.forumService.getUserInformations(uiContainer.userProfile).getEmail());
+         uiContainer.forumService.addWatch(1, path, values, userName);
+         UIForumPortlet forumPortlet = uiContainer.getAncestorOfType(UIForumPortlet.class);
+         forumPortlet.updateWatching();
+-        Object[] args = {};
+         UIApplication uiApp = uiContainer.getAncestorOfType(UIApplication.class);
+-        uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.successfully", args, ApplicationMessage.INFO));
++        uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.successfully", new String[]{}, ApplicationMessage.INFO));
+         event.getRequestContext().addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+       } catch (Exception e) {
+-        e.printStackTrace();
+-        Object[] args = {};
+         UIApplication uiApp = uiContainer.getAncestorOfType(UIApplication.class);
+-        uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.fall", args, ApplicationMessage.WARNING));
++        uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.fall", new String[]{}, ApplicationMessage.WARNING));
+         event.getRequestContext().addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+       }
+       event.getRequestContext().addUIComponentToUpdateByAjax(uiContainer);
+@@ -575,7 +570,6 @@
+         uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.UnWatchSuccessfully", args, ApplicationMessage.INFO));
+         event.getRequestContext().addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+       } catch (Exception e) {
+-        e.printStackTrace();
+         Object[] args = {};
+         UIApplication uiApp = uiContainer.getAncestorOfType(UIApplication.class);
+         uiApp.addMessage(new ApplicationMessage("UIAddWatchingForm.msg.UnWatchfall", args, ApplicationMessage.WARNING));
+Index: eXoApplication/forum/webapp/src/main/webapp/templates/forum/webui/UITopicDetail.gtmpl
+===================================================================
+--- eXoApplication/forum/webapp/src/main/webapp/templates/forum/webui/UITopicDetail.gtmpl	(revision 67539)
++++ eXoApplication/forum/webapp/src/main/webapp/templates/forum/webui/UITopicDetail.gtmpl	(working copy)
+@@ -687,7 +687,7 @@
+ 				}
+ 				UserProfile userInfo = uicomponent.getUserInfo(owner) ;
+ 				screenName = userInfo.getScreenName() ;
+-				String viewScreenName = uicomponent.getScreenName(screenName);
++				String viewScreenName = uicomponent.getShortScreenName(screenName);
+ 				String classIconPost = post.getIcon() ;
+ 				if(ForumUtils.isEmpty(classIconPost)) 
+ 					classIconPost = "NormalTopicIcon" ;
