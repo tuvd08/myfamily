@@ -14,5 +14,6 @@
     <module>faq</module>
     <module>forum</module>
     <module>poll</module>
+    <module>family</module>
   </modules>
 </project>
