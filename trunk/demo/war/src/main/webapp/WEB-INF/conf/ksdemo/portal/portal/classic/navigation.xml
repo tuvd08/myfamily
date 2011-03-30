@@ -37,7 +37,14 @@
       <label>Poll</label>
       <visibility>SYSTEM</visibility>
       <page-reference>portal::classic::poll</page-reference>
-    </node>   
+    </node>
+    <node>
+      <uri>family</uri>
+      <name>family</name>
+      <label>Family</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::classic::family</page-reference>
+    </node>
     <node>
       <uri>tour</uri>
       <name>tour</name>

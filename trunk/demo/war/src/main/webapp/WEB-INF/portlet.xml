@@ -254,6 +254,39 @@
     </portlet-preferences>
     
   </portlet>
+
+  <portlet>
+    <description xml:lang="EN">FamilyToolbar Portlet</description>
+    <portlet-name>UserToolBarFamilyPortlet</portlet-name>
+    <display-name xml:lang="EN">FamilyToolbar Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
+    
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/toolbar/UserToolBarFamilyPortlet/webui/configuration.xml</value>
+    </init-param>    
+
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portal.webui</resource-bundle>
+    <portlet-info>
+      <title>FamilyToolbar Portlet</title>
+      <short-title>FamilyToolbar Portlet</short-title>
+      <keywords>System</keywords>
+    </portlet-info>    
+    
+    <portlet-preferences>
+      <preference>
+        <name>template</name>
+        <value>system:/templates/toolbar/UIUserToolBarFamilyPortlet.gtmpl</value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
+    
+  </portlet>
   
   <portlet>
     <description xml:lang="EN">TourToolbar Portlet</description>

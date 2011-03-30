@@ -43,6 +43,9 @@
   
   <!-- Poll core services -->
   <import>war:/ks-extension/ks/poll/poll-configuration.xml</import>
+
+  <!-- Family core services -->
+  <import>war:/ks-extension/ks/family/family-configuration.xml</import>
   
   
   

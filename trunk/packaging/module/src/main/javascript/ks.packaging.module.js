@@ -62,6 +62,12 @@ function getModule(params) {
     addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.poll.service", "jar",  module.version));
   module.eXoApplication.poll.deployName = "poll";
 
+  // FAMILY
+  module.eXoApplication.family = 
+    new Project("org.exoplatform.ks", "exo.ks.eXoApplication.family.webapp", "war", module.version) .
+    addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.family.service", "jar",  module.version));
+  module.eXoApplication.family.deployName = "family";
+
   // KS we resources and services
   module.web = {}
   module.web.ksResources = 
