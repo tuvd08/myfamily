@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2011-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -18,12 +18,6 @@ package org.exoplatform.family.webui.popup;
 
 import org.exoplatform.webui.core.UIComponent;
 
-/**
- * Created by The eXo Platform SARL 
- * Author : Pham Tuan 
- *          tuan.pham@exoplatform.com 
- * Aug 29, 2007
- */
 public interface UISelectComponent {
 	final public static String TYPE_USER = "0".intern();
 	final public static String TYPE_MEMBERSHIP = "1".intern();

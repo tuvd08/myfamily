@@ -33,9 +33,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -86,6 +86,8 @@ import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Post;
 import org.exoplatform.forum.service.PruneSetting;
 import org.exoplatform.forum.service.SortSettings;
+import org.exoplatform.forum.service.SortSettings.Direction;
+import org.exoplatform.forum.service.SortSettings.SortField;
 import org.exoplatform.forum.service.Tag;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.forum.service.TopicListAccess;
@@ -93,8 +95,6 @@ import org.exoplatform.forum.service.TopicType;
 import org.exoplatform.forum.service.UserProfile;
 import org.exoplatform.forum.service.Utils;
 import org.exoplatform.forum.service.Watch;
-import org.exoplatform.forum.service.SortSettings.Direction;
-import org.exoplatform.forum.service.SortSettings.SortField;
 import org.exoplatform.forum.service.conf.CategoryData;
 import org.exoplatform.forum.service.conf.CategoryEventListener;
 import org.exoplatform.forum.service.conf.ForumData;
@@ -104,13 +104,14 @@ import org.exoplatform.forum.service.conf.PostData;
 import org.exoplatform.forum.service.conf.SendMessageInfo;
 import org.exoplatform.forum.service.conf.StatisticEventListener;
 import org.exoplatform.forum.service.conf.TopicData;
+import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.conf.RoleRulesPlugin;
 import org.exoplatform.ks.common.jcr.JCRSessionManager;
 import org.exoplatform.ks.common.jcr.JCRTask;
 import org.exoplatform.ks.common.jcr.KSDataLocation;
+import org.exoplatform.ks.common.jcr.KSDataLocation.Locations;
 import org.exoplatform.ks.common.jcr.PropertyReader;
 import org.exoplatform.ks.common.jcr.SessionManager;
-import org.exoplatform.ks.common.jcr.KSDataLocation.Locations;
 import org.exoplatform.management.annotations.Managed;
 import org.exoplatform.management.annotations.ManagedDescription;
 import org.exoplatform.management.jmx.annotations.NameTemplate;
@@ -5476,7 +5477,7 @@ public class JCRDataStorage implements DataStorage, ForumNodeTypes {
 
       // If user isn't admin , get all membership of user
       if (!isAdmin) {
-        listOfUser = ForumServiceUtils.getAllGroupAndMembershipOfUser(userId);
+        listOfUser = UserHelper.getAllGroupAndMembershipOfUser(userId);
 
         // Get all category & forum that user can view
         Map<String, List<String>> mapList = getCategoryViewer(categoryHome, listOfUser, listCateIds, listForumIds, "@exo:userPrivate");
@@ -7691,12 +7692,15 @@ public class JCRDataStorage implements DataStorage, ForumNodeTypes {
       NodeIterator iter = result.getNodes();
       int count = 0;
       /*
-       * cateids = list query cateids = listinput -> public for property (null for view) cateids = {cateid} for private --> can not view cateids = new array for view --> can not view
+       * cateids = list query 
+       * cateids = listinput -> public for property (null for view) 
+       * cateids = {cateid} for private --> can not view 
+       * cateids = new array for view --> can not view
        */
       List<String> categoryCanView = new ArrayList<String>();
       List<String> forumCanView = new ArrayList<String>();
       if (!isAdmin) {
-        List<String> listOfUser = ForumServiceUtils.getAllGroupAndMembershipOfUser(userName);
+        List<String> listOfUser = UserHelper.getAllGroupAndMembershipOfUser(userName);
         Map<String, List<String>> mapPrivate = getCategoryViewer(categoryHome, listOfUser, new ArrayList<String>(), new ArrayList<String>(), "@" + EXO_USER_PRIVATE);
         List<String> categoryIds = mapPrivate.get(Utils.CATEGORY);// all categoryid public for private user
 

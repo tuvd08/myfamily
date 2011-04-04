@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -18,15 +18,11 @@ package org.exoplatform.family.service;
 
 import java.util.List;
 
-import org.exoplatform.container.component.ComponentPlugin;
-
-
-
-
 /**
- * Main Facade for all BBCode related operations
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
- * @version $Revision$
+ * Created by the Yen Tu
+ * Author : Vu Duy Tu
+ *          duytucntt@gmail.com
+ * 10:13:28 Apr 1, 2011
  */
 public interface FamilyService {
   

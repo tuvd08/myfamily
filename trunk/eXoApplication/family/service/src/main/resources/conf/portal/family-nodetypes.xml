@@ -1,36 +1,382 @@
 <nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
-  <nodeType name="exo:family" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+
+	<nodeType name="exo:famylyAttachment" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:file</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:fileName" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:comment" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:uploadDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyAlbum" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:desciption" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:famylyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:famylyAttachment</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:genealogyAlbumHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAlbum" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyAlbum</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyAlbumHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAlbum" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyAlbum</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyNote" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:id" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:detail" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyNoteHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyNote" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyNote</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+	<!-- co chi tet ghi cong duc cho dong ho the tung gia dinh -->
+	<nodeType name="exo:citeFamily" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:id" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- moi lan dong gop thi save 1 gia tri vao mang cite[] -->
+			<propertyDefinition name="exo:cite" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:citeDate" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:citeNote" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:citeAllValues" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:note" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+	</nodeType>
+
+	<!-- bang ghi cong duc cho dong ho -->
+	<nodeType name="exo:citeFamilyHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:citeFamily" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:citeFamily</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:member" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:id" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:fullName" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:firsName" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:sex" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:birthDay" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:diedDay" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:history" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:citeForGeneslogy" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:extraWife" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:famylyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:famylyAttachment</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:genealogy" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+		<propertyDefinitions>
+			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:detail" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- tong so the he trong dong ho -> dong ho da trai qua bao nhieu doi -->
+			<propertyDefinition name="exo:generationCount" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- Tong so thanh vien trong toan dong ho -->
+			<propertyDefinition name="exo:allMemberCount" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- Tong so thanh vien la con trai trong toan dong ho -->
+			<propertyDefinition name="exo:allBoyMemberCount" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- Thong bao viec ho -->
+			<propertyDefinition name="exo:announcement" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:genealogyAlbumHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:genealogyAlbumHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:citeFamilyHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:citeFamilyHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:family" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
 		<supertypes>
 			<supertype>nt:base</supertype>
 		</supertypes>
 		<propertyDefinitions>
 			<propertyDefinition name="exo:id" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints/>
+				<valueConstraints />
 			</propertyDefinition>
 			<propertyDefinition name="exo:owner" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints/>
+				<valueConstraints />
 			</propertyDefinition>
 			<propertyDefinition name="exo:createdDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints/>
+				<valueConstraints />
 			</propertyDefinition>
 			<propertyDefinition name="exo:modifiedBy" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints/>
+				<valueConstraints />
 			</propertyDefinition>
 			<propertyDefinition name="exo:modifiedDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints/>
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- the he thu x trong dong ho -->
+			<propertyDefinition name="exo:generationIndex" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- = true neu la con nuoi va gia nhap vao dong ho -->
+			<propertyDefinition name="exo:isFosterchild" requiredType="Boolean" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<!-- = lien ket den cac gia dinh cha -->
+			<propertyDefinition name="exo:relatives" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+				<valueConstraints />
 			</propertyDefinition>
 		</propertyDefinitions>
-	</nodeType> 
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyNoteHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyNoteHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAlbumHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyAlbumHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:member" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:member</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:family" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:family</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
 
 
-	<nodeType name="exo:Familys" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+	<nodeType name="exo:familyUser" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
 		<supertypes>
-			<supertype>nt:unstructured</supertype>
-		</supertypes> 
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:userName" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:isActive" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:hasFamily" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:info" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:userNote" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
 		<childNodeDefinitions>
 			<childNodeDefinition name="*" defaultPrimaryType="exo:family" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
 				<requiredPrimaryTypes>
-				<requiredPrimaryType>exo:family</requiredPrimaryType>
+					<requiredPrimaryType>exo:family</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+
+	<nodeType name="exo:familyPrivateHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:unstructured</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyUser" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyUser</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyPublicHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:unstructured</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:family" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:family</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+
+	<nodeType name="exo:familyAdmin" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
+		<propertyDefinitions>
+			<propertyDefinition name="exo:id" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyAdminHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:unstructured</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAdmin" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyAdmin</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+		</childNodeDefinitions>
+	</nodeType>
+
+	<nodeType name="exo:familyHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:unstructured</supertype>
+		</supertypes>
+		<childNodeDefinitions>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyPrivateHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyPrivateHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyPublicHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyPublicHome</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAdminHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyAdminHome</requiredPrimaryType>
 				</requiredPrimaryTypes>
 			</childNodeDefinition>
 		</childNodeDefinitions>

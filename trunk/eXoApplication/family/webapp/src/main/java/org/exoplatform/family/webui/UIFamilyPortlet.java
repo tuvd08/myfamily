@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2011-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,18 +16,9 @@
  ***************************************************************************/
 package org.exoplatform.family.webui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.portlet.PortletMode;
 
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.UIPopupAction;
-import org.exoplatform.family.Utils;
-import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -38,10 +29,10 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 /**
- * Created by The eXo Platform SAS 
+ * Created by The by Mr. Vu Duy Tu 
  * Author : Vu Duy Tu 
- *          tu.duy@exoplatform.com 
- * 24 June 2010, 08:00:59
+ *          duytucntt@gmail.com 
+ * Apr 1, 2011
  */
 
 @ComponentConfig(

@@ -1,18 +1,13 @@
 package org.exoplatform.family.service;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.exoplatform.family.service.impl.FamilyNodeTypes;
 
 public class FamilySummary {
 	private String id;
 	private List<String> familyId;
 	private List<String> familyName;
-	private String isAdmin = "false";
 	
 	public FamilySummary() {
-		setId("Empty");
 	}
 
 	public void setId(String id) {
@@ -20,14 +15,6 @@ public class FamilySummary {
 	}
 	public String getId() {
 		return id;
-	}
-	
-	public void setIsAdmin(String isAdmin) {
-		this.isAdmin = isAdmin;
-	}
-
-	public String getIsAdmin() {
-		return isAdmin;
 	}
 
 	public List<String> getFamilyId() {

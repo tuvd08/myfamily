@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2007 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -37,8 +37,8 @@ import org.exoplatform.portal.webui.util.Util;
 /**
  * Created by The eXo Platform SARL 
  * Author : Vu Duy Tu 
- *          tu.duy@exoplatform.com 
- * June 24, 2010 5:35:54 PM
+ *          duytucntt@gmail.com 
+ * Apr 1, 2011
  */
 
 public class Utils {

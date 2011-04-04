@@ -420,7 +420,7 @@
                 </value>                 
                          
                     
-                   <value>               
+                <value>               
                   <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
                     <field  name="alias"><string>categories</string></field>
                     <field  name="path"><string>/exo:applications/faqApp/categories</string></field>
@@ -487,6 +487,105 @@
                     </field>                       
                   </object>
                 </value>
+                
+                <!-- Family portlet -->
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>familyApp</string></field>                        
+                    <field  name="path"><string>/exo:applications/familyApp</string></field> 
+                    <field  name="nodeType"><string>exo:familyHome</string></field>                   
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                              <field name="identity"><string>*:/platform/administrators</string></field>
+                              <field name="read"><string>true</string></field>                
+                              <field name="addNode"><string>true</string></field>                
+                              <field name="setProperty"><string>true</string></field>                
+                              <field name="remove"><string>true</string></field>                
+                            </object>  
+                        </value>                        
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+                
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>familyPrivateHome</string></field>                        
+                    <field  name="path"><string>/exo:applications/familyApp/familyPrivateHome</string></field> 
+                    <field  name="nodeType"><string>exo:familyPrivateHome</string></field>                   
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                              <field name="identity"><string>*:/platform/administrators</string></field>
+                              <field name="read"><string>true</string></field>                
+                              <field name="addNode"><string>true</string></field>                
+                              <field name="setProperty"><string>true</string></field>                
+                              <field name="remove"><string>true</string></field>                
+                            </object>  
+                        </value>                        
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+                
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>familyPublicHome</string></field>                        
+                    <field  name="path"><string>/exo:applications/familyApp/familyPublicHome</string></field> 
+                    <field  name="nodeType"><string>exo:familyPublicHome</string></field>                   
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                              <field name="identity"><string>*:/platform/administrators</string></field>
+                              <field name="read"><string>true</string></field>                
+                              <field name="addNode"><string>true</string></field>                
+                              <field name="setProperty"><string>true</string></field>                
+                              <field name="remove"><string>true</string></field>                
+                            </object>  
+                        </value>                        
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+                <!-- Apply for admin family portlet. -->
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>familyAdminHome</string></field>                        
+                    <field  name="path"><string>/exo:applications/familyApp/familyAdminHome</string></field> 
+                    <field  name="nodeType"><string>exo:familyAdminHome</string></field>                   
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                              <field name="identity"><string>*:/platform/administrators</string></field>
+                              <field name="read"><string>true</string></field>                
+                              <field name="addNode"><string>true</string></field>                
+                              <field name="setProperty"><string>true</string></field>                
+                              <field name="remove"><string>true</string></field>                
+                            </object>  
+                        </value>                        
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 
                 <value>              	
 	              	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">              	 	

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -19,14 +19,13 @@ package org.exoplatform.family.service.impl;
 
 import java.util.List;
 
-import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.ks.common.jcr.KSDataLocation;
-import org.exoplatform.management.jmx.annotations.NameTemplate;
-import org.exoplatform.management.jmx.annotations.Property;
 import org.exoplatform.family.service.Family;
 import org.exoplatform.family.service.FamilyService;
 import org.exoplatform.family.service.FamilySummary;
+import org.exoplatform.ks.common.jcr.KSDataLocation;
+import org.exoplatform.management.jmx.annotations.NameTemplate;
+import org.exoplatform.management.jmx.annotations.Property;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -66,7 +65,7 @@ public class FamilyServiceImpl implements Startable, FamilyService {
 	}
 
 	public List<Family> getPageFamily() throws Exception {
-		return storage_.getPageFamily();
+		return storage_.getListFamily();
 	}
 
 	public FamilySummary getFamilySummary() throws Exception {

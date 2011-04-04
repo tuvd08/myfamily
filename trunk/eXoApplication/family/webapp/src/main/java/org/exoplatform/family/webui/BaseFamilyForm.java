@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2011-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -17,15 +17,13 @@
 package org.exoplatform.family.webui;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.ks.common.webui.BaseUIForm;
 import org.exoplatform.family.service.FamilyService;
+import org.exoplatform.ks.common.webui.BaseUIForm;
 import org.exoplatform.webui.core.UIComponent;
 
 /**
  * Base class for UIForm used in family application. Provides convenience methods to access the service
  * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
- * @version $Revision$
  */
 public class BaseFamilyForm extends BaseUIForm {
 

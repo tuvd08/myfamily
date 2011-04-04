@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -16,13 +16,6 @@
  */
 package org.exoplatform.family.service.impl;
 
-/**
- * Constants for Forum nodetypes and properties.
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
- * @version $Revision$
- */
 public interface FamilyNodeTypes {
 
 

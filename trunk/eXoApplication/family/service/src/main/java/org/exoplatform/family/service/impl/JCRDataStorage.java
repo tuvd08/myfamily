@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -17,32 +17,33 @@
 package org.exoplatform.family.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.ks.common.jcr.KSDataLocation;
-import org.exoplatform.ks.common.jcr.PropertyReader;
-import org.exoplatform.ks.common.jcr.SessionManager;
 import org.exoplatform.family.service.DataStorage;
 import org.exoplatform.family.service.Family;
 import org.exoplatform.family.service.FamilySummary;
+import org.exoplatform.ks.common.jcr.KSDataLocation;
+import org.exoplatform.ks.common.jcr.PropertyReader;
+import org.exoplatform.ks.common.jcr.SessionManager;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+
+/**
+ * Created by the Yen Tu
+ * Author : Vu Duy Tu
+ *          duytucntt@gmail.com
+ * 10:13:28 PM Apr 1, 2011 
+ */
 
 public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 	private static final Log log = ExoLogger.getLogger(JCRDataStorage.class);
@@ -69,7 +70,7 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
   	return null;
   }
 
-  private Node getGroupFamilyHomeNode(SessionProvider sProvider) throws Exception {
+  private Node getFamilyAppHomeNode(SessionProvider sProvider) throws Exception {
   	Node privateApp = getNodeByPath(nodeHierarchyCreator_.getJcrPath("groupsPath"), sProvider);
   	return privateApp;
   }
@@ -93,8 +94,7 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 	private Node getNodeById(SessionProvider sProvider, String familyId) throws Exception {
 		QueryManager qm = getSession(sProvider).getWorkspace().getQueryManager();
 		StringBuffer queryString = new StringBuffer(JCR_ROOT);
-		queryString.append("//element(*,").append(EXO_POLL).append(")")
-		.append("[fn:name() = '").append(familyId).append("']");
+		queryString.append("//element(*,").append(EXO_POLL).append(")").append("[fn:name() = '").append(familyId).append("']");
 		Query query = qm.createQuery(queryString.toString(), Query.XPATH);
 		QueryResult result = query.execute();
 		NodeIterator iter = result.getNodes();
@@ -110,13 +110,13 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 		PropertyReader reader = new PropertyReader(familyNode);
 		familyNew.setOwner(reader.string(EXO_OWNER));
 		familyNew.setModifiedBy(reader.string(EXO_MODIFIED_BY));
-		familyNew.setCreatedDate(reader.date(EXO_CREATED_DATE));
-		familyNew.setModifiedDate(reader.date(EXO_MODIFIED_DATE));
+		familyNew.setCreatedDate(reader.calendar(EXO_CREATED_DATE));
+		familyNew.setModifiedDate(reader.calendar(EXO_MODIFIED_DATE));
 		//...
 		return familyNew ;
 	}
 	
-	public List<Family>getPageFamily() throws Exception {
+	public List<Family>getListFamily() throws Exception {
 		SessionProvider sProvider = SessionProvider.createSystemProvider();
 		List<Family> listFamily = new ArrayList<Family>();
 		try {
@@ -185,17 +185,6 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 	}
 
 	
-	public static Calendar getGreenwichMeanTime() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setLenient(false);
-		int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
-		calendar.setTimeInMillis(System.currentTimeMillis() - gmtoffset);
-		return calendar;
-	}
-	
-	public static boolean isEmpty(String s) {
-		return (s == null || s.trim().length() <= 0)?true:false;
-	}
 	
   
 }

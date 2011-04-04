@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2011-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -37,12 +37,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.organization.UIGroupMembershipSelector;
 
-/**
- * Created by The eXo Platform SARL 
- * Author : Pham Tuan 
- *          phamtuanchip@yahoo.de 
- * Aug 29, 2007 11:57:56 AM
- */
 @ComponentConfigs( {
 		@ComponentConfig(
 				template = "app:/templates/family/webui/popup/UIGroupSelector.gtmpl",
@@ -168,12 +162,9 @@ public class UIGroupSelector extends UIGroupMembershipSelector implements UIPopu
 	}
 
 	public void activate() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void deActivate() throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 	public void setType(String type) {

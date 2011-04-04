@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2011-2011 by Mr. Vu Duy Tu.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,12 +16,6 @@
  **/
 package org.exoplatform.family.webui.popup;
 
-/**
- * Created by The eXo Platform SARL 
- * Author : Pham Tuan 
- *          tuan.pham@exoplatform.com 
- * Aug 29, 2007
- */
 public interface UISelector {
 	public void updateSelect(String selectField, String value) throws Exception;
 }
