@@ -25,10 +25,10 @@ public class FamilyWebservice implements ResourceContainer {
   }
 
   @GET
-  @Path("/viewfamily/{resourceid}")
+  @Path("/viewfamily/{familyId}")
   //
   @Produces(MediaType.APPLICATION_JSON)
-  public Response viewFamily(@PathParam("resourceid") String familyId) throws Exception {
+  public Response viewFamily(@PathParam("familyId") String familyId) throws Exception {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setNoCache(true);
     cacheControl.setNoStore(true);

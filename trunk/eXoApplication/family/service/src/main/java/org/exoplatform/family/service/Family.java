@@ -26,11 +26,25 @@ import org.exoplatform.services.jcr.util.IdGenerator;
  * Apr 1, 2011
  */
 public class Family { 
-  public static String FAMILY = "family";
+  public static final String FAMILY = "family";
+  
 	private String id;
 	private String parentPath;
 	private String oldParentPath;
+// thong tin chung
+	private long generationIndex;
 	private String owner;
+// ten the hien tren cay gia pha. Hien theo ten nguoi lien quan truc tiep den cay gia pha.
+	private String name;
+// mo ta chung ve gia dinh
+	private String discription;
+// lien ket den gia dinh cha
+	private String[] relations;
+// la con nuoi hay ko
+	private boolean isFosterchild;
+	
+	
+// trang thai
 	private Calendar createdDate;
 	private Calendar modifiedDate;
 	private String modifiedBy;
@@ -38,31 +52,167 @@ public class Family {
 	public Family() {
 		id = FAMILY + IdGenerator.generate() ;
 	}
-	
-	public String getId() { return id; }
-	public void setId(String id) { this.id = id; }
-	
-	public String getParentPath() { return parentPath; }
-	public void setParentPath(String path) { this.parentPath = path; }
-	
-	public void setOldParentPath(String oldParentPath) { this.oldParentPath = oldParentPath;}
-	public String getOldParentPath() { return oldParentPath; }
 
-	public String getOwner(){return owner;}
-	public void setOwner(String owner){this.owner = owner;}
-	
-	public Calendar getCreatedDate(){return createdDate;}
-	public void setCreatedDate(Calendar createdDate){this.createdDate = createdDate;}
-	
-	public String getModifiedBy(){return modifiedBy;}
-	public void setModifiedBy(String modifiedBy){this.modifiedBy = modifiedBy;}
-	
-	public Calendar getModifiedDate(){return modifiedDate;}
-	public void setModifiedDate(Calendar modifiedDate){this.modifiedDate = modifiedDate;}
-	
-	public boolean getIsClosed() { return isClosed;}
-	public void setIsClosed(boolean isClosed) { this.isClosed = isClosed;}
-	
+	public Family(String id) {
+	  this.id = id;
+	}
+
+	/**
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
+  /**
+   * @param id the id to set
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
+  /**
+   * @return the parentPath
+   */
+  public String getParentPath() {
+    return parentPath;
+  }
+  /**
+   * @param parentPath the parentPath to set
+   */
+  public void setParentPath(String parentPath) {
+    this.parentPath = parentPath;
+  }
+  /**
+   * @return the oldParentPath
+   */
+  public String getOldParentPath() {
+    return oldParentPath;
+  }
+  /**
+   * @param oldParentPath the oldParentPath to set
+   */
+  public void setOldParentPath(String oldParentPath) {
+    this.oldParentPath = oldParentPath;
+  }
+  /**
+   * @return the generationIndex
+   */
+  public long getGenerationIndex() {
+    return generationIndex;
+  }
+  /**
+   * @param generationIndex the generationIndex to set
+   */
+  public void setGenerationIndex(long generationIndex) {
+    this.generationIndex = generationIndex;
+  }
+  /**
+   * @return the owner
+   */
+  public String getOwner() {
+    return owner;
+  }
+  /**
+   * @param owner the owner to set
+   */
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+  /**
+   * @return the discription
+   */
+  public String getDiscription() {
+    return discription;
+  }
+  /**
+   * @param discription the discription to set
+   */
+  public void setDiscription(String discription) {
+    this.discription = discription;
+  }
+  /**
+   * @return the relations
+   */
+  public String[] getRelations() {
+    return relations;
+  }
+  /**
+   * @param relations the relations to set
+   */
+  public void setRelations(String[] relations) {
+    this.relations = relations;
+  }
+  /**
+   * @return the isFosterchild
+   */
+  public boolean isFosterchild() {
+    return isFosterchild;
+  }
+  /**
+   * @param isFosterchild the isFosterchild to set
+   */
+  public void setFosterchild(boolean isFosterchild) {
+    this.isFosterchild = isFosterchild;
+  }
+  /**
+   * @return the createdDate
+   */
+  public Calendar getCreatedDate() {
+    return createdDate;
+  }
+  /**
+   * @param createdDate the createdDate to set
+   */
+  public void setCreatedDate(Calendar createdDate) {
+    this.createdDate = createdDate;
+  }
+  /**
+   * @return the modifiedDate
+   */
+  public Calendar getModifiedDate() {
+    return modifiedDate;
+  }
+  /**
+   * @param modifiedDate the modifiedDate to set
+   */
+  public void setModifiedDate(Calendar modifiedDate) {
+    this.modifiedDate = modifiedDate;
+  }
+  /**
+   * @return the modifiedBy
+   */
+  public String getModifiedBy() {
+    return modifiedBy;
+  }
+  /**
+   * @param modifiedBy the modifiedBy to set
+   */
+  public void setModifiedBy(String modifiedBy) {
+    this.modifiedBy = modifiedBy;
+  }
+  /**
+   * @return the isClosed
+   */
+  public boolean isClosed() {
+    return isClosed;
+  }
+  /**
+   * @param isClosed the isClosed to set
+   */
+  public void setClosed(boolean isClosed) {
+    this.isClosed = isClosed;
+  }
 	
 }
 

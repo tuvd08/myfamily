@@ -93,7 +93,7 @@
 			</childNodeDefinition>
 		</childNodeDefinitions>
 	</nodeType>
-	<!-- co chi tet ghi cong duc cho dong ho the tung gia dinh -->
+	<!-- co chi tiet ghi cong duc cho dong ho the tung gia dinh -->
 	<nodeType name="exo:citeFamily" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
 		<supertypes>
 			<supertype>nt:base</supertype>
@@ -180,14 +180,12 @@
 		</childNodeDefinitions>
 	</nodeType>
 
-	<nodeType name="exo:genealogy" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+<!-- Thong ke gia dinh -->
+	<nodeType name="exo:familyStatitis" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+		<supertypes>
+			<supertype>nt:base</supertype>
+		</supertypes>
 		<propertyDefinitions>
-			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints />
-			</propertyDefinition>
-			<propertyDefinition name="exo:detail" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
-				<valueConstraints />
-			</propertyDefinition>
 			<!-- tong so the he trong dong ho -> dong ho da trai qua bao nhieu doi -->
 			<propertyDefinition name="exo:generationCount" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
 				<valueConstraints />
@@ -198,6 +196,17 @@
 			</propertyDefinition>
 			<!-- Tong so thanh vien la con trai trong toan dong ho -->
 			<propertyDefinition name="exo:allBoyMemberCount" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+		</propertyDefinitions>
+	</nodeType>
+	
+	<nodeType name="exo:genealogy" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+		<propertyDefinitions>
+			<propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+				<valueConstraints />
+			</propertyDefinition>
+			<propertyDefinition name="exo:detail" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
 				<valueConstraints />
 			</propertyDefinition>
 			<!-- Thong bao viec ho -->
@@ -218,7 +227,7 @@
 			</childNodeDefinition>
 		</childNodeDefinitions>
 	</nodeType>
-
+	
 	<nodeType name="exo:family" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
 		<supertypes>
 			<supertype>nt:base</supertype>
@@ -252,6 +261,7 @@
 				<valueConstraints />
 			</propertyDefinition>
 		</propertyDefinitions>
+
 		<childNodeDefinitions>
 			<childNodeDefinition name="*" defaultPrimaryType="exo:familyNoteHome" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
 				<requiredPrimaryTypes>
@@ -266,6 +276,11 @@
 			<childNodeDefinition name="*" defaultPrimaryType="exo:member" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
 				<requiredPrimaryTypes>
 					<requiredPrimaryType>exo:member</requiredPrimaryType>
+				</requiredPrimaryTypes>
+			</childNodeDefinition>
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyStatitis" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+				<requiredPrimaryTypes>
+					<requiredPrimaryType>exo:familyStatitis</requiredPrimaryType>
 				</requiredPrimaryTypes>
 			</childNodeDefinition>
 			<childNodeDefinition name="*" defaultPrimaryType="exo:family" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">

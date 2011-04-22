@@ -18,6 +18,7 @@ package org.exoplatform.family.service;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by the Yen Tu
@@ -38,4 +39,38 @@ public class Utils {
   public static boolean isEmpty(String s) {
     return (s == null || s.trim().length() <= 0)?true:false;
   }
+
+  public static boolean isEmpty(String[] s) {
+    if (s == null || s.length <= 0)
+      return true;
+    for (int i = 0; i < s.length; i++) {
+      String string = s[i];
+      if (!isEmpty(string))
+        return false;
+    }
+    return true;
+  }
+
+  public static boolean isEmpty(List<String> list) {
+    if (list == null || list.size() <= 0)
+      return true;
+    for (String string : list) {
+      if (!isEmpty(string))
+        return false;
+    }
+    return true;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
