@@ -659,11 +659,28 @@
 
 .UIAnswersPortlet .ProfileContainer .AvatarContainer {
 	margin: 20px auto 0px auto;
-	width: 65px;
+	width: 66px;
 }
 
-.UIAnswersPortlet .ProfileContainer .AvatarContainer .ImageAvatar {
-	border: solid 1px #7E7E7F;
+.UIAnswersPortlet .ImgAvatarBorder {
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #B7B7B7;
+	border-bottom: 1px solid #8D8D8D;
+	padding: 3px;
+	background: white;
+}
+
+
+.UIAnswersPortlet .SmallImgAvatar {
+	width: 70px;
+	height: 70px;
+}
+
+.UIAnswersPortlet .FAQAvatar {
+	width: 63px;
+	height: 63px;
 }
 
 .UIAnswersPortlet .AnswersContainer .FAQContent .questionTitle {
@@ -1782,7 +1799,7 @@
 	width: auto;
 }
 
-.UIAnswersPortlet .UIAttachMentForm .SelectFileFrame {
+.UIAnswersPortlet .UIAttachmentForm .SelectFileFrame {
 	margin: 0px;
 	white-space: normal;
 	width: 300px;
@@ -2109,16 +2126,16 @@
 }
 
 .UIViewerSettingForm .CategoryIcon {
-	background: url('background/CategoryIcon.png') no-repeat 17px;
+	background: url('background/CategoryIcon.png') no-repeat right center;
 	float: left;
 	height: 20px;
 	margin: 0px;
-	width: 36px;
+	width: 40px;
 	padding-top: 2px;
 }
 
 .UIViewerSettingForm .CategoryIcon .checkbox {
-	height: 15px;
+	height: 16px;
 }
 
 .UIViewerSettingForm .LabelNameCategory {
@@ -2150,6 +2167,7 @@
 
 .UIViewerSettingForm .UITabPane .UITabContentContainer .UITabContent {
 	 border: none;
+	 height: auto;
 }
 
 .UIViewerSettingForm #FAQRootChildren {
@@ -2287,10 +2305,6 @@
 	height: 14px;
 }
 
-.UIAnswersPortlet .FAQAvatar {
-	background: url('background/Avatar1.gif');
-}
-
 .UIAnswersPortlet .UIAction .LightBlueStyle .ButtonMiddleIcon {
 	padding: 0px 10px 0px 2px;
 }
@@ -2314,7 +2328,12 @@
 	z-index:5;
 	position:absolute ;
 	visibility:visible;
-	background:url('background/Point1x1.png') no-repeat top center ;	
+	background:url('background/Point1x1.png') no-repeat top center ;
+	user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
 }
 
 /* Fix KS-2244*/

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -84,7 +84,6 @@ public abstract class RSSProcess {
   }
 
   protected String getPageLink() throws Exception {
-    // TODO: can not get org.exoplatform.portal.webui when run JUnit-test. So,
     // when run JUnit-test, you must comment content in this function and return
     // null.
     try {

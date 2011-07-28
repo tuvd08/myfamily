@@ -48,8 +48,8 @@ function getProduct(version) {
   product.addDependencies(ks.eXoApplication.common);
   product.addDependencies(ks.eXoApplication.faq);
   product.addDependencies(ks.eXoApplication.forum);
-  product.addDependencies(ks.eXoApplication.poll);
   product.addDependencies(ks.eXoApplication.family);
+  product.addDependencies(ks.eXoApplication.poll);
   product.addDependencies(ks.web.ksResources);  
   product.addDependencies(ks.extension.webapp);
 

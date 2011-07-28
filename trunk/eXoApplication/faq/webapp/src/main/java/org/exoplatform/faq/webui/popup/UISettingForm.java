@@ -34,6 +34,7 @@ import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.BaseUIForm;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -192,14 +193,14 @@ public class UISettingForm extends BaseUIForm implements UIPopupComponent {
 
       FAQUtils.getEmailSetting(faqSetting_, true, false);
       UIFormWYSIWYGInput emailDefaultAdd = new UIFormWYSIWYGInput(EMAIL_DEFAULT_ADD_QUESTION, EMAIL_DEFAULT_ADD_QUESTION, "");
-      emailDefaultAdd.setFCKConfig(org.exoplatform.ks.common.Utils.getFCKConfig());
+      emailDefaultAdd.setFCKConfig(WebUIUtils.getFCKConfig());
       emailDefaultAdd.setToolBarName("Basic");
       emailDefaultAdd.setValue(faqSetting_.getEmailSettingContent());
       EmailAddNewQuestion.addUIFormInput(emailDefaultAdd);
 
       FAQUtils.getEmailSetting(faqSetting_, false, false);
       UIFormWYSIWYGInput emailDefaultEdit = new UIFormWYSIWYGInput(EMAIL_DEFAULT_EDIT_QUESTION, EMAIL_DEFAULT_EDIT_QUESTION, "");
-      emailDefaultEdit.setFCKConfig(org.exoplatform.ks.common.Utils.getFCKConfig());
+      emailDefaultEdit.setFCKConfig(WebUIUtils.getFCKConfig());
       emailDefaultEdit.setToolBarName("Basic");
       emailDefaultEdit.setValue(faqSetting_.getEmailSettingContent());
       EmailEditQuestion.addUIFormInput(emailDefaultEdit);
@@ -210,7 +211,7 @@ public class UISettingForm extends BaseUIForm implements UIPopupComponent {
       }
 
       UIFormWYSIWYGInput emailDefaultMove = new UIFormWYSIWYGInput(EMAIL_MOVE_QUESTION, EMAIL_MOVE_QUESTION, "");
-      emailDefaultMove.setFCKConfig(org.exoplatform.ks.common.Utils.getFCKConfig());
+      emailDefaultMove.setFCKConfig(WebUIUtils.getFCKConfig());
       emailDefaultMove.setToolBarName("Basic");
       emailDefaultMove.setValue(defEmailMove);
       EmailMoveQuestion.addUIFormInput(emailDefaultMove);
@@ -420,9 +421,9 @@ public class UISettingForm extends BaseUIForm implements UIPopupComponent {
   static public class ChangeAvatarActionListener extends BaseEventListener<UISettingForm> {
     public void onEvent(Event<UISettingForm> event, UISettingForm settingForm, String objectId) throws Exception {
       UIPopupContainer watchContainer = settingForm.getAncestorOfType(UIPopupContainer.class);
-      UIAttachMentForm attachMentForm = openPopup(watchContainer, UIAttachMentForm.class, 550, 0);
-      attachMentForm.setNumberUpload(1);
+      UIAttachmentForm attachMentForm = openPopup(watchContainer, UIAttachmentForm.class, 550, 0);
       attachMentForm.setIsChangeAvatar(true);
+      attachMentForm.setNumberUpload(1);
     }
   }
 

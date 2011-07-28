@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -87,7 +87,6 @@ public final class AnswersFeedGenerator extends RSSProcess implements FeedConten
       this.path = path;
       this.updated = updated;
    }
-
 
    public VoidReturn execute(Session session) throws Exception {
      itemSaved(path,updated);
@@ -283,7 +282,6 @@ public final class AnswersFeedGenerator extends RSSProcess implements FeedConten
     dataLocator.getSessionManager().executeAndSave(new ItemRemovedTask(path));
   }
 
-
   class ItemRemovedTask implements JCRTask<VoidReturn> {
 
     private String path;
@@ -293,21 +291,21 @@ public final class AnswersFeedGenerator extends RSSProcess implements FeedConten
     }
 
     public VoidReturn execute(Session session) throws Exception {
-    	try {
-    		String categoryPath = path.substring(0, path.indexOf("/questions/"));
-    		Node categoryNode = (Node) session.getItem(categoryPath);
-    		if(categoryNode == null ) categoryNode = (Node) getCurrentSession().getItem(categoryPath);
-    		while (!categoryNode.isNodeType("exo:faqCategory")) {
-    			categoryNode = categoryNode.getParent();
-    		}
-    		String itemId = path.substring(path.lastIndexOf("/") + 1);
-    		RSS rss = new RSS(categoryNode);
-    		SyndFeed feed = rss.removeEntry(itemId);
-    		String title = new PropertyReader(categoryNode).string("exo:name", "Root");
-    		feed.setTitle(title);
-    		rss.saveFeed(feed, FAQ_RSS_TYPE);
+      try {
+        String categoryPath = path.substring(0, path.indexOf("/questions/"));
+        Node categoryNode = (Node) session.getItem(categoryPath);
+        if(categoryNode == null ) categoryNode = (Node) getCurrentSession().getItem(categoryPath);
+        while (!categoryNode.isNodeType("exo:faqCategory")) {
+          categoryNode = categoryNode.getParent();
+        }
+        String itemId = path.substring(path.lastIndexOf("/") + 1);
+        RSS rss = new RSS(categoryNode);
+        SyndFeed feed = rss.removeEntry(itemId);
+        String title = new PropertyReader(categoryNode).string("exo:name", "Root");
+        feed.setTitle(title);
+        rss.saveFeed(feed, FAQ_RSS_TYPE);
       } catch (Exception e) {
-      	e.printStackTrace();
+        LOG.debug("Failed to get RSS.", e);
       }
       return VoidReturn.VALUE;
     }

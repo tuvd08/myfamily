@@ -21,7 +21,7 @@ import java.util.Date;
 import org.exoplatform.services.jcr.util.IdGenerator;
 
 /**
- * March 2, 2007	
+ * March 2, 2007  
  */
 public class Category {
   private String   id;
@@ -58,12 +58,12 @@ public class Category {
 
   public Category(String id) {
     this.id = id;
-    userPrivate = new String[] { " " };
-    moderators = new String[] { " " };
+    userPrivate = new String[] { "" };
+    moderators = new String[] { "" };
     emailNotification = new String[] {};
-    viewer = new String[] { " " };
-    createTopicRole = new String[] { " " };
-    poster = new String[] { " " };
+    viewer = new String[] { "" };
+    createTopicRole = new String[] { "" };
+    poster = new String[] { "" };
   }
 
   public Category() {

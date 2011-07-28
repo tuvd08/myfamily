@@ -40,9 +40,10 @@ import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Post;
 import org.exoplatform.forum.service.Topic;
-import org.exoplatform.ks.common.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -149,7 +150,7 @@ public class UIResponseForm extends BaseUIFAQForm implements UIPopupComponent {
   public UIResponseForm() throws Exception {
     isChildOfQuestionManager_ = false;
     inputResponseQuestion_ = new UIFormWYSIWYGInput(RESPONSE_CONTENT, RESPONSE_CONTENT, "");
-    inputResponseQuestion_.setFCKConfig(Utils.getFCKConfig());
+    inputResponseQuestion_.setFCKConfig(WebUIUtils.getFCKConfig());
     inputResponseQuestion_.setToolBarName("Basic");
     checkShowAnswer_ = new UIFormCheckBoxInput<Boolean>(SHOW_ANSWER, SHOW_ANSWER, false);
     isApproved_ = new UIFormCheckBoxInput<Boolean>(IS_APPROVED, IS_APPROVED, false);
@@ -308,7 +309,7 @@ public class UIResponseForm extends BaseUIFAQForm implements UIPopupComponent {
           String linkForum = FAQUtils.getLinkDiscuss(topicId);
           Post post;
           int l = answers.length;
-          String remoteAddr = org.exoplatform.ks.common.Utils.getRemoteIP();
+          String remoteAddr = WebUIUtils.getRemoteIP();
           for (int i = 0; i < l; ++i) {
             String postId = answers[i].getPostId();
             try {
@@ -358,6 +359,7 @@ public class UIResponseForm extends BaseUIFAQForm implements UIPopupComponent {
       UIResponseForm responseForm = event.getSource();
       String language = responseForm.questionLanguages_.getValue();
       String responseQuestionContent = responseForm.inputResponseQuestion_.getValue();
+      responseQuestionContent = CommonUtils.encodeSpecialCharInContent(responseQuestionContent);
       Answer answer;
       if (ValidatorDataInput.fckContentIsNotEmpty(responseQuestionContent)) {
         if (responseForm.mapAnswers.containsKey(language)) {
@@ -366,7 +368,7 @@ public class UIResponseForm extends BaseUIFAQForm implements UIPopupComponent {
           answer.setNew(true);
         } else {
           answer = new Answer();
-          answer.setDateResponse(FAQUtils.getInstanceTempCalendar().getTime());
+          answer.setDateResponse(org.exoplatform.faq.service.Utils.getInstanceTempCalendar().getTime());
           String currentUser = FAQUtils.getCurrentUser();
           answer.setResponseBy(currentUser);
           answer.setFullName(FAQUtils.getFullName(currentUser));
@@ -515,7 +517,7 @@ public class UIResponseForm extends BaseUIFAQForm implements UIPopupComponent {
           answer.setNew(true);
           answer.setActivateAnswers(true);
           answer.setApprovedAnswers(responseForm.isAnswerApproved);
-          answer.setDateResponse(FAQUtils.getInstanceTempCalendar().getTime());
+          answer.setDateResponse(org.exoplatform.faq.service.Utils.getInstanceTempCalendar().getTime());
           answer.setResponseBy(user);
           answer.setResponses(responseContent);
           answer.setLanguage(responseForm.currentLanguage);

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -27,10 +27,9 @@ import org.exoplatform.services.jcr.RepositoryService;
 /**
  * Created by The eXo Platform SARL
  * Author : Hung Ngyen Quang
- *					hung.nguyen@exoplatform.com
- * Jul 9, 2007	
+ *          hung.nguyen@exoplatform.com
+ * Jul 9, 2007  
  * 
- * TODO: wrong location, rename to JCRMessageAttachment
  */
 public class JCRForumAttachment extends ForumAttachment {
 

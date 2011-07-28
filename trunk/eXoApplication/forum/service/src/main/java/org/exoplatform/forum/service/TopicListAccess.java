@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -105,10 +105,6 @@ public class TopicListAccess extends JCRListAccess<Topic> {
     topicNew.setIsActive(reader.bool("exo:isActive"));
     topicNew.setVoteRating(reader.d("exo:voteRating"));
     topicNew.setUserVoteRating(reader.strings("exo:userVoteRating"));
-    // TODO
-    /*
-     * topicNew.setCreatedDate(reader.date("exo:createdDate")); topicNew.setModifiedBy(reader.string("exo:modifiedBy")); topicNew.setModifiedDate(reader.date("exo:modifiedDate")); topicNew.setTagId(reader.strings("exo:tagId")); topicNew.setCanView(reader.strings("exo:canView", new String[]{})); topicNew.setCanPost(reader.strings("exo:canPost", new String[]{}));
-     */
     return topicNew;
   }
 

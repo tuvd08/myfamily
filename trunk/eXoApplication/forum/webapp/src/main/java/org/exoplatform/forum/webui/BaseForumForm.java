@@ -43,9 +43,9 @@ public class BaseForumForm extends BaseUIForm {
 
   private ForumService forumService;
 
-  public UserProfile userProfile = new UserProfile();
+  public UserProfile   userProfile = null;
 
-  public List<Watch>  listWatches = new ArrayList<Watch>();
+  public List<Watch>   listWatches = new ArrayList<Watch>();
 
   /**
    * Get a reference to the forum service
@@ -65,22 +65,26 @@ public class BaseForumForm extends BaseUIForm {
   protected void setForumService(ForumService forumService) {
     this.forumService = forumService;
   }
-  
+
   public UserProfile getUserProfile() throws Exception {
-    return userProfile;
+    if (this.userProfile == null) {
+      setUserProfile(null);
+    }
+    return this.userProfile;
   }
 
   public void setUserProfile(UserProfile userProfile) throws Exception {
-    this.userProfile = userProfile;
-    if (this.userProfile == null) {
+    if (userProfile == null) {
       this.userProfile = this.getAncestorOfType(UIForumPortlet.class).getUserProfile();
+    } else {
+      this.userProfile = userProfile;
     }
   }
-  
-  public void setListWatches(List<Watch> listWatches) {
-    this.listWatches = listWatches;
+
+  protected void setListWatches() throws Exception {
+    listWatches = getForumService().getWatchByUser(getUserProfile().getUserId());
   }
-  
+
   protected boolean isWatching(String path) throws Exception {
     for (Watch watch : listWatches) {
       if (path.equals(watch.getNodePath()) && watch.isAddWatchByEmail())
@@ -104,7 +108,7 @@ public class BaseForumForm extends BaseUIForm {
   protected String getScreenName(String userName) throws Exception {
     return getForumService().getScreenName(userName);
   }
-  
+
   protected String getShortScreenName(String screenName) throws Exception {
     if (screenName != null && screenName.length() > 17 && !screenName.trim().contains(" ")) {
       boolean isDelted = false;
@@ -112,12 +116,11 @@ public class BaseForumForm extends BaseUIForm {
         screenName = screenName.replaceAll("<s>", ForumUtils.EMPTY_STR).replaceAll("</s>", ForumUtils.EMPTY_STR);
         isDelted = true;
       }
-      screenName = (new StringBuilder().append("<span title=\"").append(screenName).append("\">").append(((isDelted) ? "<s>" : ForumUtils.EMPTY_STR)).
-      append(ForumUtils.getSubString(screenName, 15)).append(((isDelted) ? "</s></span>" : "</span>"))).toString();
+      screenName = (new StringBuilder().append("<span title=\"").append(screenName).append("\">").append(((isDelted) ? "<s>" : ForumUtils.EMPTY_STR)).append(ForumUtils.getSubString(screenName, 15)).append(((isDelted) ? "</s></span>" : "</span>"))).toString();
     }
     return screenName;
   }
-  
+
   protected <T extends UIComponent> T openPopup(Class<T> componentType, String popupId, int width, int height) throws Exception {
     UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
     return openPopup(forumPortlet, componentType, popupId, width, height);
@@ -141,9 +144,7 @@ public class BaseForumForm extends BaseUIForm {
     try {
       values.add(userProfile.getEmail());
       getForumService().addWatch(1, path, values, userProfile.getUserId());
-      UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
-      forumPortlet.updateWatching();
-      this.listWatches = forumPortlet.getWatchingByCurrentUser();
+      setListWatches();
       info("UIAddWatchingForm.msg.successfully");
       return true;
     } catch (Exception e) {
@@ -155,9 +156,7 @@ public class BaseForumForm extends BaseUIForm {
   protected boolean unWatch(String path, UserProfile userProfile) {
     try {
       getForumService().removeWatch(1, path, userProfile.getUserId() + ForumUtils.SLASH + getEmailWatching(path));
-      UIForumPortlet forumPortlet = getAncestorOfType(UIForumPortlet.class);
-      forumPortlet.updateWatching();
-      this.listWatches = forumPortlet.getWatchingByCurrentUser();
+      setListWatches();
       info("UIAddWatchingForm.msg.UnWatchSuccessfully");
       return true;
     } catch (Exception e) {
@@ -174,7 +173,7 @@ public class BaseForumForm extends BaseUIForm {
     WebuiRequestContext context = RequestContext.getCurrentInstance();
     context.addUIComponentToUpdateByAjax(popupWindow.getParent());
   }
-  
+
   protected void showUIUserSelect(UIPopupContainer uiPopupContainer, String popupWinDowId, String id) throws Exception {
     UIGroupSelector uiGroupSelector = uiPopupContainer.findFirstComponentOfType(UIGroupSelector.class);
     if (uiGroupSelector != null) {
@@ -195,5 +194,5 @@ public class BaseForumForm extends BaseUIForm {
     uiPopupWindow.setRendered(true);
     uiPopupContainer.setRendered(true);
   }
-  
+
 }

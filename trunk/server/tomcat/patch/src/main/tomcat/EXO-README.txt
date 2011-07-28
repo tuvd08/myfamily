@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -16,7 +16,7 @@
  **/
  
 =====================================================
-    Release Notes eXo Knowledge Suite Version 2.1.1.1
+    Release Notes eXo Knowledge Suite Version 2.2.0
 =====================================================
 
 ===============
@@ -36,12 +36,22 @@ forum, frequency answer and question
 
 
     * General
-      - New home page
-	  - Ear package clean up and support
-	  - Fix bugs 
-	  - Activity pluging for integration of platform 3.0.1
-	  - Optionable when post questions in root category
-	  - Demo online integrated with platform 3.0 http://platform.demo.exoplatform.org
+      -  Email Address Picker
+      - Hilight post with URL
+      - Revamp question list view
+      - Initialize from export plugin
+      - Social Contact provider
+      - Wiki - Search Context Menu
+      - [wiki] implement "compare with current version" action on view version form
+      - [wiki] Page Tree panel
+      - More Confluence macros
+      - [wiki] Edit Paragraph
+      - [wiki] Watch Page
+      - [wiki] Minor Edit
+      - [wiki] Page Info
+      - [wiki] Page Templates
+      - [wiki] Social Integration
+      - [wiki] Wiki Permissions
           
     * Find the latest release notes here : http://wiki.exoplatform.org/xwiki/bin/view/KS/Release+Notes
           
@@ -55,7 +65,7 @@ Find the latest install guide here : http://wiki.exoplatform.org/xwiki/bin/view/
         Web Browser: IE6, IE7, FF2, FF3 (recommended)
         JVM: version 1.6.0_0 or higher
         Application Server : tomcat-6.0.20 and up 
-        Building Tools: Maven 2.2.1 and up
+        Building Tools: Maven 3 and up
         
 
 - Knowledge suite quick start guide
@@ -86,9 +96,8 @@ Need to set the JAVA_HOME variable for run Knowledge suite's servers.
          "./gatein.sh run" for production
          "./gatein-dev.sh run" for development
          
-+) Edit the file $JBOSS_HOME/server/default/conf/gatein/configuration.properties and configure mail  if you want to enable mail notifications.
-Similarly
-To enable mail notifications, quickly you can use your own gmail account for example :
+
+To enable mail notifications, quickly you can use your own email account for example :
 
 # EMail
 gatein.email.smtp.username=*youracount@server.com*
@@ -100,9 +109,11 @@ gatein.email.smtp.auth=true
 gatein.email.smtp.socketFactory.port=465
 gatein.email.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
 
+in this file tomcat/gatein/conf/configuration.properties
+
 * Enter one of the following addresses into your browser address bar in local pc:   
    KS demo portal  
-      http://localhost:8080/ksdemo
+      http://localhost:8080/
 
 You can log into the portal with the following accounts: root, john, mary, demo.
 All those accounts have the default password "gtn". 
@@ -110,7 +121,7 @@ All those accounts have the default password "gtn".
 ==============
 4 Known issues 
 ==============
- *  
+ 
  
 ===========================  
 5 Other resources and links
@@ -129,6 +140,381 @@ All those accounts have the default password "gtn".
 ====================
 6 Detailed Changelog
 ==================== 
+- Version 2.2.0
+** Bug
+    * [KS-2268] - Search question by language is incorrect
+    * [KS-2362] - IE7: Error when upload avatar in special case
+    * [KS-2456] - Problem with loading form when click select user icon in Permission tab of New topic 
+    * [KS-2457] - Still can Add related unapproved question for answer in case unapproved question is not allowed to be viewed
+    * [KS-2468] - [Forum] Sort topic by Attachment count is unexact in special case 
+    * [KS-2470] - [Post reply] is still visible although this topic is closed  in special case
+    * [KS-2473] - need to show alert message when save censor in case censor field is empty
+    * [KS-2474] - Check last button of page index in forum and topic
+    * [KS-2479] - Display wrong when change order value in add new category
+    * [KS-2505] - Show duplicate default data in Forum. See file attach
+    * [KS-2506] - Moderator can not move question to a category althoug it have add question right
+    * [KS-2533] - Quick search don't run when hit [Enter] key in search field
+    * [KS-2575] - Normal user don't see topic after topic is rated by other users
+    * [KS-2582] - Displaying content of [FAQ] page is empty after delete category
+    * [KS-2584] - Using the eXo OrganizationService on GateIn... 
+    * [KS-2585] - Can not open question in search list.
+    * [KS-2590] - In user management form: can not search user in other pages except on page 1 
+    * [KS-2605] - In First time, must to double click on  "Sort" icon to sort answer in question
+    * [KS-2611] - Labels are overlapped (FR)
+    * [KS-2615] - Forums statistics are wrong after the import of old messages (zip type)
+    * [KS-2634] - [Chrome] Forum attachments are downloaded with wrong names
+    * [KS-2638] - Users watching Forum topics are receiving notifications of "Undelivered Mail Returned to Sender" when a user's mail is unavailable
+    * [KS-2653] - Edit poll in topic isn't updated
+    * [KS-2660] - Error in Jboss packaging message
+    * [KS-2663] - initialize application data wrong when adding KS application to Social Space.
+    * [KS-2668] - Can not add Poll to topic inside Forum porlet
+    * [KS-2670] -  Rated topic don't shown in RSS feed
+    * [KS-2671] - Question is still [Open question] although answered in another language 
+    * [KS-2672] - Can not view post in a forum of space from activity stream
+    * [KS-2673] - ANS: Lack of : for initial permission on added category for space
+    * [KS-2680] - Wrong URL generated in Forum
+    * [KS-2688] - Typo : "Maximum numer of online users was :...
+    * [KS-2714] - on ksdemo can not register new user because can not see the text validation
+    * [KS-2716] - Impossible to Reinitialize Avatar (FrenchUI), update tu use confirm code from portal
+    * [KS-2721] - After edit poll the score change wrong option, fix for multi vote.
+    * [KS-2752] - Missing library when trying to build KS
+    * [KS-2753] - In French: Show code error when close "User Setting" pop up in special case
+    * [KS-2757] - UI error when view poll gadget in edit mode and view vote result 
+    * [KS-2761] - Poll porlet: Selected poll isn't shown although it is public in special case
+    * [KS-2762] - Poll Porlet: Selected poll is still show although it is deleted
+    * [KS-2768] - [Answers] An inactived and/or disapproved question is always visible in FAQ 
+    * [KS-2769] - Interface not one inline in space
+    * [KS-2782] - [wiki] Miscellaneous UI bugs of wiki portlet
+    * [KS-2799] - content page is empty when view the content of first version of a page which has just one version
+    * [KS-2800] - [KS] Show message error when add forum from Moderation menu
+    * [KS-2810] - with Banned user, should synchronize right click and action bar 
+    * [KS-2811] - Total Topics in Forum Statistic isn't updated after delete category
+    * [KS-2813] - Show code error in UI when view category that moved to another position
+    * [KS-2823] - Watches form is pushed to bottom when upload avater has size about 400kb
+    * [KS-2826] - Error with buttons in Submit Question form
+    * [KS-2833] - [wiki] Text is outside the boundary
+    * [KS-2837] - [wiki] Lost typed data after close help panel
+    * [KS-2843] - Error UI in navigation bar. Detail see file attach
+    * [KS-2847] - [wiki] change date format in versions list and compare form
+    * [KS-2853] - Poll gadget does not work on ksdemo
+    * [KS-2860] - exo.ks.ext.social-integration.jar is missing in ear extension packaging
+    * [KS-2862] - Can not approve a censor post from pending list
+    * [KS-2863] - [wiki] History's changes display wrong
+    * [KS-2866] - [wiki] wiki portlet doesn't work on Platform 3.0
+    * [KS-2867] - [wiki] wrong URL format when cancel adding page
+    * [KS-2871] - Stacktrace on startup
+    * [KS-2873] - [KS-Forum] Error UI when there are some private message in Inbox 
+    * [KS-2888] - [wiki] restore version problem when page contains macro
+    * [KS-2889] - [wiki] Can't get search result when searching a keyword in attachment
+    * [KS-2890] - social integration: update new template of activity
+    * [KS-2895] - Permission tab: existing role/group is not listed after select user
+    * [KS-2896] - UI error with 3.33333333 percent  of poll vote gadget 
+    * [KS-2897] - [wiki] Bug unknown error when upload file contains special character in name
+    * [KS-2898] - [PLF] Groovy templates mimetype is "application/x-groovy+html"
+    * [KS-2901] - [Poll] Display wrong expired date time
+    * [KS-2902] - mask layer has error because of changes from portal.
+    * [KS-2906] - Answer portlet in edit mode shows the portlet in view mode
+    * [KS-2908] - IE7: Error upload form and can not upload
+    * [KS-2914] - [Wiki] UI doesn't change after applying new preferences
+    * [KS-2915] - [wiki] Couldn't add new page by link
+    * [KS-2918] - [Answer] UI component has errors when visited by IE7. 
+    * [KS-2920] - multi-line tip does not display properly
+    * [KS-2921] - Show error when add new category in case watching an existing category 
+    * [KS-2923] - FF: uploaded avatar isn't displayed after refresh browser (F5)
+    * [KS-2927] - [wiki] Couldn't rename Wiki Home
+    * [KS-2932] - [wiki] Upload icon disappear on Firefox
+    * [KS-2940] - Little error in UIRightPopupMenuContainer 
+    * [KS-2944] - [wiki] Missing space name in breadcrumb
+    * [KS-2948] - Lose upload icon and can not upload file
+    * [KS-2983] - [IE7] Little error with [Censored keywords] item in Administration menu
+    * [KS-2987] - [Forum] Censor, approve , active do not work when no check any topic
+    * [KS-2988] - [wiki] Couldn't link to other page by WYSIWYG editor
+    * [KS-2991] - [IE7] Can not add/edit a page
+    * [KS-2992] - [wiki] Users and Groups ApplicationData path aren't exsited
+    * [KS-2993] - [Forum] Data is pruned after initialized from Zip
+    * [KS-2994] - [wiki] make page content editable by webdav
+    * [KS-2996] - [Wiki] Suggestion link leads to wrong location
+    * [KS-2997] - [Wiki] A lot of dump wikis are created when create link in page.
+    * [KS-3004] - toc macro is not rendered with proper indentation
+    * [KS-3005] - [wiki] portlet height is not dynamic
+    * [KS-3012] - [Wiki] Show "Page not found" when open a page that contains character "&"
+    * [KS-3014] - [Wiki] Error when create page in case page's title contains charater "!,? "
+    * [KS-3016] - Polls Portlet action buttons are rendered in an ugly way - when integrated in a web site
+    * [KS-3018] - Poll portlet header not translated to English or French - UIPollForm
+    * [KS-3019] - Delete panel header "options" in the polls edit mode
+    * [KS-3028] - Fail to search a keyword - which is contained in answer entry - using Created between/And criteria
+    * [KS-3039] - [Wiki] Page Tree doesn't work in Group wiki
+    * [KS-3050] - [Wiki] IE7 ui error in contextual menu and forms
+    * [KS-3054] - [wiki]Macro browser is broken
+    * [KS-3064] - Don't use UIApplicationLifecycle for all WebUI components
+    * [KS-3070] - [wiki] table format is broken after switch from WYSIWYG editor to markup editor
+    * [KS-3088] - [IE7] Wiki - Add page - The page is broken
+    * [KS-3089] - [IE7] Wiki - fail to save a child page
+    * [KS-3090] - [IE7] Wiki - Edit page - UI is broken
+    * [KS-3093] - Wiki - Deleting attachment will erase the page title and text content
+    * [KS-3094] - [IE7] Wiki - Cannot delete page in IE7
+    * [KS-3095] - Wiki - Searching for the keyword 'content' always returns Wiki Home page
+    * [KS-3110] - Show exception in console after click create new space
+    * [KS-3111] - [KS] Show exceptiopn when add new page on wiki portlet
+    * [KS-3120] - [ANswers Portlet] PathNotFoundException when answering a question
+    * [KS-3123] - [Wiki] User can see page in the tree event they don't have permission to view
+    * [KS-3124] - [Wiki] Nothing happen when click to view page's history
+    * [KS-3126] - Problem with French translation in Faq Answer portlet
+    * [KS-3127] - The max user is not properly set in forum
+    * [KS-3128] - Show exception when used wiki (watch page, add page/edit page, preview page ....)
+    * [KS-3132] - Display the first template when choose other template to create new page
+    * [KS-3144] - IE7: Error UI and lose [Watch], [Bookmark], [RSS] icon in main action bar of category
+    * [KS-3151] - Mini calendar is not translated in French somewhere
+    * [KS-3152] -   Values of Language field in Add new question form are not translated in French
+    * [KS-3161] - [Wiki] Markup area have border when close help panel
+    * [KS-3164] - Error when vote in poll with multi choice
+    * [KS-3168] - Forum "Private Message" posts are visible in the global activity stream
+    * [KS-3169] - Change icons' label and form's name in Permission page form
+    * [KS-3170] - Typed content of all form open is lost when change portal language
+    * [KS-3171] - User can add/remove related page when user does not have edit permission on this page
+    * [KS-3179] - [wiki] Page exsited message is displayed when add new page from template
+    * [KS-3181] - [Wiki] The result is not shown when search by page's name
+    * [KS-3186] - [Wiki] After viewing content of attached file, attachment form is not shown when click on attachment(s) link
+    * [KS-3188] - Need to click twice to add permission for membership of group for page/space
+    * [KS-3189] - The difference when add permission for space and page without set role for user/group
+    * [KS-3190] - "Exception" message when change name of page is the same with other pages
+    * [KS-3193] - [wiki] Left tree navigation doesn't hide 
+    * [KS-3194] - [wiki] Page tree doesn't work if page's name contains "."
+    * [KS-3202] - redundant calls to "Organization Service"  in FAQ
+    * [KS-3208] - Buttons hidden when start a topic in the Forum portlet
+    * [KS-3211] - [Wiki] Exception when access wiki page
+    * [KS-3212] - RepositoryException when stopping tomcat PLF 3.5 M2
+    * [KS-3215] - [Wiki] Bad UI when select 1 macro
+    * [KS-3218] - Forum Bookmarks - the page does not react after deleting a bookmark and closing the popup
+    * [KS-3219] - [wiki] Headers are incorrect in TOC macro
+    * [KS-3220] - [Wiki] Bad UI in Template form
+    * [KS-3222] - [wiki] Scroll WYSIWYG editor when Enter pressed
+    * [KS-3223] - [wiki] Content is displayed as attachment in form select attachment
+    * [KS-3225] - [wiki] Bug when switch to WYSIWYG editor in case the page contains TOC macros
+    * [KS-3232] - [WIki] Some problem with Macro
+    * [KS-3236] - [Wiki] Splitter is too wide in PLF
+    * [KS-3246] - Exception when select the third category(without any question) to view question 
+    * [KS-3248] - [Wiki]NullPointerException when create new page using template without changing title
+    * [KS-3249] - [Wiki] Exception when create 1 page with normal user
+    * [KS-3252] - Error when view a question with attachment
+    * [KS-3259] - [wiki] Cannot access the wiki app with IE7
+    * [KS-3261] - Unit tests fail in FAQ service
+    * [KS-3262] - [KS-wiki] IE7: Show popup message when create/edit a page
+    * [KS-3263] - [KS-wiki] IE7: Page tree is not shown at the first time
+    * [KS-3264] - [KS-wiki] Content disappeared after insert 1 macro
+    * [KS-3265] - [Wiki] Paragraph - missing edit paragraph icon
+    * [KS-3266] - [Wiki] There are 2 Rich Text Editors when adding new page using Rich Text
+    * [KS-3272] - Polls are visible for all users
+    * [KS-3275] - Unknow error when search page by content
+    * [KS-3276] - Exception when view topic
+    * [KS-3278] - [KS-wiki] Exception when create new page with normal user
+    * [KS-3282] - [wiki] Wiki page content is not shown on stream activities
+    * [KS-3284] - [Wiki]Error in template form after select Rich text
+    * [KS-3286] - RSS is not hidden at the second time
+    * [KS-3306] - Bad presentation in the "Preferences" screen when the language is French
+    * [KS-3307] - Confusing UI in Preference/MySuscription screen - not working
+    * [KS-3312] - [wiki] Change the title of the root page not refreshed in the wiki explorer
+    * [KS-3316] - [wiki] Unknow error when modifying the title of the page with inline editing
+    * [KS-3321] - [social-integration] Wiki added pages aren't correctly populated in Social
+    * [KS-3343] - Show js message when do any action on KS-forum
+    * [KS-3354] - [Forum] NullPointerException when save attachments
+    * [KS-3356] - [Wiki] IE7: Jump to Wiki Home page when click on revision link of other page
+    * [KS-3357] - [Wiki] Cannot search template to create new page
+    * [KS-3363] - [Wiki] Content is disappeared when put TOC macro at the begining of page
+    * [KS-3365] - [Wiki] The title of template is shown "null" when preview
+    * [KS-3370] - CLONE - First/last name should be displayed in vote rather than user name
+    * [KS-3376] - [Answer] Show time of last update in question is incorrect
+    * [KS-3377] - [KS-Forum] Show exception in console when lock forum after move this forum
+    * [KS-3379] - CLONE - [KS][UI] Problem with style overloading in question comment
+    * [KS-3398] - [Wiki-IE7] Show all page's content when only select Edit last paragraph in page
+    * [KS-3399] - Don't show some portlet ( banner, breadcumbs) in specical case
+    * [KS-3400] - Put [Approve] field is incorrect place in Advanced search form
+    * [KS-3403] - [wiki] Link in quick search doesn't work
+    * [KS-3404] - [Wiki] Can't save page with title "Untitled"
+    * [KS-3405] - SMOKE_PLF_INT_04 Question in subcategory of a space is not displayed
+    * [KS-3407] -  Popup Resizing problem
+    * [KS-3410] - [Answer] IE7: Bad UI in Comment form 
+    * [KS-3411] - [Forum] IE7: Error in BanIPs form
+    * [KS-3414] - [FAQ] IE7: Error when edit FQA portlet
+    * [KS-3415] - [Wiki] IE7: Error when insert macro
+    * [KS-3416] - Poll portlet preference modifications are not taken into account in other user sessions
+    * [KS-3420] - Add packages in the lib of exo.ks.extension.ear
+    * [KS-3421] - [wiki] Error when upload image in new page
+    * [KS-3422] - [wiki] Can't view image from another page
+    * [KS-3429] - [Wiki] Show content of Wiki Home page after save new page
+    * [KS-3435] - [wiki] Revision area display incorect when change page
+    * [KS-3436] - [wiki] Unknow error when view change a page has 1 revision
+    * [KS-3438] - Unknown error when open Manage Question form
+    * [KS-3439] - RepositoryException when selecting a page in the search box
+    * [KS-3443] - [Answer] Display message when edit category
+    * [KS-3455] - [wiki] Advanced search does not work 
+    * [KS-3534] - [Forum] Don't expand and show sub-groups when select role/group in Permission tab
+
+** Feedback
+    * [KS-2571] - Make sure all wiki formats have style
+    * [KS-3023] - [wiki]Page tree panel is too wide
+
+** Improvement
+    * [KS-1781] - Simplify Moderation tab on forum settings.
+    * [KS-2224] - Align look and feel with gatein
+    * [KS-2349] - Make notifications of private posts dinstinguishable from notifications of public posts
+    * [KS-2608] - Signature field doesn't allow multilines
+    * [KS-2667] - Make notifications of private messages.
+    * [KS-2678] - Design new application registry icons for portlets
+    * [KS-2679] - Hide left panels on Answers in spaces
+    * [KS-2684] - Improve code for rated topic 
+    * [KS-2726] - In forum, do not use transfer the email address of the creator of a message
+    * [KS-2732] - Make notifications of private messages
+    * [KS-2744] - improve about private message and post notify 
+    * [KS-2746] - Shortent the breadcrumb when there is too much information to display
+    * [KS-2747] - Enable editing the title when double click on the text of the title of wiki page
+    * [KS-2749] - Only allow two revisions can be selected at a time when selecting versions to compare
+    * [KS-2750] - Advanced Search allowed search by title
+    * [KS-2751] - Add summary changes when editing wiki page
+    * [KS-2764] - Change content of message when don't select any option to vote
+    * [KS-2765] - Optimize Move Page tree to use JSON data
+    * [KS-2767] - Social Integration : leverage activity plugin improve for ks
+    * [KS-2838] - [wiki] Validation for Page's title and attachment
+    * [KS-2851] - [wiki] redesign page toolbar of wiki portlet
+    * [KS-2852] - improve about [list] bbcode tag.
+    * [KS-2877] - [wiki] Remove unneeded function 'reloadWYSIWYGEditor'
+    * [KS-2904] - Make Security Domain configurable
+    * [KS-2907] - [wiki] Optimize the way of change Wiki mode by link
+    * [KS-2910] - http://localhost:8080 should point to the demo portal
+    * [KS-2922] - Remaining dependency declaration for deploy 
+    * [KS-2934] - [Wiki] shoudn't show Delete and Move icon in Wiki home page
+    * [KS-2942] - Should have nicer default poll page
+    * [KS-2963] - Display page creation time and page last modified page
+    * [KS-2971] - [wiki] Double click to show & hide navigation tree
+    * [KS-2999] - [wiki] improve UI Extension code of wiki toolbar and page toolbar
+    * [KS-3008] - [WIKI] should have boundary of header or title when edit selection in wiki  
+    * [KS-3024] - [wiki] Full page content in watch email
+    * [KS-3032] - [wiki] Page tree should show page in current space only
+    * [KS-3043] - [wiki] do not show confirmation on cancel when no change has been made
+    * [KS-3174] - [wiki] Bad UI with relative pages in default wiki home
+    * [KS-3200] - [wiki] Render macro when editting in WYSIWYG editor
+    * [KS-3311] - [wiki] Preview must show the title of the Page
+    * [KS-3314] - [wiki] Menu is not consistent 
+    * [KS-3317] - [wiki] Search textfields are not consistent in all the wiki
+    * [KS-3382] - [wiki] Breadcrumb hide the wrong part of the wiki tree
+    * [KS-3383] - [wiki] Scroll Management improvements
+    * [KS-3385] - [wiki] Select Menu must be consistent in all the wiki
+    * [KS-3391] - [wiki] Use same style for table in all the wiki
+    * [KS-3392] - [wiki] Change title of the "History Page" by "Page History"
+    * [KS-3395] - [wiki] "Revision" link should display content exactly as the "attachment" link
+    * [KS-3396] - [wiki] Move the Delete action into the "More" menu
+    * [KS-3431] - Navigation API - new GateIn Implementation
+
+** New Feature
+    * [KS-515] - Email Address Picker
+    * [KS-1673] - Hilight post with URL
+    * [KS-1921] - Revamp question list view
+    * [KS-2128] - Initialize from export plugin
+    * [KS-2310] - Social Contact provider
+    * [KS-2740] - Wiki - Search Context Menu
+    * [KS-2848] - [wiki] implement "compare with current version" action on view version form
+    * [KS-2886] - [wiki] Page Tree panel
+    * [KS-2899] - More Confluence macros
+    * [KS-2935] - [wiki] Edit Paragraph
+    * [KS-2936] - [wiki] Watch Page
+    * [KS-2939] - [wiki] Minor Edit
+    * [KS-2964] - [wiki] Page Info
+    * [KS-2965] - [wiki] Page Templates
+    * [KS-2967] - [wiki] Social Integration
+    * [KS-3055] - [wiki] Wiki Permissions
+
+
+- Version 2.2.0-Beta02
+
+** Bug
+    * [KS-2473] - need to show alert message when save censor in case censor field is empty
+    * [KS-2988] - [wiki] Couldn't link to other page by WYSIWYG editor
+    * [KS-2994] - [wiki] make page content editable by webdav
+    * [KS-3004] - toc macro is not rendered with proper indentation
+    * [KS-3016] - Polls Portlet action buttons are rendered in an ugly way - when integrated in a web site
+    * [KS-3018] - Poll portlet header not translated to English or French - UIPollForm
+    * [KS-3019] - Delete panel header "options" in the polls edit mode
+    * [KS-3054] - [wiki]Macro browser is broken
+    * [KS-3070] - [wiki] table format is broken after switch from WYSIWYG editor to markup editor
+    * [KS-3088] - [IE7] Wiki - Add page - The page is broken
+    * [KS-3090] - [IE7] Wiki - Edit page - UI is broken
+    * [KS-3093] - Wiki - Deleting attachment will erase the page title and text content
+    * [KS-3094] - [IE7] Wiki - Cannot delete page in IE7
+    * [KS-3095] - Wiki - Searching for the keyword 'content' always returns Wiki Home page
+    * [KS-3110] - Show exception in console after click create new space
+    * [KS-3111] - [KS] Show exceptiopn when add new page on wiki portlet
+    * [KS-3126] - Problem with French translation in Faq Answer portlet
+    * [KS-3128] - Show exception when used wiki (watch page, add page/edit page, preview page ....)
+    * [KS-3144] - IE7: Error UI and lose [Watch], [Bookmark], [RSS] icon in main action bar of category
+    * [KS-3151] - Mini calendar is not translated in French somewhere
+    * [KS-3152] -   Values of Language field in Add new question form are not translated in French
+    * [KS-3158] - Text in French exceeds border.
+    * [KS-3161] - [Wiki] Markup area have border when close help panel
+    * [KS-3164] - Error when vote in poll with multi choice
+    * [KS-3168] - Forum "Private Message" posts are visible in the global activity stream
+    * [KS-3171] - User can add/remove related page when user does not have edit permission on this page
+    * [KS-3179] - [wiki] Page exsited message is displayed when add new page from template
+    * [KS-3193] - [wiki] Left tree navigation doesn't hide 
+    * [KS-3202] - redundant calls to "Organization Service"  in FAQ
+    * [KS-3208] - Buttons hidden when start a topic in the Forum portlet
+    * [KS-3211] - [Wiki] Exception when access wiki page
+    * [KS-3219] - [wiki] Headers are incorrect in TOC macro
+    * [KS-3222] - [wiki] Scroll WYSIWYG editor when Enter pressed
+    * [KS-3223] - [wiki] Content is displayed as attachment in form select attachment
+    * [KS-3225] - [wiki] Bug when switch to WYSIWYG editor in case the page contains TOC macros
+    * [KS-3236] - [Wiki] Splitter is too wide in PLF
+
+** Feedback
+    * [KS-2571] - Make sure all wiki formats have style
+
+** Improvement
+    * [KS-2679] - Hide left panels on Answers in spaces
+    * [KS-2999] - [wiki] improve UI Extension code of wiki toolbar and page toolbar
+    * [KS-3008] - [WIKI] should have boundary of header or title when edit selection in wiki  
+    * [KS-3043] - [wiki] do not show confirmation on cancel when no change has been made
+    * [KS-3174] - [wiki] Bad UI with relative pages in default wiki home
+    * [KS-3200] - [wiki] Render macro when editting in WYSIWYG editor
+
+- Version 2.2.0-Beta01
+
+Release Notes - eXo Knowledge - Version ks-2.2-beta01
+
+** Bug
+    * [KS-2833] - [wiki] Text is outside the boundary
+    * [KS-2889] - [wiki] Can't get search result when searching a keyword in attachment
+    * [KS-2920] - multi-line tip does not display properly
+    * [KS-2926] - Exception when start tomcat server , update forum job
+    * [KS-2944] - [wiki] Missing space name in breadcrumb
+    * [KS-2992] - [wiki] Users and Groups ApplicationData path aren't exsited
+    * [KS-2996] - [Wiki] Suggestion link leads to wrong location
+    * [KS-2997] - [Wiki] A lot of dump wikis are created when create link in page.
+    * [KS-3005] - [wiki] portlet height is not dynamic
+    * [KS-3014] - [Wiki] Error when create page in case page's title contains charater "!,? "
+    * [KS-3044] - [wiki] NPE in wiki tree in space
+    * [KS-3064] - Don't use UIApplicationLifecycle for all WebUI components
+
+** Feedback
+    * [KS-3023] - [wiki]Page tree panel is too wide
+
+** Improvement
+    * [KS-2746] - Shortent the breadcrumb when there is too much information to display
+    * [KS-2934] - [Wiki] shoudn't show Delete and Move icon in Wiki home page
+    * [KS-2963] - Display page creation time and page last modified page
+    * [KS-2971] - [wiki] Double click to show & hide navigation tree
+    * [KS-3032] - [wiki] Page tree should show page in current space only
+    * [KS-3056] - Forum's getmessage REST API should return post url instead of topic url
+
+** New Feature
+    * [KS-2624] - [wiki] common macros : toc, note, tip, section, colunm, noformat, panel
+    * [KS-2886] - [wiki] Page Tree panel
+    * [KS-2899] - More Confluence macros
+    * [KS-2935] - [wiki] Edit Paragraph
+    * [KS-2936] - [wiki] Watch Page
+    * [KS-2939] - [wiki] Minor Edit
+    * [KS-2964] - [wiki] Page Info
+    * [KS-2965] - [wiki] Page Templates
+    * [KS-2966] - [wiki] Related Pages
+    * [KS-2967] - [wiki] Social Integration
 
 - Version 2.1.1 
 

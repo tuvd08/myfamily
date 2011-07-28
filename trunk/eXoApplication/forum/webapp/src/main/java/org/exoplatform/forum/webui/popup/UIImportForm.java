@@ -15,11 +15,7 @@ import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.forum.ForumUtils;
 import org.exoplatform.forum.service.ForumService;
-import org.exoplatform.forum.service.Utils;
-import org.exoplatform.forum.webui.UIBreadcumbs;
-import org.exoplatform.forum.webui.UICategories;
 import org.exoplatform.forum.webui.UICategory;
-import org.exoplatform.forum.webui.UICategoryContainer;
 import org.exoplatform.forum.webui.UIForumPortlet;
 import org.exoplatform.ks.common.webui.BaseUIForm;
 import org.exoplatform.ks.common.webui.UIPopupAction;
@@ -52,11 +48,7 @@ public class UIImportForm extends BaseUIForm implements UIPopupComponent {
   }
 
   public UIImportForm() {
-    int sizeLimit = ForumUtils.getLimitUploadSize();
-    if (sizeLimit >= 0)
-      this.addChild(new UIFormUploadInput(FILE_UPLOAD, FILE_UPLOAD, sizeLimit));
-    else
-      this.addChild(new UIFormUploadInput(FILE_UPLOAD, FILE_UPLOAD));
+    this.addChild(new UIFormUploadInput(FILE_UPLOAD, FILE_UPLOAD, true));
     categoryPath = null;
   }
 
@@ -159,17 +151,13 @@ public class UIImportForm extends BaseUIForm implements UIPopupComponent {
       }
       // remove temp file in upload service and server
       UploadService uploadService = importForm.getApplicationComponent(UploadService.class);
-      uploadService.removeUpload(uploadInput.getUploadId());
+      uploadService.removeUploadResource(uploadInput.getUploadId());
       if (!isUdateForm) {
         popupAction.deActivate();
         event.getRequestContext().addUIComponentToUpdateByAjax(popupAction);
       }
       if (isErr) {
-        forumPortlet.updateIsRendered(ForumUtils.CATEGORIES);
-        UICategoryContainer categoryContainer = forumPortlet.getChild(UICategoryContainer.class);
-        categoryContainer.updateIsRender(true);
-        categoryContainer.getChild(UICategories.class).setIsRenderChild(false);
-        forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(Utils.FORUM_SERVICE);
+        forumPortlet.rederForumHome();
         event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
       }
     }
@@ -181,7 +169,7 @@ public class UIImportForm extends BaseUIForm implements UIPopupComponent {
       // remove temp file in upload service and server
       UIFormUploadInput uploadInput = (UIFormUploadInput) importForm.getChildById(importForm.FILE_UPLOAD);
       UploadService uploadService = importForm.getApplicationComponent(UploadService.class);
-      uploadService.removeUpload(uploadInput.getUploadId());
+      uploadService.removeUploadResource(uploadInput.getUploadId());
 
       UIForumPortlet portlet = importForm.getAncestorOfType(UIForumPortlet.class);
       UIPopupAction popupAction = portlet.getChild(UIPopupAction.class);

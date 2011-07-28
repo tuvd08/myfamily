@@ -97,6 +97,7 @@
         </object-param>
       </init-params>
     </component-plugin>
+  </external-component-plugins>
   <!-- End social intergration -->
 
 	<external-component-plugins>

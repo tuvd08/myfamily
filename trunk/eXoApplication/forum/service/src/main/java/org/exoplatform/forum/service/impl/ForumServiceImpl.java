@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -38,6 +38,7 @@ import org.exoplatform.forum.service.Forum;
 import org.exoplatform.forum.service.ForumAdministration;
 import org.exoplatform.forum.service.ForumAttachment;
 import org.exoplatform.forum.service.ForumEventLifeCycle;
+import org.exoplatform.forum.service.ForumEventListener;
 import org.exoplatform.forum.service.ForumEventQuery;
 import org.exoplatform.forum.service.ForumLinkData;
 import org.exoplatform.forum.service.ForumPrivateMessage;
@@ -46,19 +47,20 @@ import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.forum.service.ForumStatistic;
 import org.exoplatform.forum.service.ForumStatisticsService;
 import org.exoplatform.forum.service.ForumSubscription;
+import org.exoplatform.forum.service.InitializeForumPlugin;
 import org.exoplatform.forum.service.JCRPageList;
 import org.exoplatform.forum.service.LazyPageList;
 import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Post;
 import org.exoplatform.forum.service.PruneSetting;
+import org.exoplatform.forum.service.SendMessageInfo;
 import org.exoplatform.forum.service.Tag;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.forum.service.TopicType;
 import org.exoplatform.forum.service.UserLoginLogEntry;
 import org.exoplatform.forum.service.UserProfile;
 import org.exoplatform.forum.service.Watch;
-import org.exoplatform.forum.service.conf.InitializeForumPlugin;
-import org.exoplatform.forum.service.conf.SendMessageInfo;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.conf.RoleRulesPlugin;
 import org.exoplatform.management.annotations.ManagedBy;
 import org.exoplatform.services.log.ExoLogger;
@@ -71,8 +73,8 @@ import org.quartz.JobDetail;
 /**
  * Created by The eXo Platform SARL
  * Author : Hung Nguyen Quang
- *					hung.nguyen@exoplatform.com
- * Jul 10, 2007	
+ *          hung.nguyen@exoplatform.com
+ * Jul 10, 2007  
  */
 @ManagedBy(ForumServiceManaged.class)
 public class ForumServiceImpl implements ForumService, Startable {
@@ -181,7 +183,6 @@ public class ForumServiceImpl implements ForumService, Startable {
       log.error("Error while initializing Prune schedulers: " + e.getMessage());
     }
 
-    // TODO: JUnit test is fall.
     // management views
     try {
       log.info("initializing management view...");
@@ -225,9 +226,6 @@ public class ForumServiceImpl implements ForumService, Startable {
   public void stop() {
   }
 
-  /**
-   * @TODO : profileTemplate is currently ignored
-   */
   public void addMember(User user, UserProfile profileTemplate) throws Exception {
     boolean added = storage.populateUserProfile(user, profileTemplate, true);
     if (added) {
@@ -946,14 +944,13 @@ public class ForumServiceImpl implements ForumService, Startable {
    * {@inheritDoc}
    */
   public void userLogin(String userId) throws Exception {
-
-    // TODO: login and onlineUserlist shoudl be anaged by
-    // forumStatisticsService.memberIn();
+    // Note: login and onlineUserlist shoudl be anaged by forumStatisticsService.memberIn();
     lastLogin_ = userId;
     if (!onlineUserList_.contains(userId)) {
       onlineUserList_.add(userId);
     }
-    UserLoginLogEntry loginEntry = new UserLoginLogEntry(userId, onlineUserList_.size(), storage.getGreenwichMeanTime());
+    UserLoginLogEntry loginEntry = new UserLoginLogEntry(userId, onlineUserList_.size(), 
+                                                         CommonUtils.getGreenwichMeanTime());
     queue.add(loginEntry);
   }
 
@@ -1031,8 +1028,8 @@ public class ForumServiceImpl implements ForumService, Startable {
   /**
    * {@inheritDoc}
    */
-  public List<Post> getNewPostsByUser(String userName, int number) throws Exception {
-    return storage.getNewPostsByUser(userName, number);
+  public List<Post> getRecentPostsForUser(String userName, int number) throws Exception {
+    return storage.getRecentPostsForUser(userName, number);
   }
 
   public NodeIterator search(String queryString) throws Exception {
@@ -1140,7 +1137,7 @@ public class ForumServiceImpl implements ForumService, Startable {
   /**
    * {@inheritDoc}
   public void updateDataImported() throws Exception{
-  	storage.updateDataImported();
+    storage.updateDataImported();
   }
    */
 

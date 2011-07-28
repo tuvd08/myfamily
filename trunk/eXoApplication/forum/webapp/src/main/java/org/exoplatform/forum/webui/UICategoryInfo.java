@@ -17,11 +17,11 @@
 package org.exoplatform.forum.webui;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.forum.ForumUtils;
+import org.exoplatform.forum.TimeConvertUtils;
 import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.forum.service.ForumStatistic;
 import org.exoplatform.forum.service.UserProfile;
@@ -90,7 +90,7 @@ public class UICategoryInfo extends UIContainer {
     try {
       String[] strs = s.split(ForumUtils.COMMA);
       long l = Long.parseLong(strs[1].replace("at", ForumUtils.EMPTY_STR).trim());
-      Calendar calendar = GregorianCalendar.getInstance();
+      Calendar calendar = TimeConvertUtils.getInstanceTempCalendar();
       double timeZone = userProfile.getTimeZone();
       if (userProfile.getUserId().equals(UserProfile.USER_GUEST))
         timeZone = 0;
@@ -101,7 +101,7 @@ public class UICategoryInfo extends UIContainer {
       if (ForumUtils.isEmpty(at))
         at = "at";
       builder.append(strs[0]).append(", ").append(at).append(" ");
-      builder.append(ForumUtils.getFormatDate((userProfile.getLongDateFormat() + ", " + userProfile.getTimeFormat()), calendar.getTime()));
+      builder.append(TimeConvertUtils.getFormatDate((userProfile.getLongDateFormat() + ", " + userProfile.getTimeFormat()), calendar.getTime()));
       if (userProfile.getUserId().equals(UserProfile.USER_GUEST)) {
         if (timeZone >= 0)
           builder.append(" GMT+").append(String.valueOf(timeZone).replace(".0", ForumUtils.EMPTY_STR));
@@ -113,14 +113,6 @@ public class UICategoryInfo extends UIContainer {
       s = s.replace("at", at);
     }
     return s;
-  }
-
-  public Calendar getInstanceTempCalendar() {
-    Calendar calendar = GregorianCalendar.getInstance();
-    calendar.setLenient(false);
-    int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
-    calendar.setTimeInMillis(System.currentTimeMillis() + gmtoffset);
-    return calendar;
   }
 
   public ForumStatistic getForumStatistic() throws Exception {

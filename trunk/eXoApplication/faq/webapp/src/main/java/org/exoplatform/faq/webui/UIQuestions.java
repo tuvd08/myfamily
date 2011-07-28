@@ -18,8 +18,8 @@ package org.exoplatform.faq.webui;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,9 +58,11 @@ import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Post;
 import org.exoplatform.forum.service.Topic;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;
@@ -237,7 +239,7 @@ public class UIQuestions extends UIContainer {
 
   public String getRSSLink() {
     String catepath = categoryId_.substring(categoryId_.lastIndexOf("/") + 1);
-    return org.exoplatform.ks.common.Utils.getRSSLink("faq", getPortalName(), catepath);
+    return CommonUtils.getRSSLink("faq", getPortalName(), catepath);
   }
 
   public String getPortalName() {
@@ -248,7 +250,7 @@ public class UIQuestions extends UIContainer {
   public String getImageUrl(String imagePath) throws Exception {
     String url = "";
     try {
-      url = org.exoplatform.ks.common.Utils.getImageUrl(imagePath);
+      url = CommonUtils.getImageUrl(imagePath);
     } catch (Exception e) {
       log.debug("Failed to get url of image.", e);
     }
@@ -532,7 +534,8 @@ public class UIQuestions extends UIContainer {
   }
 
   private String calculateTimeMessageOfLastActivity(long time) {
-    long current = GregorianCalendar.getInstance().getTimeInMillis();
+    Calendar calendar = Utils.getInstanceTempCalendar();
+    long current = calendar.getTimeInMillis();
     long interval = current - time;
     if (interval < 60 * 60 * 1000) { // if interval is less than one hour.
       String msg = FAQUtils.getResourceBundle(this.getId() + ".label.last-act-time-minute");
@@ -1281,7 +1284,7 @@ public class UIQuestions extends UIContainer {
         link = link.replaceFirst("private", "public");
         Question question = uiForm.faqService_.getQuestionById(questionId);
         String userName = question.getAuthor();
-        String remoteAddr = org.exoplatform.ks.common.Utils.getRemoteIP();
+        String remoteAddr = WebUIUtils.getRemoteIP();
         if (UserHelper.getUserByUserId(userName) == null) {
           String temp = userName;
           String listMode[] = uiForm.faqService_.getModeratorsOf(question.getPath());

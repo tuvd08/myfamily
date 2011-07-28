@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -29,8 +29,6 @@ import java.util.Map;
 import javax.jcr.NodeIterator;
 
 import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.forum.service.conf.SendMessageInfo;
-import org.exoplatform.forum.service.impl.ForumEventListener;
 import org.exoplatform.ks.bbcode.api.BBCode;
 import org.exoplatform.services.organization.User;
 
@@ -176,7 +174,6 @@ public class FakeForumService implements ForumService {
 
     return 0;
   }
-
 
   public List<String> getBanList() throws Exception {
 
@@ -343,7 +340,6 @@ public class FakeForumService implements ForumService {
 
     return null;
   }
-
 
   public Post getPost(String categoryId, String forumId, String topicId, String postId) throws Exception {
 
@@ -559,7 +555,6 @@ public class FakeForumService implements ForumService {
   public void removeMember(User user) throws Exception {
   }
 
-
   public Post removePost(String categoryId, String forumId, String topicId, String postId) throws Exception {
 
     return null;
@@ -728,48 +723,47 @@ public class FakeForumService implements ForumService {
     return null;
   }
 
-	public InputStream createForumRss(String objectId, String link) throws Exception {
-		return null;
-	}
+  public InputStream createForumRss(String objectId, String link) throws Exception {
+    return null;
+  }
 
-	public InputStream createUserRss(String userId, String link) throws Exception {
-		return null;
-	}
+  public InputStream createUserRss(String userId, String link) throws Exception {
+    return null;
+  }
 
   @Override
   public void calculateDeletedUser(String userName) throws Exception {
-    // TODO Auto-generated method stub
+
     
   }
 
   @Override
   public void addListenerPlugin(ForumEventListener listener) throws Exception {
-    // TODO Auto-generated method stub
+
     
   }
 
-	@Override
-	public Topic getTopicUpdate(Topic topic, boolean isSummary) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public Topic getTopicUpdate(Topic topic, boolean isSummary) throws Exception {
 
-	@Override
-	public void savePost(String categoryId, String forumId, String topicId, Post post, boolean isNew, MessageBuilder messageBuilder) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+    return null;
+  }
 
-	@Override
-	public void saveTopic(String categoryId, String forumId, Topic topic, boolean isNew, boolean isMove, MessageBuilder messageBuilder) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+  @Override
+  public void savePost(String categoryId, String forumId, String topicId, Post post, boolean isNew, MessageBuilder messageBuilder) throws Exception {
 
-	@Override
-	public List<Post> getNewPostsByUser(String userName, int number) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+  }
+
+  @Override
+  public void saveTopic(String categoryId, String forumId, Topic topic, boolean isNew, boolean isMove, MessageBuilder messageBuilder) throws Exception {
+
+    
+  }
+
+  @Override
+  public List<Post> getRecentPostsForUser(String userName, int number) throws Exception {
+    return null;
+  }
 
 }

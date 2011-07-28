@@ -98,17 +98,27 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='Administrations']/div/div[1]/div/div/div/div/a</td>
+	<td>//div[@id='Administrations']/div/div[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='Administrations']/div/div[2]/div/div/div/div[2]/div/div/div[6]/a/span</td>
+	<td>//div[@id='Administrations']/div/div[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
 	<td>-- Open form to add topic type</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='Administrations']/div/div[2]/ul/li[6]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='Administrations']/div/div[2]/ul/li[6]/a/span</td>
 	<td></td>
 </tr>
 <tr>
@@ -128,46 +138,6 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>Type</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Type</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Icône</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Icône</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Sélectionner et pré-visualiser une icône</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Sélectionner et pré-visualiser une icône</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Défaut</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Défaut</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
 	<td>Enregistrer</td>
 	<td></td>
 </tr>
@@ -184,16 +154,6 @@
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Annuler</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Nom de l'icône sélectionnée:</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Nom de l'icône sélectionnée:</td>
 	<td></td>
 </tr>
 <tr>
@@ -261,7 +221,6 @@
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

@@ -20,17 +20,14 @@
 
 .UIForumContainer .ForumToolbar .StatusIcon {
 	background-position: left center;
-	line-height: 22px;
+	line-height: 21px;
 	padding-left: 22px;
 	margin: 0px;
 	width: auto; height: auto;
 }
 
 .UIForumContainer .ForumToolbar .ContentAction {
-	padding: 2px 0px 0px 0px; 
-	margin: 0px;
 	float: right;
-	cursor:pointer;
 }
 
 .UIForumContainer .ForumToolbar .DownArrow1Icon {
@@ -48,6 +45,11 @@
 }
 
 .UIForumContainer .ContentContainer .UITopicList .TitleNorman {
+	color: #204aa0;
+	font-size: 12px;
+}
+
+.UIForumContainer .ContentContainer .TitleNorman {
 	color: #204aa0;
 	font-size: 12px;
 }
@@ -83,18 +85,25 @@
 }
 
 .UIForumContainer .ContentContainer .VoteIcon {
-	width: 16px; height: 16px;
+	width: 16px; 
+	height: 16px;
 	float: left;
 }
 
 .UIForumContainer .ContentContainer .ThreadStatusIcon {
 	margin: auto;
-	width: 24px; height: 24px;
+	width: 24px; 
+	height: 24px;
+}
+
+.UIForumContainer .ContentContainer span{
+	display: inline-block;
 }
 
 .UIForumContainer .ContentContainer .AttachmentIcon {
 	margin: 2px 0px 0px 12px;
 	width: 16px; height: 16px;
+	display: block;
 }
 
 .UIForumContainer .ContentContainer .LeftArrowIcon {
@@ -105,8 +114,9 @@
 }
 
 .UIForumContainer .ContentContainer .RightArrowIcon {
-	margin: 3px 4px 0px 2px;
-	width: 16px; height: 16px;
+	margin: 0px 2px;
+	width: 16px; 
+	height: 16px;
 	float: right;
 	cursor: pointer;
 }
@@ -114,6 +124,7 @@
 .UIForumContainer .ContentContainer .DownArrow1Icon {
 	padding-right: 16px;
 	cursor: pointer;
+	display: block;
 }
 
 
@@ -171,13 +182,12 @@
 	line-height: 18px;
 }
 
-.UIPostRules .ForumCategory .ContentContainer .BoldTitle {
-	font-weight: bold ;
-	line-height: 18px;
-}
-
 .UIForumContainer .UITopicContainer .TopicDeleted {
 	border: 1px outset ;
 	color: black;
 	padding: 10px;
+}
+
+.UIForumPortlet .UIPostRules .TxtRules{
+	padding: 5px;
 }

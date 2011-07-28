@@ -22,14 +22,10 @@ package org.exoplatform.forum;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -68,7 +64,9 @@ public class ForumUtils {
 
   public static final String FIELD_SEARCHFORUM_LABEL = "SearchForum".intern();
 
-  public static String       UPLOAD_FILE_SIZE        = "uploadFileSizeLimitMB".intern();
+  public static final String UPLOAD_FILE_SIZE        = "uploadFileSizeLimitMB".intern();
+
+  public static final String UPLOAD_AVATAR_SIZE      = "uploadAvatarSizeLimitMB".intern();
 
   public static final String SEARCHFORM_ID           = "SearchForm".intern();
 
@@ -100,6 +98,8 @@ public class ForumUtils {
 
   public static final int    MAXTITLE                = 100;
 
+  public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;  
+
   public static final long   MAXMESSAGE              = 10000;
 
   static String buildForumLink(String url, String selectedNode, String portalName, String type, String id) throws Exception {
@@ -125,35 +125,9 @@ public class ForumUtils {
   public static String createdForumLink(String type, String id) throws Exception {
     PortalRequestContext portalContext = Util.getPortalRequestContext();
     String url = portalContext.getRequest().getRequestURL().toString();
-    String selectedNode = Util.getUIPortal().getSelectedNode().getUri();
+    String selectedNode = Util.getUIPortal().getSelectedUserNode().getURI();
     String portalName = portalContext.getPortalOwner();
     return buildForumLink(url, selectedNode, portalName, type, id);
-  }
-
-  public static String getFormatDate(String format, Date myDate) {
-    /*
-     * h,hh,H, m, mm, d, dd, DDD, DDDD, M, MM, MMM, MMMM, yy, yyyy
-     */
-    if (myDate == null)
-      return EMPTY_STR;
-    if (!isEmpty(format)) {
-      if (format.indexOf("DDDD") >= 0)
-        format = format.replaceAll("DDDD", "EEEE");
-      if (format.indexOf("DDD") >= 0)
-        format = format.replaceAll("DDD", "EEE");
-    }
-    PortalRequestContext portalContext = Util.getPortalRequestContext();
-    Locale locale = new Locale(portalContext.getLocale().getLanguage(), portalContext.getLocale().getCountry());
-    Format formatter = new SimpleDateFormat(format, locale);
-    return formatter.format(myDate);
-  }
-
-  public static Calendar getInstanceTempCalendar() {
-    Calendar calendar = GregorianCalendar.getInstance();
-    calendar.setLenient(false);
-    int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
-    calendar.setTimeInMillis(System.currentTimeMillis() - gmtoffset);
-    return calendar;
   }
 
   public static boolean isValidEmailAddresses(String addressList) throws Exception {
@@ -273,9 +247,19 @@ public class ForumUtils {
   
   public static String[] getCensoredKeyword(ForumService forumService) throws Exception {
     ForumAdministration forumAdministration = forumService.getForumAdministration();
-    String stringKey = forumAdministration.getCensoredKeyword();
-    if (!ForumUtils.isEmpty(stringKey)) {
-      stringKey = stringKey.toLowerCase().replaceAll(COMMA+" ", COMMA).replaceAll(" "+COMMA, COMMA).replaceAll(";", COMMA);
+    return getCensoredKeyword(forumAdministration.getCensoredKeyword());
+  }
+
+  public static String[] getCensoredKeyword(String stringKey) throws Exception {
+    if (!isEmpty(stringKey)) {
+      String str = EMPTY_STR;
+      while (!stringKey.equals(str)) {
+        str = stringKey;
+        stringKey = stringKey.toLowerCase().replaceAll(";", COMMA).replaceAll(COMMA + " ", COMMA).replaceAll(" " + COMMA, COMMA).replaceAll(COMMA + COMMA, COMMA);
+        if (stringKey.indexOf(COMMA) == 0) {
+          stringKey = stringKey.replaceFirst(COMMA, EMPTY_STR);
+        }
+      }
       return stringKey.trim().split(COMMA);
     }
     return new String[] {};
@@ -554,14 +538,17 @@ public class ForumUtils {
     return list;
   }
 
-  public static int getLimitUploadSize() {
+  public static int getLimitUploadSize(boolean isAvatar) {
     PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletPreferences portletPref = pcontext.getRequest().getPreferences();
-    int limitMB;
+    int limitMB = DEFAULT_VALUE_UPLOAD_PORTAL;
     try {
-      limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_FILE_SIZE, EMPTY_STR).trim());
+      if (isAvatar) {
+        limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_AVATAR_SIZE, EMPTY_STR).trim());
+      } else {
+        limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_FILE_SIZE, EMPTY_STR).trim());
+      }
     } catch (Exception e) {
-      limitMB = -1;
     }
     return limitMB;
   }

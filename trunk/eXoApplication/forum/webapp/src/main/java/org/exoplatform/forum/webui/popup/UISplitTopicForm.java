@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.exoplatform.forum.ForumTransformHTML;
 import org.exoplatform.forum.ForumUtils;
 import org.exoplatform.forum.service.JCRPageList;
 import org.exoplatform.forum.service.Post;
@@ -30,6 +29,7 @@ import org.exoplatform.forum.service.Utils;
 import org.exoplatform.forum.webui.UIForumKeepStickPageIterator;
 import org.exoplatform.forum.webui.UIForumPortlet;
 import org.exoplatform.forum.webui.UITopicDetail;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -130,13 +130,12 @@ public class UISplitTopicForm extends UIForumKeepStickPageIterator implements UI
     this.topic = topic;
   }
 
-
   static public class SaveActionListener extends EventListener<UISplitTopicForm> {
     public void execute(Event<UISplitTopicForm> event) throws Exception {
       UISplitTopicForm uiForm = event.getSource();
       String newTopicTitle = uiForm.getUIStringInput(FIELD_SPLITTHREAD_INPUT).getValue();
       if (!ForumUtils.isEmpty(newTopicTitle)) {
-        newTopicTitle = ForumTransformHTML.enCodeHTMLTitle(newTopicTitle);
+        newTopicTitle = CommonUtils.encodeSpecialCharInTitle(newTopicTitle);
         // postIds number/id
         List<String> postIds = uiForm.getIdSelected();
         if (postIds.size() > 0) {

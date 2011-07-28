@@ -28,6 +28,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.forum.ForumSessionUtils;
 import org.exoplatform.forum.ForumTransformHTML;
 import org.exoplatform.forum.ForumUtils;
+import org.exoplatform.forum.TimeConvertUtils;
 import org.exoplatform.forum.service.ForumPageList;
 import org.exoplatform.forum.service.ForumSubscription;
 import org.exoplatform.forum.service.JCRPageList;
@@ -43,6 +44,7 @@ import org.exoplatform.forum.webui.UIForumPortlet;
 import org.exoplatform.forum.webui.UITopicContainer;
 import org.exoplatform.forum.webui.UITopicDetail;
 import org.exoplatform.forum.webui.UITopicsTag;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
@@ -188,7 +190,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
     list = new ArrayList<SelectItemOption<String>>();
     String[] format = new String[] { "M-d-yyyy", "M-d-yy", "MM-dd-yy", "MM-dd-yyyy", "yyyy-MM-dd", "yy-MM-dd", "dd-MM-yyyy", "dd-MM-yy", "M/d/yyyy", "M/d/yy", "MM/dd/yy", "MM/dd/yyyy", "yyyy/MM/dd", "yy/MM/dd", "dd/MM/yyyy", "dd/MM/yy" };
     for (String frm : format) {
-      list.add(new SelectItemOption<String>((frm.toLowerCase() + " (" + ForumUtils.getFormatDate(frm, date) + ")"), frm));
+      list.add(new SelectItemOption<String>((frm.toLowerCase() + " (" + TimeConvertUtils.getFormatDate(frm, date) + ")"), frm));
     }
 
     UIFormSelectBox shortdateFormat = new UIFormSelectBox(FIELD_SHORTDATEFORMAT_SELECTBOX, FIELD_SHORTDATEFORMAT_SELECTBOX, list);
@@ -196,7 +198,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
     list = new ArrayList<SelectItemOption<String>>();
     format = new String[] { "DDD, MMMM dd, yyyy", "DDDD, MMMM dd, yyyy", "DDDD, dd MMMM, yyyy", "DDD, MMM dd, yyyy", "DDDD, MMM dd, yyyy", "DDDD, dd MMM, yyyy", "MMMM dd, yyyy", "dd MMMM, yyyy", "MMM dd, yyyy", "dd MMM, yyyy" };
     for (String idFrm : format) {
-      list.add(new SelectItemOption<String>((idFrm.toLowerCase() + " (" + ForumUtils.getFormatDate(idFrm, date) + ")"), idFrm.replaceFirst(" ", "=")));
+      list.add(new SelectItemOption<String>((idFrm.toLowerCase() + " (" + TimeConvertUtils.getFormatDate(idFrm, date) + ")"), idFrm.replaceFirst(" ", "=")));
     }
 
     UIFormSelectBox longDateFormat = new UIFormSelectBox(FIELD_LONGDATEFORMAT_SELECTBOX, FIELD_LONGDATEFORMAT_SELECTBOX, list);
@@ -242,7 +244,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
     String strSignature = this.userProfile.getSignature();
     if (ForumUtils.isEmpty(strSignature))
       strSignature = ForumUtils.EMPTY_STR;
-    signature.setValue(ForumTransformHTML.unCodeHTML(strSignature));
+    signature.setValue(strSignature);
     UIFormCheckBoxInput isDisplaySignature = new UIFormCheckBoxInput<Boolean>(FIELD_ISDISPLAYSIGNATURE_CHECKBOX, FIELD_ISDISPLAYSIGNATURE_CHECKBOX, false);
     isDisplaySignature.setChecked(this.userProfile.getIsDisplaySignature());
 
@@ -314,7 +316,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
     PortalRequestContext portalContext = Util.getPortalRequestContext();
     String url = portalContext.getRequest().getRequestURL().toString();
     url = url.substring(0, url.indexOf(ForumUtils.SLASH, 8));
-    rssLink = url + org.exoplatform.ks.common.Utils.getUserRSSLink(ForumWebservice.APP_TYPE, userProfile.getUserId());
+    rssLink = url + CommonUtils.getUserRSSLink(ForumWebservice.APP_TYPE, userProfile.getUserId());
     formStringInput.setValue(rssLink);
     formStringInput.setEditable(false);
 
@@ -503,7 +505,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
       UIAttachFileForm attachFileForm = uiForm.openPopup(popupContainer, UIAttachFileForm.class, 500, 0);
       attachFileForm.updateIsTopicForm(false);
       attachFileForm.setIsChangeAvatar(true);
-      attachFileForm.setMaxField(1);
+      attachFileForm.setMaxField(1, true);
     }
   }
 
@@ -559,7 +561,7 @@ public class UIForumUserSettingForm extends BaseForumForm implements UIPopupComp
         url = url.replaceFirst("http://", ForumUtils.EMPTY_STR);
         url = url.substring(0, url.indexOf(ForumUtils.SLASH));
         url = "http://" + url;
-        rssLink = url + org.exoplatform.ks.common.Utils.getRSSLink("forum", uiForm.getPortalName(), listObjectId.toString());
+        rssLink = url + CommonUtils.getRSSLink("forum", uiForm.getPortalName(), listObjectId.toString());
         ((UIFormStringInput) inputUserWatchManger.getChildById(RSS_LINK)).setValue(rssLink);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);

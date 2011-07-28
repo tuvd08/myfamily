@@ -35,7 +35,8 @@
 					<div class="DotLine"><span></span></div>
 					<div class="VersionIcon"><span></span></div>
 					<div class="ArowIcon"><%=_ctx.appRes("home.community") %><br/>
-					<a href="http://forums.exoplatform.org" class="ProVersion"><%=_ctx.appRes("home.forums") %></a>&nbsp;|&nbsp;</div>
+					<a href="http://forums.exoplatform.org" class="ProVersion"><%=_ctx.appRes("home.forums") %></a>&nbsp;|&nbsp;<a href="http://wiki.exoplatform.org" class="ProVersion"><%=_ctx.appRes("home.wiki") %></a>
+					</div>
 					
 					<div class="DotLine"><span></span></div>
 					<div class="LeftButton">

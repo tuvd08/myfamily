@@ -6,6 +6,7 @@
 	import org.exoplatform.forum.service.Post;
 	import org.exoplatform.ks.common.user.CommonContact;
 	import org.exoplatform.forum.ForumUtils;
+	import org.exoplatform.forum.TimeConvertUtils;
 	import org.exoplatform.forum.ForumSessionUtils;
 	
 	def rcontext = _ctx.getRequestContext() ;
@@ -24,13 +25,12 @@
 	UserProfile userProfile = uicomponent.getUserProfile() ;
 	boolean isModeratePost = topic.getIsModeratePost() ;
 %>
-	<div class="ViewTopicContainer" style="padding:10px 8px;">
-		<div class="ViewTopicPageIterator">
+	<div class="ViewTopicContainer">
+		<div class="ViewTopicPageIterator ClearFix">
 			<% 
 			if(uicomponent.getIsRenderIter()) {
 				uicomponent.renderChild(UIForumPageIterator.class) ;
 			%>
-				<div style="clear:right;"><span></span></div>
 			<%} %>
 		</div>
 	  <div class="ImageContentContainer">
@@ -38,13 +38,11 @@
 		String longDateFormat = userProfile.getLongDateFormat() + ", " + userProfile.getTimeFormat() ;
 		String shortDateFormat = userProfile.getShortDateFormat() + ", " + userProfile.getTimeFormat() ;
 		long setTime = (long)(userProfile.getTimeZone()*3600000) ;
-		int nb = 0;
 		Date dateView = new Date();
 		String screenName ="";
 		for(post in posts) {
 			String owner = post.getOwner() ;
 			CommonContact contact = uiform.getPersonalContact(owner) ;
-			String avatarUrl = uiform.getAvatarUrl(owner) ;
 			String location = "" ;
 			boolean isCity = false;
 			if(contact != null) {
@@ -62,7 +60,7 @@
 				classIconPost = "NormalTopicIcon" ;
 			String namePost = post.getName() ;
 			dateView.setTime(post.getCreatedDate().getTime() - setTime);
-			String createdDate = ForumUtils.getFormatDate(longDateFormat,dateView);
+			String createdDate = TimeConvertUtils.getFormatDate(longDateFormat,dateView);
 			//String message = uicomponent.getReplaceByBBCode(post.getMessage()) ;
 			String message = uicomponent.renderPost(post) ;
 			
@@ -70,13 +68,13 @@
 			String editDate ;
 			if(!ForumUtils.isEmpty(editBy)) {
 				dateView.setTime(post.getModifiedDate().getTime() - setTime);
-				editDate = ForumUtils.getFormatDate(longDateFormat,dateView);
+				editDate = TimeConvertUtils.getFormatDate(longDateFormat,dateView);
 			}
 			
 			String idMessage = "Id" + post.getId().substring(15);
 			Date joinedDate =  userInfo.getJoinedDate();
 			String joinDate = "";
-			if(joinedDate != null) joinDate = ForumUtils.getFormatDate(shortDateFormat, joinedDate) ;
+			if(joinedDate != null) joinDate = TimeConvertUtils.getFormatDate(shortDateFormat, joinedDate) ;
 			String alert = "(<span style='color:#f77617; font-weight:normal;'>" ;
 			boolean isAnd = false ;
 			if(post.getIsHidden()) {
@@ -98,8 +96,7 @@
 			if(isAnd) alert = alert + "!</span>) "
 			else alert = " " ;
 	%>
-		<div class="ContentContainer" id="<%=post.getId();%>" style="margin:2px 0px 0px 0px;">
-			<table class="TablePost" cellspacing="0" border="0" cellpadding="0">
+			<table class="TablePost ContentContainer" cellspacing="0" border="0" cellpadding="0" id="<%=post.getId();%>">
 				<tbody>
 					<tr>
 <!-- Start MemberContainer -->
@@ -113,41 +110,33 @@
 											 titleSmile = "Online";
 										}
 								%>
-								<div class="MemberName">
-									<div class="State $userSmile" title="${screenName}'s $titleSmile"><span></span></div>
-									<div class="Name">$viewScreenName</div>
-									<div style="clear:left;"><span></span></div>
-								</div>
+								<h4 class="State $userSmile" title="${screenName}'s $titleSmile">$viewScreenName</h4>
 								<div class="Rank"><%=userInfo.getUserTitle();%></div>
 								<% boolean isDisplayAvatar = userInfo.getIsDisplayAvatar();	
 									if(isDisplayAvatar) {
-									avatarUrl = uiform.getAvatarUrl(owner) ;
-									String idAv = "avatar" + nb;
-									onload = "eXo.forum.UIForumPortlet.onloadReSizeAvatar('"+idAv+"');";
-									 ++nb;
 								%>
-								<img style="width:70px;" src="$avatarUrl" class="ImgAvatar" id="$idAv" onload="$onload" alt=""/>
+								<img src="<%=uiform.getAvatarUrl(owner);%>" class="ImgAvatar ImgAvatarBorder" alt=""/>
 								<% } %>
 								<div class="InfoMember">
-									<div><%=_ctx.appRes("UITopicDetail.label.JoinDate");%>: $joinDate</div>
+									<span><%=_ctx.appRes("UITopicDetail.label.JoinDate");%>: $joinDate</span>
 									<% long totalPost = userInfo.getTotalPost();
 										if(totalPost > 0) {
 											 dateView.setTime(userInfo.getLastPostDate().getTime() - setTime);
-											 String lastPostDateOfUser = ForumUtils.getFormatDate(shortDateFormat,dateView) ;
+											 String lastPostDateOfUser = TimeConvertUtils.getFormatDate(shortDateFormat,dateView) ;
 									%>
-									<div><%=_ctx.appRes("UITopicDetail.label.Posts");%>: $totalPost</div>
-									<div><%=_ctx.appRes("UITopicDetail.label.LastPost");%>: $lastPostDateOfUser</div>
+									<span><%=_ctx.appRes("UITopicDetail.label.Posts");%>: $totalPost</span>
+									<span><%=_ctx.appRes("UITopicDetail.label.LastPost");%>: $lastPostDateOfUser</span>
 									<% } else {%>
-									<div><strong>$owner</strong><%=_ctx.appRes("UITopicDetail.label.hasNoPost");%></div>
+									<span><strong>$owner</strong><%=_ctx.appRes("UITopicDetail.label.hasNoPost");%></span>
 									<% } 
 									 if(!ForumUtils.isEmpty(location)) {
 									%>
-									<div><%=_ctx.appRes("UITopicDetail.label.Location");%>: $location</div>
+									<span><%=_ctx.appRes("UITopicDetail.label.Location");%>: $location</span>
 									<%}
 										dateView.setTime(userInfo.getLastLoginDate().getTime() - setTime);
-										String lastLoginUser = ForumUtils.getFormatDate(shortDateFormat, dateView) ;
+										String lastLoginUser = TimeConvertUtils.getFormatDate(shortDateFormat, dateView) ;
 									%>
-									<div><%=_ctx.appRes("UITopicDetail.label.LastLogin");%>: $lastLoginUser</div>
+									<span><%=_ctx.appRes("UITopicDetail.label.LastLogin");%>: $lastLoginUser</span>
 								</div>
 							</div>
 						</td>
@@ -155,11 +144,9 @@
 	<!-- End MemberContainer -->
 	<!-- Start PostViewContainer -->
 						<td class="PostViewContainer">
-							<div class="PostViewHeader">
-								<div class="PostViewTitle">
-									<div class="PostViewIcon $classIconPost">$namePost $alert</div>
-									<div class="PostTime">Posted: $createdDate</div>
-								</div>
+							<div class="PostViewHeader ClearFix">
+								<h5 class="PostViewIcon $classIconPost FL">$namePost $alert</h5>
+								<div class="PostTime FR">Posted: $createdDate</div>
 							</div>
 							<div class="PostContentContainer">
 						<% 
@@ -172,12 +159,12 @@
 						<% } else { %>
 							<div class="PostContentNote">
 						<% } %>
-								<div style="padding-top:8px" id="$idMessage">$message</div>
+								<div id="$idMessage">$message</div>
 							</div>
 							<% if(hasAttachment) {%>
 							<div class="AttachmentContainer">
-								<div class="AttachmentTitle"><%=_ctx.appRes("UITopicDetail.label.Attachments");%>:</div>
-								<div class="AttachmentContent">
+								<h5 class="AttachmentTitle"><%=_ctx.appRes("UITopicDetail.label.Attachments");%>:</h5>
+								<div class="AttachmentContent ClearFix">
 								<% for(attachment in attachments) {
 										 String urlFile = uicomponent.getFileSource(attachment) ;
 										 String titleFile = attachment.getName();
@@ -191,35 +178,27 @@
 										<% if(typeFile.indexOf("image") >= 0) {
 										   String attLink = uicomponent.getImageUrl(attachment.getPath());
 										%>
-											<div class="Image"><img onclick="eXo.forum.UIForumPortlet.showPicture('$attLink');" class="AttachImage" id="imgView${fileName}" src="$attLink" height="100px;" alt=""/></div> 
+											<a href="#" class="Image"><img onclick="eXo.forum.UIForumPortlet.showPicture('$attLink');" class="AttachImage" id="imgView${fileName}" src="$attLink" height="100px;" alt=""/></a> 
 						 					<div class="LabelBox">
-						 						<div class="AttachmentIcon JPGIcon"><span></span></div>
-						 						<a onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)" class="AttachmentLabel" title="$titleFile">$fileName</a>
-						 						<div style="clear:left;"><span></span></div>
+						 						<a class="AttachmentIcon JPGIcon" onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)" title="$titleFile">$fileName</a>
 						 						<div class="Size"><%=_ctx.appRes("UITopicDetail.label.Size");%>: ${size}</div>
 						 						<div class="Action">
-						 							<div class="Icon MaxView" onclick="eXo.forum.UIForumPortlet.showPicture('$attLink');"><%=_ctx.appRes("UITopicDetail.action.View");%></div>
-						 							<div class="Icon Download">
-						 								<a onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)"><%=_ctx.appRes("UITopicDetail.action.Download");%></a>
-						 							</div>
+						 							<a href="#" class="Icon MaxView" onclick="eXo.forum.UIForumPortlet.showPicture('$attLink');"><%=_ctx.appRes("UITopicDetail.action.View");%></a>
+													<a class="Icon Download" onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)"><%=_ctx.appRes("UITopicDetail.action.Download");%></a>
 						 						</div>
 						 					</div>
-							 				<div style="clear:left;"><span></span></div>
 									<% }else { 
 												String typeFileIcon = typeFile.substring((typeFile.indexOf("/")+1));
 									%>
 										<div class="LabelBox">
-											<div class="AttachmentIcon ${typeFileIcon}Icon"><span></span></div>
-											<a class="AttachmentLabel" onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)">
+											<a class="AttachmentIcon ${typeFileIcon}Icon" onclick="if(eXo.core.Browser.browserType == 'ie') {<%=uicomponent.event("DownloadAttach");%>; } ajaxRedirect('$urlFile'); return false;" href="javaScript: void(0)">
 												$fileName
 											</a>
-											<div style="clear:left;"><span></span></div>
 											<div class="Size"><%=_ctx.appRes("UITopicDetail.label.Size");%>: ${size}</div>
 										</div>
 									<% } %>
 									</div>
 								<% } %>
-									<div style="clear:left;"><span></span></div>
 								</div>
 							</div>
 							<% } %>
@@ -236,15 +215,13 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
 		<% } %>
 	</div>
-		<div class="ViewTopicPageIterator">
+		<div class="ViewTopicPageIterator ClearFix">
 			<% 
 			if(uicomponent.getIsRenderIter()) {
 				uicomponent.renderChild(UIForumPageIterator.class) ;
 			%>
-				<div style="clear:right;"><span></span></div>
 			<%} %>
 		</div>
 	</div>
@@ -271,7 +248,6 @@
 							</div>
 						</div>
 					<%}%>
-						<div style="clear:left;"><span></span></div>
 					</div>
 				</td>
 			</tr>

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -26,7 +26,7 @@ import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.forum.service.ForumService;
-import org.exoplatform.ks.common.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.quartz.Job;
@@ -43,7 +43,7 @@ public class DeactiveJob implements Job {
   public void execute(JobExecutionContext context) throws JobExecutionException {
     ExoContainer oldContainer = ExoContainerContext.getCurrentContainer();
     try {
-      ExoContainer exoContainer = Utils.getExoContainer(context);
+      ExoContainer exoContainer = CommonUtils.getExoContainer(context);
       ForumService forumService = (ForumService) exoContainer.getComponentInstanceOfType(ForumService.class);
       ExoContainerContext.setCurrentContainer(exoContainer);
       if (forumService != null) {

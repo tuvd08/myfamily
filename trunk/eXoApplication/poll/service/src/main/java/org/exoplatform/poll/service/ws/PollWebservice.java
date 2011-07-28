@@ -5,7 +5,9 @@ package org.exoplatform.poll.service.ws;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,19 +20,20 @@ import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.poll.service.Poll;
+import org.exoplatform.poll.service.PollNodeTypes;
 import org.exoplatform.poll.service.PollService;
 import org.exoplatform.poll.service.PollSummary;
-import org.exoplatform.poll.service.impl.JCRDataStorage;
-import org.exoplatform.poll.service.impl.PollNodeTypes;
+import org.exoplatform.poll.service.Utils;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.MembershipEntry;
 
 /**
- * @author Uoc Nguyen
+ * @author Vu Duy Tu
  * 
  */
 @Path("private/ks/poll")
@@ -44,34 +47,37 @@ public class PollWebservice implements ResourceContainer {
 
   @GET
   @Path("/viewpoll/{resourceid}")
-  //
   @Produces(MediaType.APPLICATION_JSON)
   public Response viewPoll(@PathParam("resourceid") String pollId) throws Exception {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setNoCache(true);
     cacheControl.setNoStore(true);
     PollService pollService = (PollService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PollService.class);
-    if (!JCRDataStorage.isEmpty(pollId)) {
+    if (!Utils.isEmpty(pollId)) {
       try {
         Poll poll = pollService.getPoll(pollId);
         if (poll != null) {
           // poll.setIsAdmin(String.valueOf(hasGroupAdminOfGatein()));
           poll.setIsAdmin("true");
           String group = poll.getParentPath();
+          boolean hasPerminsion = false;
           if (group.indexOf(PollNodeTypes.APPLICATION_DATA) > 0 && poll.getIsAdmin().equals("false")) {
             group = group.substring(group.indexOf(PollNodeTypes.GROUPS + "/") + PollNodeTypes.GROUPS.length(), group.indexOf("/" + PollNodeTypes.APPLICATION_DATA));
-            boolean hasPerminsion = false;
             for (String group_ : getGroupsOfUser()) {
-              if (group_.indexOf(group) == 0) {
+              if (group_.indexOf(group) >= 0) {
                 hasPerminsion = true;
                 break;
               }
             }
-            if (!hasPerminsion) {
-              poll = new Poll();
-              poll.setId("DoNotPermission");
-              return Response.ok(poll, MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
-            }
+          } else if (group.indexOf(PollNodeTypes.POLLS) < 0) {
+            hasPerminsion = pollService.hasPermissionInForum(group + "/" + poll.getId(), getAllGroupAndMembershipOfUser());
+          } else {
+            hasPerminsion = true;
+          }
+          if (!hasPerminsion) {
+            poll = new Poll();
+            poll.setId("DoNotPermission");
+            return Response.ok(poll, MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
           }
           poll.setVotes();
           poll.setInfoVote();
@@ -84,22 +90,26 @@ public class PollWebservice implements ResourceContainer {
     }
     PollSummary pollSummary = new PollSummary();
     /*
-     * if(hasGroupAdminOfGatein()) { pollSummary = pollService.getPollSummary(); pollSummary.setIsAdmin("true"); } else { pollSummary.setId("DoNotPermission"); }
-     */
-    pollSummary = pollService.getPollSummary(getGroupsOfUser());
+    if (hasGroupAdminOfGatein()) {
+      pollSummary = pollService.getPollSummary();
+      pollSummary.setIsAdmin("true");
+    } else {
+      pollSummary.setId("DoNotPermission");
+    }
+    */
+    pollSummary = pollService.getPollSummary(getAllGroupAndMembershipOfUser());
     pollSummary.setIsAdmin("true");
     return Response.ok(pollSummary, MediaType.APPLICATION_JSON).cacheControl(cacheControl).build();
   }
 
   @GET
   @Path("/votepoll/{pollId}/{indexVote}")
-  //
   @Produces(MediaType.APPLICATION_JSON)
   public Response votePoll(@PathParam("pollId") String pollId, @PathParam("indexVote") String indexVote) throws Exception {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setNoCache(true);
     cacheControl.setNoStore(true);
-    if (!JCRDataStorage.isEmpty(pollId) && !JCRDataStorage.isEmpty(indexVote)) {
+    if (!Utils.isEmpty(pollId) && !Utils.isEmpty(indexVote)) {
       try {
         PollService pollService = (PollService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PollService.class);
         Poll poll = pollService.getPoll(pollId.trim());
@@ -186,7 +196,7 @@ public class PollWebservice implements ResourceContainer {
       String[] posHaveVoted = (setUserVote[pos].substring(setUserVote[pos].indexOf(":"))).split(":");
       setUserVote[pos] = setUserVote[pos].substring(0, setUserVote[pos].indexOf(":"));
       for (String posVoted : posHaveVoted) {
-        if (JCRDataStorage.isEmpty(posVoted)) {
+        if (Utils.isEmpty(posVoted)) {
           doubleVote[Integer.parseInt(posVoted)] -= 1;
           totalVote -= 1;
         }
@@ -220,12 +230,12 @@ public class PollWebservice implements ResourceContainer {
     if (poll_.getIsClosed())
       return true;
     if (poll_.getTimeOut() > 0) {
-      Date today = JCRDataStorage.getGreenwichMeanTime().getTime();
+      Date today = Utils.getGreenwichMeanTime().getTime();
       if ((today.getTime() - poll_.getCreatedDate().getTime()) >= poll_.getTimeOut() * 86400000)
         return true;
     }
     String username = getUserId();
-    if (JCRDataStorage.isEmpty(username))
+    if (Utils.isEmpty(username))
       return true;
     String[] userVotes = poll_.getUserVote();
     for (String string : userVotes) {
@@ -264,11 +274,32 @@ public class PollWebservice implements ResourceContainer {
     return username;
   }
 
+  private List<String> getAllGroupAndMembershipOfUser() {
+    List<String> listOfUser = new ArrayList<String>();
+    try {
+      Identity identity = ConversationState.getCurrent().getIdentity();
+      listOfUser.add(identity.getUserId());
+      Set<String> list = new HashSet<String>();
+      list.addAll(identity.getGroups());
+      for (MembershipEntry membership : identity.getMemberships()) {
+        String value = membership.getGroup();
+        list.add(value); // its groups
+        value = membership.getMembershipType() + ":" + value;
+        list.add(value);
+      }
+      listOfUser.addAll(list);
+    } catch (Exception e) {
+      log.warn("Failed to add all info of user.");
+    }
+    return listOfUser;
+  }
+
   private List<String> getGroupsOfUser() {
     try {
       return new ArrayList<String>(ConversationState.getCurrent().getIdentity().getGroups());
     } catch (Exception e) {
+      log.warn("Failed to add group of user.");
+      return new ArrayList<String>();
     }
-    return new ArrayList<String>();
   }
 }

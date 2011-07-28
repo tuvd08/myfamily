@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -25,8 +25,6 @@ import java.util.List;
 import javax.jcr.NodeIterator;
 
 import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.forum.service.conf.SendMessageInfo;
-import org.exoplatform.forum.service.impl.ForumEventListener;
 import org.exoplatform.services.organization.User;
 
 /**
@@ -219,7 +217,8 @@ public interface ForumService extends ForumServiceLegacy {
    * Gets the page topic by user.
    * 
    * @param userName the user name
-   * @param strOrderBy TODO
+   * @param strOrderBy is a string. It's content have command to set 'order by' of Query. This function will return page topic has 'order by'
+   *        by strOrderby. 
    * @return the page topic by user
    * @throws Exception the exception
    */
@@ -229,7 +228,7 @@ public interface ForumService extends ForumServiceLegacy {
    * Gets the page topic old.
    * 
    * @param date the date
-   * @param forumPatch TODO
+   * @param forumPatch the path of forum
    * @return the page topic old
    * @throws Exception the exception
    */
@@ -423,9 +422,10 @@ public interface ForumService extends ForumServiceLegacy {
    * Gets the page post by user.
    * 
    * @param userName the user name
-   * @param userId TODO
-   * @param isMod TODO
-   * @param strQuery TODO
+   * @param userId the poster
+   * @param isMod the role of poster
+   * @param strQuery is a string. It's content have command Query. This function
+   *        will return page post suitable to content of that strQuery
    * @return the page post by user
    * @throws Exception the exception
    */
@@ -509,8 +509,10 @@ public interface ForumService extends ForumServiceLegacy {
   /**
    * Gets the all link.
    * 
-   * @param strQueryCate TODO
-   * @param strQueryForum TODO
+   * @param strQueryCate is a string. It's content have command Query. This function
+   *        will return page category suitable to content of that strQueryCate
+   * @param strQueryForum is a string. It's content have command Query. This function
+   *        will return page forum suitable to content of that strQueryForum
    * @return the all link
    * @throws Exception the exception
    */
@@ -706,7 +708,7 @@ public interface ForumService extends ForumServiceLegacy {
    * @param textQuery the text query
    * @param type is type user and type object(forum, topic and post)
    * @param pathQuery the path query
-   * @param forumIdsOfModerator TODO
+   * @param forumIdsOfModerator the list of forumId witch user searching has role is 'moderator'.   
    * @return the quick search
    * @throws Exception the exception
    */
@@ -942,14 +944,23 @@ public interface ForumService extends ForumServiceLegacy {
   boolean isAdminRole(String userName) throws Exception;
 
   /**
-   * Select number of lasted public post.
+   * Gets recent public posts limited by number post.
    * 
-   * @param in number number of post
+   * @param number is number of post
+   * @return the list recent public post.
    * @throws Exception the exception
    */
   List<Post> getNewPosts(int number) throws Exception;
-
-  List<Post> getNewPostsByUser(String userName, int number) throws Exception;
+  
+  /**
+   * Gets recent posts for user and limited by number post.
+   * 
+   * @param userName is userId for check permission.
+   * @param number is number of post
+   * @return the list recent post for user.
+   * @throws Exception the exception
+   */
+  List<Post> getRecentPostsForUser(String userName, int number) throws Exception;
 
   /**
    * Search  node
@@ -1015,10 +1026,8 @@ public interface ForumService extends ForumServiceLegacy {
    * @param typeImport type of import
    * @throws Exception the exception
    */
+  //Note: used updateForum(String path) for update data after imported.
   void importXML(String nodePath, ByteArrayInputStream bis, int typeImport) throws Exception;
-
-  // TODO: used updateForum(String path) for update data after imported.
-  // void updateDataImported() throws Exception;
 
   /**
    * get profiles of users

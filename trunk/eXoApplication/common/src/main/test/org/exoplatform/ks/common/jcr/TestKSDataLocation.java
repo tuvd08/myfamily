@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -37,10 +37,8 @@ import junit.framework.TestCase;
 public class TestKSDataLocation extends TestCase {
 
 
-
   private String repo = "test-repo";
   private String ws = "test-ws";
-
 
   public void testConstructorWithNullCreator() {
     
@@ -117,7 +115,6 @@ public class TestKSDataLocation extends TestCase {
     
     // if not NodeHierarchyCreator was passed, use it to resolve pathes
 
-
     assertEquals("shared/bbcodes", location.getBBCodesLocation());
     assertEquals("shared/tags", location.getTagsLocation());
     
@@ -143,7 +140,6 @@ public class TestKSDataLocation extends TestCase {
     assertEquals("statistics/forum", location.getForumStatisticsLocation());
 
 
-
     
 
     
@@ -151,7 +147,6 @@ public class TestKSDataLocation extends TestCase {
     
 
   }
-
 
   private InitParams initParams() {
     InitParams params = new InitParams();

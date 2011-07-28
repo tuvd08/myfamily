@@ -27,6 +27,7 @@ import org.exoplatform.faq.webui.FAQUtils;
 import org.exoplatform.faq.webui.UIAnswersPortlet;
 import org.exoplatform.faq.webui.UICategories;
 import org.exoplatform.faq.webui.UIQuestions;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.UIPopupAction;
@@ -242,15 +243,7 @@ public class UICategoryForm extends BaseUIFAQForm implements UIPopupComponent, U
     public void execute(Event<UICategoryForm> event) throws Exception {
       UICategoryForm uiCategory = event.getSource();
       String name = uiCategory.getUIStringInput(FIELD_NAME_INPUT).getValue();
-      if (name.indexOf("<") >= 0)
-        name = name.replace("<", "&lt;");
-      if (name.indexOf(">") >= 0)
-        name = name.replace(">", "&gt;");
-
-      if (name.indexOf("'") >= 0) {
-        uiCategory.warning("UICateforyForm.sms.cate-name-invalid");
-        return;
-      }
+      name = CommonUtils.encodeSpecialCharInTitle(name);
 
       if (uiCategory.isAddNew_) {
         if (uiCategory.getFAQService().isCategoryExist(name, uiCategory.parentId_)) {
@@ -266,6 +259,7 @@ public class UICategoryForm extends BaseUIFAQForm implements UIPopupComponent, U
       UIFormInputWithActions inputset = uiCategory.getChildById(CATEGORY_DETAIL_TAB);
       long index = 1;
       String strIndex = inputset.getUIStringInput(FIELD_INDEX_INPUT).getValue();
+      UIAnswersPortlet answerPortlet = uiCategory.getAncestorOfType(UIAnswersPortlet.class);
       if (strIndex != null && strIndex.trim().length() > 0) {
         try {
           index = Long.parseLong(strIndex);
@@ -273,6 +267,13 @@ public class UICategoryForm extends BaseUIFAQForm implements UIPopupComponent, U
           uiCategory.warning("NameValidator.msg.erro-large-number", new String[] { uiCategory.getLabel(FIELD_INDEX_INPUT) });
           return;
         }
+        long indexLimited = uiCategory.getFAQService().getMaxindexCategory(uiCategory.parentId_);
+        if (uiCategory.isAddNew_) indexLimited += 1;
+        if (index > indexLimited) {
+          uiCategory.warning("UICateforyForm.msg.over-index-number");
+          return;
+        }
+        
       }
       if (index > uiCategory.maxIndex)
         index = uiCategory.maxIndex;
@@ -308,7 +309,7 @@ public class UICategoryForm extends BaseUIFAQForm implements UIPopupComponent, U
       boolean viewAuthorInfor = inputset.getUIFormCheckBoxInput(VIEW_AUTHOR_INFOR).isChecked();
       String[] users = FAQUtils.splitForFAQ(moderator);
 
-      UIAnswersPortlet answerPortlet = uiCategory.getAncestorOfType(UIAnswersPortlet.class);
+      
       // UIQuestions questions = answerPortlet.findFirstComponentOfType(UIQuestions.class) ;
       // SessionProvider sessionProvider = FAQUtils.getSystemProvider();
       Category cat;

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.ks</groupId>
     <artifactId>exo.ks.packaging</artifactId>
-    <version>2.2.0-Beta2-SNAPSHOT</version>
+    <version>2.2.1-SNAPSHOT</version>
   </parent>
   <artifactId>exo.ks.packaging.assembly</artifactId>
   <packaging>pom</packaging>
@@ -171,6 +171,11 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
+      <artifactId>exo.platform.commons.component</artifactId>
+      <version>${org.exoplatform.commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
       <artifactId>exo.platform.commons.webui.ext</artifactId>
       <version>${org.exoplatform.commons.version}</version>
     </dependency>
@@ -332,6 +337,11 @@
       <version>${javax.ws.rs.jsr311-api.version}</version>
     </dependency>
     <dependency>
+      <groupId>javax.resource</groupId>
+      <artifactId>connector-api</artifactId>
+      <version>${javax.resource.connector-api.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>${org.slf4j.version}</version>
@@ -347,14 +357,9 @@
       <version>${xml-apis.version}</version>
     </dependency>
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
-      <version>${quartz.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
-      <version>${rome.version}</version>
+      <version>${org.quartz-scheduler.version}</version>
     </dependency>
     <dependency>
       <groupId>picocontainer</groupId>
@@ -438,11 +443,7 @@
       <artifactId>commons-pool</artifactId>
       <version>${commons-pool.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>fontbox</artifactId>
-      <version>${org.apache.pdfbox.fontbox.version}</version>
-    </dependency>
+     
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
@@ -454,9 +455,9 @@
       <version>${org.exoplatform.tool.version}</version>
     </dependency>
     <dependency>
-      <groupId>javassist</groupId>
+      <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <version>${javassist.version}</version>
+      <version>${org.javassist.version}</version>
     </dependency>
     <dependency>
       <groupId>html-parser</groupId>
@@ -521,11 +522,6 @@
       <version>${org.jboss.version}</version>
     </dependency>
     <dependency>
-      <groupId>net.sourceforge.nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-      <version>${net.sourceforge.nekohtml.version}</version>
-    </dependency>
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>${commons-logging.version}</version>
@@ -553,6 +549,11 @@
     </dependency>
     <dependency>
       <groupId>org.gatein.wsrp</groupId>
+      <artifactId>wsrp-wsrp2-ws</artifactId>
+      <version>${org.gatein.wsrp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.wsrp</groupId>
       <artifactId>wsrp-integration-api</artifactId>
       <version>${org.gatein.wsrp.version}</version>
     </dependency>
@@ -568,118 +569,6 @@
       <version>${org.gatein.wsrp.version}</version>
     </dependency>
 
-    <!-- wiki dependencies -->
-    <!--
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <version>${gwt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <version>${gwt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>${javax.validation.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>${hibernate-validator.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython-standalone</artifactId>
-      <version>${jython-standalone.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>pygments</groupId>
-      <artifactId>pygments</artifactId>
-      <version>${pygments.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.htmlcleaner</groupId>
-      <artifactId>htmlcleaner</artifactId>
-      <version>${net.sourceforge.htmlcleaner.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-web-gwt-wysiwyg-client</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-configuration-api</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-model</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-context</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-component-api</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-component-default</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-properties</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-xml</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-script</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-rendering-api</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-rendering-syntax-wikimodel</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-rendering-macro-box</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-rendering-macro-message</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-core-rendering-macro-code</artifactId>
-      <version>2.3.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.wikimodel</groupId>
-      <artifactId>org.wikimodel.wem</artifactId>
-      <version>${org.wikimodel.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.suigeneris</groupId>
       <artifactId>jrcs.diff</artifactId>
@@ -695,9 +584,6 @@
       <artifactId>ecs</artifactId>
       <version>${ecs.version}</version>
     </dependency>
--->
-
-
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.server.tomcat.patch</artifactId>
@@ -724,18 +610,6 @@
     </dependency><!-- 2.2.0-SNAPSHOT-->
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.faq.service</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency><!-- 2.2.0-SNAPSHOT-->
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.family.service</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency><!-- 2.2.0-SNAPSHOT-->
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.eXoApplication.common</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
@@ -752,7 +626,6 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency><!-- 2.2.0-SNAPSHOT-->
-
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.component.rendering</artifactId>
@@ -762,6 +635,12 @@
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.component.common</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency><!-- 2.2.0-SNAPSHOT-->
+    <dependency>
+      <groupId>org.exoplatform.ks</groupId>
+      <artifactId>exo.ks.eXoApplication.family.service</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency><!-- 2.2.0-SNAPSHOT-->
@@ -785,13 +664,13 @@
     </dependency><!-- 2.2.0-SNAPSHOT-->
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.forum.webapp</artifactId>
+      <artifactId>exo.ks.eXoApplication.faq.service</artifactId>
       <version>${project.version}</version>
-      <type>war</type>
+      <type>jar</type>
     </dependency><!-- 2.2.0-SNAPSHOT-->
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.family.webapp</artifactId>
+      <artifactId>exo.ks.eXoApplication.forum.webapp</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency><!-- 2.2.0-SNAPSHOT-->
@@ -804,6 +683,12 @@
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.eXoApplication.faq.webapp</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency><!-- 2.2.0-SNAPSHOT-->
+    <dependency>
+      <groupId>org.exoplatform.ks</groupId>
+      <artifactId>exo.ks.eXoApplication.family.webapp</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency><!-- 2.2.0-SNAPSHOT-->
@@ -837,6 +722,18 @@
       <version>${xerces.version}</version>
       <type>jar</type>
     </dependency><!-- 2.9.1-->
+    <dependency>
+      <groupId>bouncycastle</groupId>
+      <artifactId>bcmail-jdk14</artifactId>
+      <version>${bouncycastle.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>bouncycastle</groupId>
+      <artifactId>bcprov-jdk14</artifactId>
+      <version>${bouncycastle.version}</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -863,14 +760,6 @@
               </artifactItems>
             </configuration>
           </execution>
-          <!--
-                        <artifactItem>
-                           <groupId>org.exoplatform.delivery</groupId>
-                           <artifactId>exopackage-conf</artifactId>
-                           <type>zip</type>
-                           <outputDirectory>target/exopackage-conf</outputDirectory>
-                        </artifactItem>
-                        -->
           <execution>
             <id>copy-dependencies</id>
             <phase>compile</phase>

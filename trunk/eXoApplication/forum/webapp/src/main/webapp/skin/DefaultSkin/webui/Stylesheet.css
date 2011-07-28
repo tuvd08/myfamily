@@ -14,9 +14,51 @@
 @import url('UISliderControl/Stylesheet.css') ;
 @import url('UIForumPortletInfo/Stylesheet.css') ;
 
+.FL{
+	float: left;
+}
+
+.FR{
+	float: right;
+}
+
+
+h1 {font-size: 22px;}
+
+h2 {font-size: 18px;}
+
+h3 {font-size: 16px;}
+
+h4 {font-size: 14px;}
+
+h5 {font-size: 12px;}
+
+h6 {font-size: 11px;}
+
+
+ul,li{
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+
 .UIWindow .UIForumPortlet {
 	margin:0px;
 	border:none;
+}
+
+.ClearFix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.ClearFix { !
+	display: inline-block; !
+	zoom: 1; !
+	display: block;
 }
 
 .UIPageDesktop #UIWindow-forum {
@@ -38,29 +80,15 @@
 
 /**************************** Fix UIRightClickPopupMenu *********************************/
 
-.UIForumPortlet .UIRightClickPopupMenu .UIContextMenuContainer {
-    border: 1px solid #c6c7c9;
-}
-
-.UIForumPortlet .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-    margin: 0px;
-}
-
-.UIForumPortlet .UIForumActionBar .SearchPopup .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-	min-width: 140px !important;
-	width: 160px !important;
-}
-
-*html .UIForumPortlet  .SearchPopup .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-	width:170px;
-}
-
-.UIForumPortlet  .SearchPopup .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-	min-width:170px;
-}
-
 .UIForumPortlet .ForumToolbar .UIRightClickPopupMenu .ItemIcon {
 	min-width:110px;
+}
+
+.UIForumPortlet .UIRightClickPopupMenu {
+    background: #F6F6F6;
+	border: 1px solid #d3d3d3;
+	-moz-box-shadow: 1px 1px white inset, -1px -1px white inset, 2px 2px 2px #d5d5d5;
+	-wedkit-box-shadow: 1px 1px white inset, -1px -1px white inset, 2px 2px 2px #d5d5d5;
 }
 
 .UIForumPortlet .UIRightClickPopupMenu .ItemIcon {
@@ -68,16 +96,11 @@
 	display: block;
 	margin: 0px;
 	min-width:60px;
-	padding: 0px 0px 0px 28px;
+	padding: 0px 5px 0px 28px;
 	background-position: 6px;
 	line-height: 24px;
 	white-space: nowrap;
 }
-
-.UIForumPortlet .UIRightClickPopupMenu .ItemIcon:hover {
-	color: orange;
-	background-color: #DEE4F2;
-} 
 
 *html .UIForumPortlet .ForumToolbar .UIRightClickPopupMenu .ItemIcon {
 	width:110px;
@@ -87,30 +110,15 @@
 	width:60px;
 }
 
-.UIForumPortlet .ContentAction .UIRightClickPopupMenu .ItemIcon:hover {
+.UIForumPortlet .UIRightClickPopupMenu .ItemIcon:hover {
 	background-color: #DEE4F2;
 }
 
-.UIForumPortlet .ContentAction .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-	min-width: 150px;
-}
 
-*html .UIForumPortlet .ContentAction .UIRightClickPopupMenu .UIRightPopupMenuContainer {
-	width: 150px;
-}
-
-.Vista .UIForumPortlet .UIRightClickPopupMenu {
-	width:180px;
-}
-
-.UIForumPortlet .UIRightClickPopupMenu .UIRightPopupMenuContainer a:hover {
-	color: orange;
-	background-color: transparent;
-}
 
 /**************************** UIActionForum *********************************/
 .UIForumPortlet .UIActionForum {
-	padding:2px 3px;
+	padding:0px;
 }
 
 .UIForumPortlet .UIForumLinks .UIActionForum {
@@ -122,39 +130,43 @@
 }
  
 .UIForumPortlet .UIActionForum .NormalStyle {
-}
- 
-.UIForumPortlet .UIActionForum .NormalStyle .ButtonLeft {
-	background:url('background/buttons/LeftNormalStyleButton7x22.gif') no-repeat left top;
-	padding:0px 0px 0px 7px;
-}
-
-.UIForumPortlet .UIActionForum .NormalStyle .ButtonRight {
-	background:url('background/buttons/RightNormalStyleButton7x22.gif') no-repeat right top;
-	padding:0px 7px 0px 0px ;
-}
-
-.UIForumPortlet .UIActionForum .NormalStyle .ButtonMiddle {
-	line-height:18px;
-	background:url('background/buttons/MiddleNormalStyleButton1x22.gif') repeat-x top;
+	background:url('background/buttons/BntNormalStyle.gif') repeat-x top;
+	padding: 0px 4px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #4d67aa;
+	line-height:16px;
+	-moz-box-shadow: 1px 1px 2px #b3b3b3;
+	-webkit-box-shadow: 1px 1px 2px #b3b3b3;
+	box-shadow: 1px 1px 2px #b3b3b3;
+	margin: 0px 0px 0px 3px;
 }
 
-.UIForumPortlet .UIActionForum .NormalStyle .IconButton {
+.UIForumPortlet .IconButton {
 	background-repeat:no-repeat;
 	padding:0px 3px 0px 20px;
 	cursor:pointer;
-	height: 20px;
+	line-height:18px;
 }
 
 .UIForumPortlet .LockActionForum .NormalStyle .IconButton {
 	cursor:default;
 }
 
-.UIForumPortlet .UIActionForum .NormalStyle .LabelIcon {
-	line-height:18px;
+/**************************** UIForumPortlet ForumToolBar *********************************/
+.UIForumPortlet .NormalButtomBT {
+	background:url('background/buttons/NormalButtonForum.gif') repeat-x top;
+	padding: 0px 4px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #707070;
+	line-height:16px;
+	margin: 0px 0px 0px 4px;
+	white-space: nowrap;
 }
 
-/**************************** UIForumPortlet ForumToolBar *********************************/
 .UIForumPortlet .UIActionForum .NormalButtom {
 	margin:0px;
 }
@@ -175,14 +187,24 @@
 }
 
 /**************************** UIForumPortlet ForumToolBar *********************************/
-.UIForumPortlet .ForumToolbar {
+.UIForumPortlet .ForumActionToolbar {
+	background:url(background/ForumActionToolBar.gif) repeat-x;
+	border: 1px solid #c7c7c7;
+	border-radius: 3px 3px 0px 0px;
+	-moz-border-radius: 3px 3px 0px 0px;
+	-webkit-border-radius: 3px 3px 0px 0px;
+	padding: 1px 10px;
+	height: 24px;
+	border-bottom: none;
+	-moz-box-shadow: 1px 1px 0 white inset, -1px -1px 0 white inset;
 }
 
 .UIForumPortlet .ForumToolbar .CollapseButton {
-	float:right;
-	width:16px; height:16px; 
-	margin:5px 5px 0px 0px;
-	cursor:pointer;
+	float: right;
+	width: 16px; height:16px; 
+	margin: 5px 5px 0px 0px;
+	cursor: pointer;
+	display: block;
 }
 
 .UIForumPortlet .ForumToolbar .ExpandButton {
@@ -202,13 +224,9 @@
 
 .UIForumPortlet .ForumToolbar .Title {
 	float:left;
-	font-weight:bold;
 	margin:6px 0px 0px 8px;
 }
 
-.UIForumPortlet .ForumToolbar .Title span {
-	font-weight:normal;
-}
 
 .UIForumPortlet .ForumToolbar .ForumSeparatorLine {
 	background:url(background/SeparatorLine2x19.gif) no-repeat;
@@ -233,18 +251,19 @@
 	height:26px;
 }
 
-.UIForumPortlet .ForumToolbar .UIPopupCategory {
+.UIForumPortlet .UIPopupCategory {
 	left:0px;
-	position:absolute;
+	position:relative;
 	top:auto;
 	width:auto;
 	z-index:4;
+	float: left;
 }
 
 .UIForumPortlet .ForumToolbar .UIRightClickPopupMenu .LineMenu {
 	width:150px;
 	margin:4px auto;
-	border-top:solid 1px #7b7b7b;
+	border-top:solid 1px #d3d3d3;
 }
 
 .Vista .UIForumPortlet .ForumToolbar .UIRightClickPopupMenu {
@@ -259,61 +278,48 @@
 .UIForumPortlet .UIForumActionBar .DisableAction a:hover {
 	color: gray;
 }
+
 /******************************	OverButton	***************************************/
-.UIForumPortlet .UITopicContainer .DefaultStyle {
-	border-top:1px solid #d8d8d8;
-}
-
-.UIForumPortlet .UITopicDetail .DefaultStyle {
-	border-top:1px solid #d8d8d8;
-}
-
-.UIForumPortlet .DefaultStyle .LeftOverButton {
-	padding-left:5px;
-}
-
-.UIForumPortlet .DefaultStyle .RightOverButton {
-	padding-right:5px;
-}
-
-.UIForumPortlet .DefaultStyle .CenterOverButton {
-	padding-left:3px;
-}
-
-.UIForumPortlet .ButtonHeadBar .CenterOverButton {
-	padding-right: 5px;
-}
 
 .UIForumPortlet .ButtonHeadBar {
 	float:right; 
 	text-align:left; 
-	margin: 0px;
-	white-space:nowrap;
-	padding: 2px 3px 0px 0px; 
-	cursor:pointer;
 }
+
+
+.UIForumPortlet .DefaultStyle{
+	cursor:pointer;
+	line-height: 20px;
+	white-space:nowrap;
+	margin: 1px;
+	padding: 0px 4px;
+}
+
+.UIForumPortlet .DefaultStyle:hover{
+	background:url('background/OverButton1x22.gif') repeat-x top;
+	border: 1px solid #afafaf;
+	margin: 0px;
+}
+
+.UIForumPortlet .UIForumActionBar .DefaultStyle{
+	cursor:pointer;
+	line-height: 22px;
+	white-space:nowrap;
+	margin: 3px 1px 1px 1px;
+	padding: 0px 4px;
+}
+
+.UIForumPortlet .UIForumActionBar .DefaultStyle:hover{
+	background:url('background/OverButton1x23.gif') repeat-x top;
+	border: 1px solid #afafaf;
+	margin: 2px 0px 0px 0px;
+}
+
 
 *html .UIForumPortlet .ButtonHeadBar {
 	width:90px; 
 }
 
-.UIForumPortlet .Forum {
-	background:none;
-	line-height:22px;
-}
-
-.UIForumPortlet .ForumAction .LeftOverButton {
-	background:url('background/LeftOverButton5x22.gif') no-repeat left top;
-}
-
-.UIForumPortlet .ForumAction .RightOverButton {
-	background:url('background/RightOverButton5x22.gif') no-repeat right top;
-}
-
-.UIForumPortlet .ForumAction .CenterOverButton {
-	background:url('background/CenterOverButton1x22.gif') repeat-x top;
-	line-height:22px;
-}
 /*ForumBarAction*/
 .UIForumPortlet .ForumBar {
 	background:none;
@@ -322,25 +328,6 @@
 	margin:3px 3px 0px 3px; 
 }
 
-.UIForumPortlet .ForumBarAction {
-	float:left;
-	line-height:23px;
-	margin:3px 3px 0px 3px;
-	cursor: pointer;
-}
-
-.UIForumPortlet .ForumBarAction .LeftOverButton {
-	background:url('background/LeftOverButton5x23.gif') no-repeat left top;
-}
-
-.UIForumPortlet .ForumBarAction .RightOverButton {
-	background:url('background/RightOverButton5x23.gif') no-repeat right top;
-}
-
-.UIForumPortlet .ForumBarAction .CenterOverButton {
-	background:url('background/CenterOverButton1x23.gif') repeat-x top;
-	line-height:23px;
-}
 
 /******************************	End OverButton	***************************************/
 
@@ -445,17 +432,22 @@
 	z-index:5;
 	position:absolute ;
 	visibility:visible;
-	background:url('background/Point1x1.png') no-repeat top center ;	
+	background:url('background/Point1x1.png') no-repeat top center ;
+	user-select:none;
+	-moz-user-select:none;
+	-khtml-user-select:none;
+	-webkit-user-select:none;
+	-o-user-select:none;
 }
 
 .UIForumPortlet .ContentAction .UIPopupCategory {
-	top:0px;
-	left:0px; 
+	top: 0px;
+	left: 0px;
+	position: relative;
 }
 
 .UIForumPortlet .ToolbarActionsTag .UIPopupCategory {
- top:0px;
- left:0px; 
+	display:none; top: 20px; left: -5px;
 }
 
 .UIForumPortlet .UIForm .HorizontalLayout {
@@ -485,11 +477,6 @@
 .UIForumPortlet .UIRightClickPopupMenu .DisableMenuItem .ItemIcon:hover {
 	color: gray;
 }
-
-.UIForumPortlet .UIRightClickPopupMenu .UIRightPopupMenuContainer .DisableMenuItem:hover {
-	color: gray;
-}
-
 
 .UIForumPortlet .PageListPostHidden .UIAction {
 	padding:0px;
@@ -527,7 +514,7 @@
 
 .UIForumPortlet .TagContainer .ScrollButtons {
 	display:none;
-	float:right;
+	float:left;
 	width:24px;
 	height:24px;
 	padding: 0px 0px 0px 0px;
@@ -535,7 +522,6 @@
 	background:url(/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/BlueDownArrow.gif) no-repeat scroll right center;
 	*float:left;
 }
-
 
 .UIForumPortlet .TagContainer .ScrollButtonsOver {
 	background-color:#d8d8d8;
@@ -671,3 +657,78 @@
   overflow: hidden;
   word-wrap: break-word;
 }
+
+/* ============== UIButtonForum =====================*/
+
+.UIForumPortlet .StartTopicForum{
+  padding: 0px 6px;
+  background:url('background/buttons/UIButtonForum.gif') repeat-x top;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border: 1px solid #4d67aa;
+  -moz-box-shadow: 1px 1px 2px #B3B3B3;
+  -webkit-box-shadow: 1px 1px 2px #B3B3B3;
+  box-shadow: 1px 1px 2px #B3B3B3;
+}
+
+.UIForumPortlet .ForumToolbar .SearchForm  .SearchPopup {
+	padding: 10px 12px 6px 12px;
+}
+
+.UIForumPortlet .UIRightClickPopupMenu .ClickPopupContent .AddLinkToBookIcon{
+	background-position: 5px center;
+}
+
+.UIForumPortlet .UIRightClickPopupMenu .ClickPopupContent .AddWatchingIcon{
+	background-position: 5px center;
+}
+
+.UIForumPortlet .UIRightClickPopupMenu .ClickPopupContent .ForumRSSFeed{
+	background-position: 5px center;
+}
+
+.UIForumPortlet .BntPostReply {
+ background:url('background/buttons/BntNormalStyle.gif') repeat-x top;
+ padding: 0px 4px;
+ border-radius: 4px;
+ -moz-border-radius: 4px;
+ -webkit-border-radius: 4px;
+ border: 1px solid #4d67aa;
+ line-height:16px;
+ -moz-box-shadow: 1px 1px 2px #b3b3b3;
+ -webkit-box-shadow: 1px 1px 2px #b3b3b3;
+ box-shadow: 1px 1px 2px #b3b3b3;
+ margin: 0px 0px 0px 3px;
+}
+
+.UIForumPortlet .TitleForum{
+	line-height: 25px;
+	margin: 0;
+	padding: 1px 0px 1px 10px;
+}
+
+.UIForumPortlet .UIForumContainer .UITopicDetailContainer .ContentContainer{
+	border: 1px solid #C7C7C7;
+}
+
+.UIForumPortlet .ImgAvatarBorder {
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #B7B7B7;
+	border-bottom: 1px solid #8D8D8D;
+	padding: 3px;
+	background: white;
+}
+
+.UIForumPortlet .ImgAvatar {
+	width: 120px;
+	height: 120px;
+}
+
+.UIForumPortlet .SmallImgAvatar {
+	width: 70px;
+	height: 70px;
+}
+

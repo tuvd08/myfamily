@@ -16,14 +16,14 @@
  */
 package org.exoplatform.faq.webui;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,11 +38,12 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.download.DownloadService;
+import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.faq.service.FAQService;
 import org.exoplatform.faq.service.FAQSetting;
 import org.exoplatform.faq.service.FileAttachment;
 import org.exoplatform.faq.service.JcrInputProperty;
-import org.exoplatform.ks.common.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.user.CommonContact;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -72,7 +73,11 @@ public class FAQUtils {
 
   public static String DISPLAYBOTH      = "both";
 
-  public static String UPLOAD_FILE_SIZE = "uploadFileSizeLimitMB";
+  public static String UPLOAD_FILE_SIZE   = "uploadFileSizeLimitMB";
+
+  public static String UPLOAD_AVATAR_SIZE = "uploadAvatarSizeLimitMB";
+
+  public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
 
   static private Log   log              = ExoLogger.getLogger(FAQUtils.class);
 
@@ -470,21 +475,13 @@ public class FAQUtils {
     return getFormatDate(DateFormat.SHORT, myDate);
   }
 
-  public static Calendar getInstanceTempCalendar() {
-    Calendar calendar = GregorianCalendar.getInstance();
-    calendar.setLenient(false);
-    int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
-    calendar.setTimeInMillis(System.currentTimeMillis() - gmtoffset);
-    return calendar;
-  }
-
   public static String getUserAvatar(String userName) throws Exception {
     String url = "";
     try {
       FAQService service = getFAQService();
       FileAttachment avatar = service.getUserAvatar(userName);
       if (avatar != null) {
-        url = Utils.getImageUrl(avatar.getPath()) + "?size=" + avatar.getSize();
+        url = CommonUtils.getImageUrl(avatar.getPath()) + "?size=" + avatar.getSize();
       }
     } catch (Exception e) {
       log.debug("Failed to get user avatar of user: " + userName, e);
@@ -492,6 +489,26 @@ public class FAQUtils {
     return (isFieldEmpty(url)) ? org.exoplatform.faq.service.Utils.DEFAULT_AVATAR_URL : url;
   }
 
+  public static String getFileSource(FileAttachment attachment) throws Exception {
+    DownloadService dservice = (DownloadService)PortalContainer.getComponent(DownloadService.class);
+    try {
+      InputStream input = attachment.getInputStream();
+      String fileName = attachment.getName();
+      byte[] imageBytes = null;
+      if (input != null) {
+        imageBytes = new byte[input.available()];
+        input.read(imageBytes);
+        ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
+        InputStreamDownloadResource dresource = new InputStreamDownloadResource(byteImage, "image");
+        dresource.setDownloadName(fileName);
+        return dservice.getDownloadLink(dservice.addDownloadResource(dresource));
+      }
+    } catch (Exception e) {
+      log.error("Can not get File Source, exception: " + e.getMessage());
+    }
+    return "";
+  }
+  
   public static String getLink(String link, String componentId, String componentIdhasAction, String action, String actionRep, String objectId) {
     PortalRequestContext portalContext = Util.getPortalRequestContext();
     String url = portalContext.getRequest().getRequestURL().toString();
@@ -505,7 +522,7 @@ public class FAQUtils {
     PortalRequestContext portalContext = Util.getPortalRequestContext();
     String link = portalContext.getRequest().getRequestURL().toString();
     try {
-      String selectedNode = Util.getUIPortal().getSelectedNode().getUri();
+      String selectedNode = Util.getUIPortal().getSelectedUserNode().getURI();
       String portalName = "/" + Util.getUIPortal().getName();
       if (link.indexOf(portalName) > 0) {
         if (link.indexOf(portalName + "/" + selectedNode) < 0) {
@@ -520,14 +537,17 @@ public class FAQUtils {
     return link;
   }
 
-  public static int getLimitUploadSize() {
+  public static int getLimitUploadSize(boolean isAvatar) {
     PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletPreferences portletPref = pcontext.getRequest().getPreferences();
-    int limitMB;
+    int limitMB = DEFAULT_VALUE_UPLOAD_PORTAL;
     try {
-      limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_FILE_SIZE, "").trim());
+      if (isAvatar) {
+        limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_AVATAR_SIZE, "").trim());
+      } else {
+        limitMB = Integer.parseInt(portletPref.getValue(UPLOAD_FILE_SIZE, "").trim());
+      }
     } catch (Exception e) {
-      limitMB = -1;
     }
     return limitMB;
   }

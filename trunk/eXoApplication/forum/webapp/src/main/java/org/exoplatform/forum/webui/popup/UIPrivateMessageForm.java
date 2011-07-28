@@ -20,18 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.forum.ForumTransformHTML;
 import org.exoplatform.forum.ForumUtils;
 import org.exoplatform.forum.service.ForumPrivateMessage;
 import org.exoplatform.forum.service.UserProfile;
 import org.exoplatform.forum.webui.BaseForumForm;
 import org.exoplatform.forum.webui.UIForumPortlet;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
-import org.exoplatform.ks.common.Utils;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
 import org.exoplatform.ks.common.webui.UISelector;
 import org.exoplatform.ks.common.webui.UIUserSelect;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -110,7 +110,7 @@ public class UIPrivateMessageForm extends BaseForumForm implements UIPopupCompon
     UIFormWYSIWYGInput formWYSIWYGInput = new UIFormWYSIWYGInput(FIELD_MAILMESSAGE_INPUT, FIELD_MAILMESSAGE_INPUT, ForumUtils.EMPTY_STR);
     formWYSIWYGInput.addValidator(MandatoryValidator.class);
     formWYSIWYGInput.setToolBarName("Basic");
-    formWYSIWYGInput.setFCKConfig(Utils.getFCKConfig());
+    formWYSIWYGInput.setFCKConfig(WebUIUtils.getFCKConfig());
     UIFormInputWithActions sendMessageTab = new UIFormInputWithActions(FIELD_SENDMESSAGE_TAB);
     sendMessageTab.addUIFormInput(SendTo);
     sendMessageTab.addUIFormInput(MailTitle);
@@ -209,7 +209,7 @@ public class UIPrivateMessageForm extends BaseForumForm implements UIPopupCompon
         messageForm.warning("NameValidator.msg.warning-long-text", new String[] { messageForm.getLabel(FIELD_MAILTITLE_INPUT), String.valueOf(maxText) });
         return;
       }
-      mailTitle = ForumTransformHTML.enCodeHTMLTitle(mailTitle);
+      mailTitle = CommonUtils.encodeSpecialCharInTitle(mailTitle);
       UIFormWYSIWYGInput formWYSIWYGInput = MessageTab.getChild(UIFormWYSIWYGInput.class);
       String message = formWYSIWYGInput.getValue();
       if (!ForumUtils.isEmpty(message)) {

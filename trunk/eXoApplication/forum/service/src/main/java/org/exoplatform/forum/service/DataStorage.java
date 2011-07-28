@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -27,8 +27,6 @@ import java.util.Map;
 import javax.jcr.NodeIterator;
 
 import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.forum.service.conf.InitializeForumPlugin;
-import org.exoplatform.forum.service.conf.SendMessageInfo;
 import org.exoplatform.ks.common.conf.RoleRulesPlugin;
 import org.exoplatform.ks.common.jcr.KSDataLocation;
 import org.exoplatform.management.annotations.Managed;
@@ -245,8 +243,6 @@ public interface DataStorage {
 
   void saveForumStatistic(ForumStatistic forumStatistic) throws Exception;
 
-  Calendar getGreenwichMeanTime();
-
   Object getObjectNameByPath(String path) throws Exception;
 
   Object getObjectNameById(String id, String type) throws Exception;
@@ -355,7 +351,7 @@ public interface DataStorage {
 
   List<Post> getNewPosts(int number) throws Exception;
 
-  List<Post> getNewPostsByUser(String userName, int number) throws Exception;
+  List<Post> getRecentPostsForUser(String userName, int number) throws Exception;
 
   Map<String, String> getServerConfig();
 

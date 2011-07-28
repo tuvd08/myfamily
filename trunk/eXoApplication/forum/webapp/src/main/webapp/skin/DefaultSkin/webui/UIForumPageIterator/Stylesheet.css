@@ -1,40 +1,28 @@
 .UIForumPageIterator {    
 	float:right;
 	margin: 0px ;
-	padding: 3px 0px 0px 5px ;
+	padding: 3px 0px 3px 5px ;
+	overflow: hidden; 
 }
 
-.UIForumPageIterator .PageIteratorContainer {    
-  float: right ;
-  overflow: hidden; 
-}
-
-.UIForumPageIterator .PageIteratorContainer .LeftPageIteratorBlock{    
-  line-height: 18px ; 
-  float: right ;
-  margin-right: 15px;
-}
-
-.UIForumPageIterator .PageIteratorContainer .RightPageIteratorBlock{    
-  float: right ;
+.UIForumPageIterator span{    
+	display: block;
+	float: left;
 }
 
 .UIForumPageIterator .Icon {
   float: left ;
   margin: 0px 2px 0px 0px ;
-  width: 18px ; height: 17px ;
+  width: 18px ; 
+  height: 17px ;
 }
 
-.UIForumPageIterator .TotalPages {
-  float: left ;
-  line-height: 16px ; 
-}
 
 .UIForumPageIterator .PagesTotalNumber {
-  float: left ;
   line-height: 17px ; 
   color: #0183f1;
-  margin-left: 5px;
+  margin: 0px 5px;
+  float: left;
 }
 
 .UIForumPageIterator .LastTopPageIcon {
@@ -80,25 +68,22 @@
   float: left ;
   text-align: center;
   margin: 0px 2px 0px 0px;
-  line-height: 17px;
+  line-height: 15px;
+  display: block;
+  padding: 0px 6px
 }
 
 .UIForumPageIterator .PageSelected {
-  line-height: 15px;
-  height: 15px ;
   border: 1px solid #dfdfdf;
   color: #f16701;
   font-weight: bold;
-  padding: 0px 6px;
   cursor: default;
 }
 
 .UIForumPageIterator .PageNormal {
-	margin: 0px 0px 0px 0px ;
-  padding: 1px 7px;
-  border: 1px solid #dfdfdf;
-  color: #333333 ;
-  background: white;
+	border: 1px solid #dfdfdf;
+	color: #333333 ;
+	background: white;
 }
 
 .UIForumPageIterator .Number a {
@@ -111,30 +96,31 @@
   border: 1px solid #777777;
 }
 
-
 .UIForumPortlet .GotoPageIcon {
 	background: url('background/OpenPopup17x21.gif') no-repeat ;
 	margin-top: 3px;
 	float: right; 
 	width: 21px; height: 17px;
+	display: block;
 }
 
 .UIForumPortlet .GotoPageIcon .UIPopupCategory {
-	left:-30px;
-	position: absolute;
+	left:-90px;
+	position: relative;
 	top: 2px;
-	width:120px;
 	z-index: 1010;
 }
 
-.UIForumPortlet .SearchForm .UIPopupCategory .InputPage {
-	padding: 2px 6px;
-}
-
-.UIForumPortlet .SearchForm .UIPopupCategory .InputPage input{
-	width: 95px;
+.UIForumPortlet .SearchForm .UIPopupCategory input{
+	width: 68px;
 	height: 12px;
 	font-size: 11px;
+	float: left;
+}
+
+.UIForumPortlet .SearchForm .UIPopupCategory .BorderSearch{
+	border-bottom: 1px solid #707070;
+	padding-bottom: 6px;
 }
 
 .UIForumPortlet .GotoPageIcon .UIPopupCategory .InputPage {
@@ -145,4 +131,19 @@
 	width:30px;
 	height: 12px;
 	font-size: 12px;
+}
+
+/*=========================== Add ==========================*/
+
+.UIForumPortlet .GotoPageIcon .UIRightClickPopupMenu{
+	width: 122px;
+	right: 0px;
+	top: 15px;
+	padding: 10px 12px;
+}
+
+.UIForumPortlet .GotoPageIcon .UIRightClickPopupMenu input{
+	width: 50px;
+	height: 13px;
+	float: left;
 }

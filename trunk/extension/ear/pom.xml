@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.ks</groupId>
     <artifactId>exo.ks.extension</artifactId>
-    <version>2.2.0-Beta2-SNAPSHOT</version>
+    <version>2.2.1-SNAPSHOT</version>
   </parent>
   <artifactId>exo.ks.extension.ear</artifactId>
   <packaging>ear</packaging>
@@ -86,52 +86,45 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-    <!-- HACK : cometd packaging should be provided by platform -->
     <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>exo.platform.commons.comet.webapp</artifactId>
-      <version>${org.exoplatform.commons.version}</version>
-      <type>war</type>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${gwt.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>cometd-bayeux</artifactId>
-      <version>6.1.11</version>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <version>${gwt.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>cometd-api</artifactId>
-      <version>0.9.20080221</version>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>${javax.validation.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>6.1.11</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>exo.platform.commons.comet.service</artifactId>
-      <version>${org.exoplatform.commons.version}</version>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate-validator.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.exoplatform.kernel</groupId>
-          <artifactId>exo.kernel.container</artifactId>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.exoplatform.kernel</groupId>
-          <artifactId>exo.kernel.component.common</artifactId>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.exoplatform.ws</groupId>
-          <artifactId>exo.ws.rest.core</artifactId>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.exoplatform.ws</groupId>
-          <artifactId>exo.ws.commons</artifactId>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.exoplatform.ws</groupId>
-          <artifactId>exo.ws.frameworks.json</artifactId>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -146,32 +139,6 @@
           <displayName>ks-extension</displayName>
           <defaultLibBundleDir>lib</defaultLibBundleDir>
           <modules>
-            <webModule>
-              <groupId>org.exoplatform.commons</groupId>
-              <artifactId>exo.platform.commons.comet.webapp</artifactId>
-              <contextRoot>cometd</contextRoot>
-              <bundleFileName>cometd.war</bundleFileName>
-            </webModule>
-            <jarModule>
-              <groupId>org.exoplatform.commons</groupId>
-              <artifactId>exo.platform.commons.comet.service</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <jarModule>
-              <groupId>org.mortbay.jetty</groupId>
-              <artifactId>cometd-bayeux</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <jarModule>
-              <groupId>org.mortbay.jetty</groupId>
-              <artifactId>jetty-util</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <jarModule>
-              <groupId>org.mortbay.jetty</groupId>
-              <artifactId>cometd-api</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
             <jarModule>
               <groupId>org.exoplatform.ks</groupId>
               <artifactId>exo.ks.extension.config</artifactId>
@@ -238,6 +205,31 @@
               <contextRoot>ksResources</contextRoot>
               <bundleFileName>ksResources.war</bundleFileName>
             </webModule>
+            <jarModule>
+              <groupId>org.slf4j</groupId>
+              <artifactId>slf4j-api</artifactId>
+              <excluded>true</excluded>
+            </jarModule>
+            <jarModule>
+              <groupId>javax.jcr</groupId>
+              <artifactId>jcr</artifactId>
+              <excluded>true</excluded>
+            </jarModule>
+            <jarModule>
+              <groupId>com.google.gwt</groupId>
+              <artifactId>gwt-user</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>com.google.gwt</groupId>
+              <artifactId>gwt-servlet</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
+            <jarModule>
+              <groupId>org.exoplatform.ks</groupId>
+              <artifactId>exo.ks.ext.social-integration</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+            </jarModule>
           </modules>
         </configuration>
       </plugin>

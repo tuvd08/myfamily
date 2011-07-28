@@ -25,6 +25,7 @@ import javax.jcr.PathNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.forum.ForumTransformHTML;
 import org.exoplatform.forum.ForumUtils;
+import org.exoplatform.forum.TimeConvertUtils;
 import org.exoplatform.forum.service.Forum;
 import org.exoplatform.forum.service.ForumAttachment;
 import org.exoplatform.forum.service.Post;
@@ -41,11 +42,13 @@ import org.exoplatform.forum.webui.UITopicContainer;
 import org.exoplatform.forum.webui.UITopicDetail;
 import org.exoplatform.forum.webui.popup.UIForumInputWithActions.ActionData;
 import org.exoplatform.ks.bbcode.core.ExtendedBBCodeProvider;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
 import org.exoplatform.ks.common.webui.UISelector;
 import org.exoplatform.ks.common.webui.UIUserSelect;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -207,7 +210,7 @@ public class UITopicForm extends BaseForumForm implements UISelector {
     UIFormTextAreaInput canPost = new UIFormTextAreaInput(FIELD_CANPOST_INPUT, FIELD_CANPOST_INPUT, null);
     UIFormWYSIWYGInput formWYSIWYGInput = new UIFormWYSIWYGInput(FIELD_MESSAGECONTENT, FIELD_MESSAGECONTENT, ForumUtils.EMPTY_STR);
     formWYSIWYGInput.addValidator(MandatoryValidator.class);
-    formWYSIWYGInput.setFCKConfig(org.exoplatform.ks.common.Utils.getFCKConfig());
+    formWYSIWYGInput.setFCKConfig(WebUIUtils.getFCKConfig());
     formWYSIWYGInput.setToolBarName("Basic");
     UIFormInputIconSelector uiIconSelector = new UIFormInputIconSelector(FIELD_THREADICON_TAB, FIELD_THREADICON_TAB);
     uiIconSelector.setSelectedIcon("IconsView");
@@ -414,7 +417,7 @@ public class UITopicForm extends BaseForumForm implements UISelector {
       this.topic = getForumService().getTopic(categoryId, forumId, topicId, ForumUtils.EMPTY_STR);
       UIForumInputWithActions threadContent = this.getChildById(FIELD_THREADCONTEN_TAB);
       threadContent.getUIStringInput(FIELD_EDITREASON_INPUT).setRendered(true);
-      threadContent.getUIStringInput(FIELD_TOPICTITLE_INPUT).setValue(ForumTransformHTML.unCodeHTML(this.topic.getTopicName()));
+      threadContent.getUIStringInput(FIELD_TOPICTITLE_INPUT).setValue(this.topic.getTopicName());
       threadContent.getChild(UIFormWYSIWYGInput.class).setValue(this.topic.getDescription());
 
       UIForumInputWithActions threadOption = this.getChildById(FIELD_THREADOPTION_TAB);
@@ -462,15 +465,15 @@ public class UITopicForm extends BaseForumForm implements UISelector {
       if (topicTitle.length() < 1 && topicTitle.equals("null")) {
         k = 0;
       }
-      topicTitle = ForumTransformHTML.enCodeHTMLTitle(topicTitle);
+      topicTitle = CommonUtils.encodeSpecialCharInTitle(topicTitle);
       if (t > 0 && k != 0 && !checksms.equals("null")) {
         String userName = UserHelper.getCurrentUser();
         Post postNew = new Post();
         postNew.setOwner(userName);
         postNew.setName(topicTitle);
         if (ForumUtils.isEmpty(uiForm.topicId)) {
-          postNew.setCreatedDate(ForumUtils.getInstanceTempCalendar().getTime());
-          postNew.setModifiedDate(ForumUtils.getInstanceTempCalendar().getTime());
+          postNew.setCreatedDate(TimeConvertUtils.getInstanceTempCalendar().getTime());
+          postNew.setModifiedDate(TimeConvertUtils.getInstanceTempCalendar().getTime());
         } else {
           postNew.setCreatedDate(uiForm.topic.getCreatedDate());
           postNew.setModifiedDate(uiForm.topic.getModifiedDate());
@@ -537,8 +540,6 @@ public class UITopicForm extends BaseForumForm implements UISelector {
           if (topicTitle.length() <= 0 && topicTitle.equals("null")) {
             k = 0;
           }
-          topicTitle = ForumTransformHTML.enCodeHTMLTitle(topicTitle);
-          editReason = ForumTransformHTML.enCodeHTMLTitle(editReason);
           if (t > 0 && k != 0 && !checksms.equals("null")) {
             boolean isOffend = false;
             boolean hasForumMod = false;
@@ -558,6 +559,9 @@ public class UITopicForm extends BaseForumForm implements UISelector {
               if (uiForm.forum != null)
                 hasForumMod = uiForm.forum.getIsModerateTopic();
             }
+            topicTitle = CommonUtils.encodeSpecialCharInTitle(topicTitle);
+            editReason = CommonUtils.encodeSpecialCharInTitle(editReason);
+
             UIForumInputWithActions threadOption = uiForm.getChildById(FIELD_THREADOPTION_TAB);
             String topicType = threadOption.getUIFormSelectBox(FIELD_TOPICTYPE_SELECTBOX).getValue();
             if (topicType.equals("none"))
@@ -653,11 +657,7 @@ public class UITopicForm extends BaseForumForm implements UISelector {
                   uiForm.isDetail = false;
                 }
               } catch (PathNotFoundException e) {
-                forumPortlet.updateIsRendered(ForumUtils.CATEGORIES);
-                UICategoryContainer categoryContainer = forumPortlet.getChild(UICategoryContainer.class);
-                categoryContainer.updateIsRender(true);
-                categoryContainer.getChild(UICategories.class).setIsRenderChild(false);
-                forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(Utils.FORUM_SERVICE);
+                forumPortlet.rederForumHome();
                 forumPortlet.cancelAction();
                 warning("UITopicForm.msg.forum-deleted");
                 event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
@@ -670,7 +670,7 @@ public class UITopicForm extends BaseForumForm implements UISelector {
               try {
                 String remoteAddr = ForumUtils.EMPTY_STR;
                 if (forumPortlet.isEnableIPLogging()) {
-                  remoteAddr = org.exoplatform.ks.common.Utils.getRemoteIP();
+                  remoteAddr = WebUIUtils.getRemoteIP();
                 }
                 topicNew.setRemoteAddr(remoteAddr);
                 uiForm.getForumService().saveTopic(uiForm.categoryId, uiForm.forumId, topicNew, true, false, ForumUtils.getDefaultMail());
@@ -744,7 +744,7 @@ public class UITopicForm extends BaseForumForm implements UISelector {
       UIPopupContainer popupContainer = uiForm.getAncestorOfType(UIPopupContainer.class);
       UIAttachFileForm attachFileForm = uiForm.openPopup(popupContainer, UIAttachFileForm.class, 500, 0);
       attachFileForm.updateIsTopicForm(true);
-      attachFileForm.setMaxField(5);
+      attachFileForm.setMaxField(5, false);
     }
   }
 

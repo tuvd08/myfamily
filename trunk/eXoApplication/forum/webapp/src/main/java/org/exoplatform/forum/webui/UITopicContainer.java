@@ -45,9 +45,11 @@ import org.exoplatform.forum.webui.popup.UIPageListTopicUnApprove;
 import org.exoplatform.forum.webui.popup.UITopicForm;
 import org.exoplatform.forum.webui.popup.UIWatchToolsForm;
 import org.exoplatform.ks.bbcode.core.ExtendedBBCodeProvider;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.UIPopupAction;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -177,7 +179,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
 
   public String getRSSLink(String cateId) {
     PortalContainer pcontainer = PortalContainer.getInstance();
-    return org.exoplatform.ks.common.Utils.getRSSLink("forum", pcontainer.getPortalContainerInfo().getContainerName(), cateId);
+    return CommonUtils.getRSSLink("forum", pcontainer.getPortalContainerInfo().getContainerName(), cateId);
   }
 
   public String getLastPostIdReadOfTopic(String topicId) throws Exception {
@@ -205,7 +207,6 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
     forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath((categoryId + ForumUtils.SLASH + forumId));
     forumPortlet.updateAccessForum(forumId);
     this.userProfile = forumPortlet.getUserProfile();
-    listWatches = forumPortlet.getWatchingByCurrentUser();
     cleanCheckedList();
     setForum(true);
     linkUserInfo = forumPortlet.getPortletLink();
@@ -270,7 +271,6 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
     enableIPLogging = forumPortlet.isEnableIPLogging();
     forumPortlet.updateAccessForum(forumId);
     this.userProfile = forumPortlet.getUserProfile();
-    listWatches = forumPortlet.getWatchingByCurrentUser();
     if (!isBreadcumbs) {
       forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath((categoryId + ForumUtils.SLASH + forumId));
     }
@@ -375,6 +375,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
   }
 
   private void initPage() throws Exception {
+    setListWatches();
     objectId = forumId;
     if (userProfile == null)
       userProfile = new UserProfile();
@@ -419,7 +420,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
 
   private String getRemoteIP() throws Exception {
     if (enableIPLogging) {
-      return org.exoplatform.ks.common.Utils.getRemoteIP();
+      return WebUIUtils.getRemoteIP();
     }
     return ForumUtils.EMPTY_STR;
   }
@@ -539,7 +540,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
         categories.setIsRenderChild(true);
         List<ForumSearch> list = uiTopicContainer.getForumService().getQuickSearch(text, type.toString(), path, uiTopicContainer.getUserProfile().getUserId(), forumPortlet.getInvisibleCategories(), forumPortlet.getInvisibleForums(), null);
         UIForumListSearch listSearchEvent = categories.getChild(UIForumListSearch.class);
-        listSearchEvent.setListSearchEvent(list);
+        listSearchEvent.setListSearchEvent(list, path.substring(path.indexOf(Utils.CATEGORY)));
         forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(ForumUtils.FIELD_EXOFORUM_LABEL);
         formStringInput.setValue(ForumUtils.EMPTY_STR);
         event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
@@ -586,7 +587,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
 
   static public class AddTopicActionListener extends BaseEventListener<UITopicContainer> {
     public void onEvent(Event<UITopicContainer> event, UITopicContainer uiTopicContainer, final String objectId) throws Exception {
-      UITopicForm topicForm = uiTopicContainer.openPopup(UITopicForm.class, "UIAddTopicContainer", 900, 460);
+      UITopicForm topicForm = uiTopicContainer.openPopup(UITopicForm.class, "UIAddTopicContainer", 900, 520);
       topicForm.setTopicIds(uiTopicContainer.categoryId, uiTopicContainer.forumId, uiTopicContainer.forum, uiTopicContainer.userProfile.getUserRole());
       topicForm.setMod(uiTopicContainer.isModerator);
     }
@@ -613,6 +614,23 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
           topic = uiTopicContainer.getForumService().getTopicUpdate(topic, false);
           uiTopicContainer.forum = uiTopicContainer.getForumService().getForum(uiTopicContainer.categoryId, uiTopicContainer.forumId);
           if (uiTopicContainer.forum != null) {
+            if(topic == null) {
+              warning("UIForumPortlet.msg.topicEmpty");
+              event.getRequestContext().addUIComponentToUpdateByAjax(uiTopicContainer);
+            } else if(!uiTopicContainer.isModerator){
+              if(uiTopicContainer.forum.getIsClosed()) {
+                forumPortlet.rederForumHome();
+                warning("UIForumPortlet.msg.do-not-permission");
+                event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
+                return;
+              }
+              if(topic.getIsClosed() || topic.getIsWaiting() || !topic.getIsActive() 
+                  || !topic.getIsActiveByForum()) {
+                warning("UIForumPortlet.msg.do-not-permission");
+                event.getRequestContext().addUIComponentToUpdateByAjax(uiTopicContainer);
+                return;
+              }
+            }
             UIForumContainer uiForumContainer = forumPortlet.getChild(UIForumContainer.class);
             UITopicDetailContainer uiTopicDetailContainer = uiForumContainer.getChild(UITopicDetailContainer.class);
             uiForumContainer.setIsRenderChild(false);
@@ -636,11 +654,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
             context.addUIComponentToUpdateByAjax(uiForumContainer);
             context.addUIComponentToUpdateByAjax(forumPortlet.getChild(UIBreadcumbs.class));
           } else {
-            forumPortlet.updateIsRendered(ForumUtils.CATEGORIES);
-            UICategoryContainer categoryContainer = forumPortlet.getChild(UICategoryContainer.class);
-            categoryContainer.updateIsRender(true);
-            categoryContainer.getChild(UICategories.class).setIsRenderChild(false);
-            forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(Utils.FORUM_SERVICE);
+            forumPortlet.rederForumHome();
             warning("UITopicContainer.msg.forum-deleted");
             event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
           }
@@ -768,12 +782,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
       if (forum == null) {
         warning("UITopicContainer.msg.forum-deleted");
         UIForumPortlet forumPortlet = uiTopicContainer.getAncestorOfType(UIForumPortlet.class);
-        UICategoryContainer categoryContainer = forumPortlet.getChild(UICategoryContainer.class);
-        forumPortlet.updateIsRendered(ForumUtils.CATEGORIES);
-        categoryContainer.updateIsRender(false);
-        categoryContainer.getChild(UICategory.class).updateByBreadcumbs(uiTopicContainer.categoryId);
-        forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(uiTopicContainer.categoryId);
-        forumPortlet.getChild(UIForumLinks.class).setUpdateForumLinks();
+        forumPortlet.rederForumHome();
         event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
         return;
       }
@@ -871,7 +880,7 @@ public class UITopicContainer extends UIForumKeepStickPageIterator {
         }
       }
       if (checked) {
-        UITopicForm topicForm = uiTopicContainer.openPopup(UITopicForm.class, "UIEditTopicContainer", 850, 460);
+        UITopicForm topicForm = uiTopicContainer.openPopup(UITopicForm.class, "UIEditTopicContainer", 900, 545);
         topicForm.setTopicIds(uiTopicContainer.categoryId, uiTopicContainer.forumId, uiTopicContainer.forum, uiTopicContainer.userProfile.getUserRole());
         topicForm.setUpdateTopic(topic, true);
         topicForm.setMod(uiTopicContainer.isModerator);

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -19,7 +19,6 @@ package org.exoplatform.forum.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -46,7 +45,7 @@ import org.exoplatform.services.security.MembershipEntry;
 /**
  * Created by The eXo Platform SAS
  * Author : Vu Duy Tu
- *					tu.duy@exoplatform.com
+ *          tu.duy@exoplatform.com
  */
 
 public class ForumServiceUtils {

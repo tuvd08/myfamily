@@ -159,7 +159,7 @@ UIForumPortlet.prototype.checkAll = function(obj) {
 
 //DungJs
 UIForumPortlet.prototype.checkAction = function(obj, evt) {
-	eXo.webui.UIPopupSelectCategory.show(obj, evt) ;
+	eXo.forum.UIForumPortlet.showPopup(obj, evt) ;
 	var uiCategory = document.getElementById("UICategory") ;
 	var uiRightClickPopupMenu = eXo.core.DOMUtil.findFirstDescendantByClass(uiCategory, "div", "UIRightClickPopupMenu") ;
 	var checkboxes = eXo.core.DOMUtil.findDescendantsByClass(uiCategory, "input", "checkbox") ;
@@ -234,7 +234,7 @@ UIForumPortlet.prototype.visibleAction = function(id) {
 };
 
 UIForumPortlet.prototype.checkActionTopic = function(obj, evt) {
-	eXo.webui.UIPopupSelectCategory.show(obj, evt) ;
+	eXo.forum.UIForumPortlet.showPopup(obj, evt) ;
 	var DOMUtil = eXo.core.DOMUtil;
 	var parentMenu = document.getElementById("ModerationMenu") ;
 	var menuItems = parentMenu.getElementsByTagName("a") ;
@@ -277,6 +277,9 @@ UIForumPortlet.prototype.checkActionTopic = function(obj, evt) {
 UIForumPortlet.prototype.expandCollapse = function(obj) {
 	var forumToolbar = eXo.core.DOMUtil.findAncestorByClass(obj,"ForumToolbar") ;
 	var contentContainer = eXo.core.DOMUtil.findNextElementByTagName(forumToolbar,"div") ;
+	if(!contentContainer) {
+	 contentContainer = eXo.core.DOMUtil.findNextElementByTagName(forumToolbar,"ul") ;
+	}
 	if(contentContainer.style.display != "none") {
 		contentContainer.style.display = "none" ;
 		obj.className = "ExpandButton" ;
@@ -338,16 +341,6 @@ UIForumPortlet.prototype.checkedChildNode = function(elm) {
   }
 } ;
 
-UIForumPortlet.prototype.OverButton = function(oject) {
-	if(oject.className.indexOf("Action") > 0){
-		var Srt = "";
-		for(var i=0; i<oject.className.length - 6; i++) {
-			Srt = Srt + oject.className.charAt(i);
-		}
-		oject.className = Srt;
-	}	else oject.className = oject.className + "Action";
-};
-
 UIForumPortlet.prototype.initVote = function(voteId, rate) {
 	var vote = document.getElementById(voteId) ;
 	var DOMUtil = eXo.core.DOMUtil ;
@@ -395,8 +388,8 @@ UIForumPortlet.prototype.showPopup = function(elevent,e) {
 	}
 	if(!e) e = window.event ;
 		e.cancelBubble = true ;
-	var parend = eXo.core.DOMUtil.findAncestorByTagName(elevent, "div") ;
-	var popup = eXo.core.DOMUtil.findFirstDescendantByClass(parend, "div", "UIPopupCategory") ;
+//	var parend = eXo.core.DOMUtil.findAncestorByTagName(elevent, "div") ;
+	var popup = eXo.core.DOMUtil.findFirstDescendantByClass(elevent, "div", "UIPopupCategory") ;
 	if(popup.style.display === "none") {
 		popup.style.display = "block" ;
 		eXo.core.DOMUtil.listHideElements(popup) ;
@@ -565,22 +558,6 @@ UIForumPortlet.prototype.setShowInfo = function(elm) {
 //	}
 //};
 
-UIForumPortlet.prototype.onloadReSizeAvatar = function(idElm) {
-	setTimeout("eXo.forum.UIForumPortlet.reSizeAvatar('"+idElm+"')", 1000);
-};
-
-UIForumPortlet.prototype.reSizeAvatar = function(idElm) {
-	var imgElm = document.getElementById(idElm);
-	if(imgElm){
-		imgElm.style.width = "auto" ;
-		if(imgElm.offsetWidth > 130){  
-			imgElm.style.width = "130px" ;
-		}
-		if(imgElm.offsetHeight > 150){  
-			imgElm.style.height = "150px" ;
-		}
-	}
-};
 
 UIForumPortlet.prototype.controlWorkSpace = function() {
 	var slidebar = document.getElementById('ControlWorkspaceSlidebar');
@@ -627,10 +604,12 @@ UIForumPortlet.prototype.setSizeImages = function(delta, classParant) {
 	    if(max_width > 600) max = 600;
 	    var images_ =  imageContentContainer.getElementsByTagName("img");
 	    for(var i=0; i<images_.length; i++){
+	      var className = String(images_[i].className);
+	      if (className.indexOf("ImgAvatar") >= 0 || className.indexOf("AttachImage") >= 0) {
+	        continue;
+	      }
 	    	var img =  new Image();
 	      img.src = images_[i].src;
-	      if(images_[i].className === "ImgAvatar") continue ;
-	      if(images_[i].className === "AttachImage") continue ;
 			  if(img.width > max) {
 					images_[i].style.width= max + "px" ;
 					images_[i].style.height = "auto" ;
@@ -674,7 +653,7 @@ UIForumPortlet.prototype.resetFielForm = function(idElm) {
 UIForumPortlet.prototype.RightClickBookMark = function(elmId) {
 	var ancestor= document.getElementById(elmId);
 	var DOMUtil = eXo.core.DOMUtil ;
-	var popupContents= DOMUtil.findDescendantsByClass(ancestor, "div","ClickPopupContent");
+	var popupContents= DOMUtil.findDescendantsByClass(ancestor, "ul","ClickPopupContent");
 	if(popupContents == null) return;
 	var popupContainer = document.getElementById('RightClickContainer') ;
 	if(popupContainer == null) return;
@@ -777,7 +756,7 @@ UIForumPortlet.prototype.initScroll = function() {
 ScrollManager.prototype.loadItems = function(elementClass, clean) {
 	if (clean) this.cleanElements();
 	this.elements.clear();
-	var items = eXo.core.DOMUtil.findDescendantsByClass(this.mainContainer, "div", elementClass);
+	var items = eXo.core.DOMUtil.findDescendantsByClass(this.mainContainer, "li", elementClass);
 	for(var i = 0; i < items.length; i++){
 		this.elements.push(items[i]);
 	}
@@ -789,8 +768,8 @@ UIForumPortlet.prototype.loadTagScroll = function() {
   if(container) {
     uiNav.tagScrollMgr = eXo.portal.UIPortalControl.newScrollManager("TagContainer") ;
     uiNav.tagScrollMgr.initFunction = uiNav.initTagScroll ;
-    uiNav.tagScrollMgr.mainContainer = container.parentNode ;
-    uiNav.tagScrollMgr.arrowsContainer = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "ScrollButtons") ;
+    uiNav.tagScrollMgr.mainContainer = container ;
+    uiNav.tagScrollMgr.arrowsContainer = eXo.core.DOMUtil.findFirstDescendantByClass(container, "li", "ScrollButtons") ;
     uiNav.tagScrollMgr.loadItems("MenuItem",true) ;
     
     var button = eXo.core.DOMUtil.findDescendantsByTagName(uiNav.tagScrollMgr.arrowsContainer, "div");
@@ -809,13 +788,12 @@ UIForumPortlet.prototype.initTagScroll = function() {
 	var uiNav = eXo.forum.UIForumPortlet ;
 	//if(!uiNav.scrollManagerLoaded) uiNav.loadTagScroll() ;
 	var elements = uiNav.tagScrollMgr.elements ;
-	var menu = eXo.core.DOMUtil.findFirstDescendantByClass(uiNav.tagScrollMgr.arrowsContainer,"div","UIRightPopupMenuContainer") ;
+	var menu = eXo.core.DOMUtil.findFirstDescendantByClass(uiNav.tagScrollMgr.arrowsContainer,"ul","UIRightPopupMenuContainer") ;
 	var tmp = null;
 	uiNav.setTagContainerWidth(uiNav.tagScrollMgr.mainContainer);
 	uiNav.tagScrollMgr.init() ;
 	uiNav.tagScrollMgr.checkAvailableSpace() ;
-	var menuContainer = document.createElement("div");
-	menuContainer.className = "MenuTagContainer";
+	 
 	removeChildren(menu);
 	uiNav.tagScrollMgr.arrowsContainer.onmouseover = over;
 	uiNav.tagScrollMgr.arrowsContainer.onmouseout = out;
@@ -827,12 +805,12 @@ UIForumPortlet.prototype.initTagScroll = function() {
 			tmp = elements[i].cloneNode(true);
 			eXo.core.DOMUtil.replaceClass(tmp,"FloatLeft","TagItem");
 			tmp.style.display = "block";
-			menuContainer.appendChild(tmp)		
+			menu.appendChild(tmp);
 			elements[i].style.display = "none";
 			uiNav.tagScrollMgr.arrowsContainer.style.display = "block";	
 		}
 	}
-	menu.appendChild(menuContainer);	
+	
 	setPosition(menu);
 	function removeChildren(cont){
 		var firstChild = eXo.core.DOMUtil.findFirstChildByClass(cont,"div","MenuTagContainer")
@@ -950,44 +928,52 @@ UIForumPortlet.prototype.initContextMenu = function(id){
 UIForumPortlet.prototype.showBBCodeHelp = function(id, isIn){
 	var parentElm = document.getElementById(id);
 	var popupHelp = document.getElementById(id+"ID");
-	var bbCodeContentHelp = eXo.core.DOMUtil.findFirstDescendantByClass(parentElm,"div","BBCodeHelpContent");
-	if(bbCodeContentHelp){
+	if(parentElm){
+    parentElm.onmouseover = function() {
+      popupHelp.style.display = "block";
+    };
+    parentElm.onmouseout = function() {
+      popupHelp.style.display = 'none';
+    };
+
 		if(isIn == "true"){
-			bbCodeContentHelp.style.display = "block";
-			var bbCodeHelpPopup = eXo.core.DOMUtil.findFirstDescendantByClass(bbCodeContentHelp,"div","BBCodeHelpPopup");
-			var contentHelp = eXo.core.DOMUtil.findFirstDescendantByClass(parentElm,"div","ContentHelp");
-			var contentPosition = eXo.core.DOMUtil.findFirstDescendantByClass(bbCodeContentHelp,"div","ContentPosition");
+			popupHelp.style.display = "block";
+			var contentHelp = eXo.core.DOMUtil.findFirstDescendantByClass(popupHelp,"div","ContentHelp");
+			contentHelp.style.height = "auto";
 			var l = String(contentHelp.innerHTML).length;
 			if(l < 100){
-				contentHelp.style.width = (20 + l*4) + "px"
-				bbCodeContentHelp.style.width = (20 + l*4 + 54) + "px"
-				contentPosition.style.height = "auto";
+				contentHelp.style.width = (l*4) + "px"
+        contentHelp.style.height = "45px";
 			} else {
 				contentHelp.style.width = "400px"
-				bbCodeContentHelp.style.width = "454px"
-				contentPosition.style.height = (contentHelp.offsetHeight - 26) + "px";
+        if(l > 150) {
+          contentHelp.style.height = "auto";
+        } else {
+          contentHelp.style.height = "45px";
+        }
 			}
 			var parPopup = document.getElementById("UIForumPopupWindow");
 			var parPopup2 = document.getElementById("UIForumChildPopupWindow");
 			var left = 0;
-			var idField = String(id).replace("Help", "");
-			var field = document.getElementById(idField);
-			left = (parPopup.offsetLeft)*1 + (parPopup2.offsetLeft)*1 + field.offsetWidth + 135;
 			var worksPace = document.getElementById('UIWorkingWorkspace');
 			var worksPaceW = 1*1;
-			if(worksPace) worksPaceW = (worksPace.offsetWidth)*1;
-			if((left > contentHelp.offsetWidth) && ((left + bbCodeContentHelp.offsetWidth)  > worksPaceW)) {
-				bbCodeContentHelp.style.left = "-"  + (contentHelp.offsetWidth + 50) + "px";
-				popupHelp.className = "LeftBBCodeHelpPopup";
-			} else {
-				bbCodeContentHelp.style.left = "12px";
+			if(worksPace) {
+        worksPaceW = (worksPace.offsetWidth)*1;
+      } else {
+        worksPaceW = (document.getElementById('UIPortalApplication').offsetWidth)*1;
+      }
+			left = (parPopup.offsetLeft)*1 + (parPopup2.offsetLeft)*1 + parentElm.offsetLeft;
+			if(left+popupHelp.offsetWidth > worksPaceW) {
+				popupHelp.style.left = "-"  + (contentHelp.offsetWidth+22) + "px";
 				popupHelp.className = "RightBBCodeHelpPopup";
+			} else {
+				popupHelp.className = "LeftBBCodeHelpPopup";
+        popupHelp.style.left = "-2px";
 			}
 		} else {
-			bbCodeContentHelp.style.display = "none";
+			popupHelp.style.display = "none";
 		}
 	}
-	
 };
 
 UIForumPortlet.prototype.submitSearch = function(id){

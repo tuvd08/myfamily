@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.ks</groupId>
     <artifactId>exo.ks.eXoApplication.forum</artifactId>
-    <version>2.2.0-Beta2-SNAPSHOT</version>
+    <version>2.2.1-SNAPSHOT</version>
   </parent>
   <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
   <packaging>jar</packaging>
@@ -13,6 +13,7 @@
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>exo.ws.rest.core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
@@ -55,7 +56,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -166,7 +167,6 @@
       <version>${org.exoplatform.portal.version}</version>
       <scope>test</scope>
     </dependency>
-    
     <dependency>
       <groupId>jtidy</groupId>
       <artifactId>jtidy</artifactId>
@@ -175,17 +175,18 @@
     <dependency>
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    
-
-    
-     
-    
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>${org.hsqldb.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

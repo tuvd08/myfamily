@@ -23,8 +23,8 @@ import org.exoplatform.forum.ForumUtils;
 import org.exoplatform.forum.service.ForumAdministration;
 import org.exoplatform.forum.webui.BaseForumForm;
 import org.exoplatform.forum.webui.UIForumPortlet;
-import org.exoplatform.ks.common.Utils;
 import org.exoplatform.ks.common.webui.BaseEventListener;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -114,7 +114,7 @@ public class UINotificationForm extends BaseForumForm implements UIPopupComponen
       value = this.getLabel("EmailToAuthorMoved");
     UIFormWYSIWYGInput notifyEmailMoved = new UIFormWYSIWYGInput(FIELD_NOTIFYEMAILMOVED_TEXTAREA, FIELD_NOTIFYEMAILMOVED_TEXTAREA, ForumUtils.EMPTY_STR);
     notifyEmailMoved.setToolBarName("Basic");
-    notifyEmailMoved.setFCKConfig(Utils.getFCKConfig());
+    notifyEmailMoved.setFCKConfig(WebUIUtils.getFCKConfig());
     notifyEmailMoved.setValue(value);
     return notifyEmailMoved;
   }
@@ -125,7 +125,7 @@ public class UINotificationForm extends BaseForumForm implements UIPopupComponen
       value = this.getLabel("notifyEmailContentDefault");
     UIFormWYSIWYGInput notifyEmail = new UIFormWYSIWYGInput(FIELD_NOTIFYEMAIL_TEXTAREA, FIELD_NOTIFYEMAIL_TEXTAREA, ForumUtils.EMPTY_STR);
     notifyEmail.setToolBarName("Basic");
-    notifyEmail.setFCKConfig(Utils.getFCKConfig());
+    notifyEmail.setFCKConfig(WebUIUtils.getFCKConfig());
     notifyEmail.setValue(value);
     return notifyEmail;
   }

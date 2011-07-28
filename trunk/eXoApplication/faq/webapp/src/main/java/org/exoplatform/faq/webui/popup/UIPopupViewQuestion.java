@@ -16,20 +16,16 @@
  */
 package org.exoplatform.faq.webui.popup;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.download.DownloadService;
-import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.faq.rendering.RenderHelper;
 import org.exoplatform.faq.service.Answer;
 import org.exoplatform.faq.service.FAQService;
-import org.exoplatform.faq.service.FileAttachment;
 import org.exoplatform.faq.service.Question;
 import org.exoplatform.faq.service.QuestionLanguage;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.webui.BaseUIForm;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -107,7 +103,7 @@ public class UIPopupViewQuestion extends BaseUIForm implements UIPopupComponent 
   public String getImageUrl(String imagePath) throws Exception {
     String url = "";
     try {
-      url = org.exoplatform.ks.common.Utils.getImageUrl(imagePath);
+      url = CommonUtils.getImageUrl(imagePath);
     } catch (Exception e) {
       log.debug("Getting image url fail: ", e);
     }
@@ -143,32 +139,6 @@ public class UIPopupViewQuestion extends BaseUIForm implements UIPopupComponent 
       result = size + "." + residual + " " + sizes[i];
     }
     return result;
-  }
-
-  private String getFileSource(InputStream input, String fileName, DownloadService dservice) throws Exception {
-    byte[] imageBytes = null;
-    if (input != null) {
-      imageBytes = new byte[input.available()];
-      input.read(imageBytes);
-      ByteArrayInputStream byteImage = new ByteArrayInputStream(imageBytes);
-      InputStreamDownloadResource dresource = new InputStreamDownloadResource(byteImage, "image");
-      dresource.setDownloadName(fileName);
-      return dservice.getDownloadLink(dservice.addDownloadResource(dresource));
-    }
-    return null;
-  }
-
-  @SuppressWarnings("unused")
-  private String getFileSource(FileAttachment attachment) throws Exception {
-    DownloadService dservice = getApplicationComponent(DownloadService.class);
-    try {
-      InputStream input = attachment.getInputStream();
-      String fileName = attachment.getName();
-      return getFileSource(input, fileName, dservice);
-    } catch (Exception e) {
-      log.error("Can not get File Source, exception: " + e.getMessage());
-      return null;
-    }
   }
 
   public void activate() throws Exception {

@@ -38,10 +38,12 @@ import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.forum.service.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.BaseEventListener;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
+import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.resources.LocaleConfig;
 import org.exoplatform.services.resources.LocaleConfigService;
@@ -263,7 +265,7 @@ public class UIQuestionForm extends BaseUIFAQForm implements UIPopupComponent {
     }
 
     inputQuestionDetail = new UIFormWYSIWYGInput(QUESTION_DETAIL, QUESTION_DETAIL, "");
-    inputQuestionDetail.setFCKConfig(org.exoplatform.ks.common.Utils.getFCKConfig());
+    inputQuestionDetail.setFCKConfig(WebUIUtils.getFCKConfig());
     inputQuestionDetail.setToolBarName("Basic");
     if (!questionContents_.isEmpty()) {
       String input = questionContents_.get(0);
@@ -505,7 +507,7 @@ public class UIQuestionForm extends BaseUIFAQForm implements UIPopupComponent {
     public void onEvent(Event<UIQuestionForm> event, UIQuestionForm questionForm, String objectId) throws Exception {
       try {
         boolean isNew = true;
-        Date date = FAQUtils.getInstanceTempCalendar().getTime();
+        Date date = org.exoplatform.faq.service.Utils.getInstanceTempCalendar().getTime();
         String author = questionForm.inputAuthor.getValue();
         String emailAddress = questionForm.inputEmailAddress.getValue();
         String questionContent = questionForm.inputQuestionContent.getValue();
@@ -532,26 +534,22 @@ public class UIQuestionForm extends BaseUIFAQForm implements UIPopupComponent {
           return;
         }
 
-        if (language.equals(questionForm.defaultLanguage_)) {
-          if (questionContent == null) {
-            warning("UIQuestionForm.msg.default-question-null");
-            return;
-          }
-        } else {
-          if (questionForm.mapLanguage.isEmpty() || questionForm.mapLanguage.get(questionForm.getDefaultLanguage()) == null) {
-            warning("UIQuestionForm.msg.default-question-null");
-            return;
+        if (!language.equals(questionForm.defaultLanguage_)) {
+          if(questionForm.mapLanguage.isEmpty() || questionForm.mapLanguage.get(questionForm.getDefaultLanguage()) == null) {
+            warning("UIQuestionForm.msg.default-question-null") ;
+            return ;
           }
         }
 
         String questionDetail = questionForm.inputQuestionDetail.getValue();
-        if (!ValidatorDataInput.fckContentIsNotEmpty(questionDetail))
-          questionDetail = " ";
-        if (!ValidatorDataInput.fckContentIsNotEmpty(questionContent)) {
-          if (questionForm.mapLanguage.containsKey(language)) {
-            questionForm.mapLanguage.get(language).setState(QuestionLanguage.DELETE);
+        if(!ValidatorDataInput.fckContentIsNotEmpty(questionDetail)) questionDetail = " ";
+        if(!ValidatorDataInput.fckContentIsNotEmpty(questionContent)){
+          if( questionForm.mapLanguage.containsKey(language)){
+            questionForm.mapLanguage.get(language).setState(QuestionLanguage.DELETE) ;
           }
         }
+        questionDetail = CommonUtils.encodeSpecialCharInContent(questionDetail);
+        questionContent = CommonUtils.encodeSpecialCharInTitle(questionContent);
 
         Question question = questionForm.getQuestion();
 
@@ -684,7 +682,8 @@ public class UIQuestionForm extends BaseUIFAQForm implements UIPopupComponent {
     public void execute(Event<UIQuestionForm> event) throws Exception {
       UIQuestionForm questionForm = event.getSource();
       UIPopupContainer popupContainer = questionForm.getAncestorOfType(UIPopupContainer.class);
-      UIAttachMentForm attachMentForm = questionForm.openPopup(popupContainer, UIAttachMentForm.class, 550, 0);
+      UIAttachmentForm attachMentForm = questionForm.openPopup(popupContainer, UIAttachmentForm.class, 550, 0);
+      attachMentForm.setIsChangeAvatar(false);
       attachMentForm.setNumberUpload(5);
     }
   }

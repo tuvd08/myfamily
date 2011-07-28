@@ -28,6 +28,7 @@ import org.exoplatform.forum.service.ForumSearch;
 import org.exoplatform.forum.service.TopicType;
 import org.exoplatform.forum.service.UserProfile;
 import org.exoplatform.forum.service.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.ks.common.UserHelper;
 import org.exoplatform.ks.common.webui.UIPopupAction;
 import org.exoplatform.ks.common.webui.UIPopupContainer;
@@ -201,14 +202,9 @@ public class UISearchForm extends BaseForumForm implements UISelector {
   }
 
   public void initDefaultContent() throws Exception {
-    List<SelectItemOption<String>> list = new ArrayList<SelectItemOption<String>>();
-    list.add(new SelectItemOption<String>(getLabel("Category"), Utils.CATEGORY));
-    list.add(new SelectItemOption<String>(getLabel("Forum"), Utils.FORUM));
-    list.add(new SelectItemOption<String>(getLabel("Topic"), Utils.TOPIC));
-    list.add(new SelectItemOption<String>(getLabel("Post"), Utils.POST));
-    this.getUIFormSelectBox(FIELD_SEARCHTYPE_SELECTBOX).setOptions(list);
+    getUIFormSelectBox(FIELD_SEARCHTYPE_SELECTBOX).setOptions(optionsType(0));
 
-    list = new ArrayList<SelectItemOption<String>>();
+    List<SelectItemOption<String>> list = new ArrayList<SelectItemOption<String>>();
     list.add(new SelectItemOption<String>(getLabel("Full"), "entire"));
     list.add(new SelectItemOption<String>(getLabel("Titles"), "title"));
     UIFormRadioBoxInput boxInput = this.getUIFormRadioBoxInput(FIELD_SCOPE_RADIOBOX).setOptions(list);
@@ -253,6 +249,23 @@ public class UISearchForm extends BaseForumForm implements UISelector {
 
   public void setPath(String path) {
     this.path = path;
+    if(ForumUtils.isEmpty(path)) setOptionsType(0);
+    else if(path.indexOf(Utils.TOPIC) > 0) setOptionsType(3);
+    else if(path.indexOf(Utils.CATEGORY) > 0) setOptionsType(1);
+    else if(path.indexOf(Utils.FORUM) > 0) setOptionsType(2);
+  }
+  
+  private  List<SelectItemOption<String>> optionsType(int type) {
+    List<SelectItemOption<String>> list = new ArrayList<SelectItemOption<String>>();
+    if(type == 0)list.add(new SelectItemOption<String>(getLabel("Category"), Utils.CATEGORY));
+    if(type <= 1)list.add(new SelectItemOption<String>(getLabel("Forum"), Utils.FORUM));
+    if(type <= 2)list.add(new SelectItemOption<String>(getLabel("Topic"), Utils.TOPIC));
+    if(type <= 3)list.add(new SelectItemOption<String>(getLabel("Post"), Utils.POST));
+    return list;
+  }
+  
+  private void setOptionsType(int type) {
+    getUIFormSelectBox(FIELD_SEARCHTYPE_SELECTBOX).setOptions(optionsType(0));
   }
 
   private void setTopicType() throws Exception {
@@ -356,17 +369,7 @@ public class UISearchForm extends BaseForumForm implements UISelector {
       UISearchForm uiForm = event.getSource();
       Log log = ExoLogger.getLogger(SearchActionListener.class);
       String keyValue = uiForm.getUIStringInput(FIELD_SEARCHVALUE_INPUT).getValue();
-      if (!ForumUtils.isEmpty(keyValue)) {
-        String special = "\\,.?!`~/][)(;#@$%^&*<>-_+=|:\"'";
-        for (int i = 0; i < special.length(); i++) {
-          char c = special.charAt(i);
-          if (keyValue.indexOf(c) >= 0) {
-            UIApplication uiApp = uiForm.getAncestorOfType(UIApplication.class);
-            uiApp.addMessage(new ApplicationMessage("UIQuickSearchForm.msg.failure", null, ApplicationMessage.WARNING));
-            return;
-          }
-        }
-      }
+      keyValue = CommonUtils.encodeSpecialCharInSearchTerm(keyValue);
       String type = uiForm.getUIFormSelectBox(FIELD_SEARCHTYPE_SELECTBOX).getValue();
       String topicType = uiForm.getUIFormSelectBox(FIELD_TOPICTYPE_SELECTBOX).getValue();
 
@@ -433,13 +436,13 @@ public class UISearchForm extends BaseForumForm implements UISelector {
       eventQuery.setValueIn(valueIn);
       eventQuery.setTopicType(topicType);
       eventQuery.setPath(uiForm.path);
-      eventQuery.setByUser(byUser);
+      eventQuery.setByUser(CommonUtils.encodeSpecialCharInSearchTerm(byUser));
       eventQuery.setIsLock(isLock);
       eventQuery.setIsClose(isClosed);
       eventQuery.setTopicCountMin(uiForm.checkValue(topicCountMin));
       eventQuery.setPostCountMin(uiForm.checkValue(postCountMin));
       eventQuery.setViewCountMin(uiForm.checkValue(viewCountMin));
-      eventQuery.setModerator(moderator);
+      eventQuery.setModerator(CommonUtils.encodeSpecialCharInSearchTerm(moderator));
       eventQuery.setFromDateCreated(fromDateCreated);
       eventQuery.setToDateCreated(toDateCreated);
       eventQuery.setFromDateCreatedLastPost(fromDateCreatedLastPost);
@@ -473,7 +476,7 @@ public class UISearchForm extends BaseForumForm implements UISelector {
       UICategories categories = categoryContainer.getChild(UICategories.class);
       categories.setIsRenderChild(true);
       UIForumListSearch listSearchEvent = categories.getChild(UIForumListSearch.class);
-      listSearchEvent.setListSearchEvent(list);
+      listSearchEvent.setListSearchEvent(list, ForumUtils.FIELD_SEARCHFORUM_LABEL+type);
       forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(ForumUtils.FIELD_EXOFORUM_LABEL);
       event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
     }
@@ -515,11 +518,7 @@ public class UISearchForm extends BaseForumForm implements UISelector {
     public void execute(Event<UISearchForm> event) throws Exception {
       UISearchForm uiForm = event.getSource();
       UIForumPortlet forumPortlet = uiForm.getParent();
-      forumPortlet.updateIsRendered(ForumUtils.CATEGORIES);
-      UICategoryContainer categoryContainer = forumPortlet.getChild(UICategoryContainer.class);
-      categoryContainer.updateIsRender(true);
-      categoryContainer.getChild(UICategories.class).setIsRenderChild(false);
-      forumPortlet.getChild(UIBreadcumbs.class).setUpdataPath(Utils.FORUM_SERVICE);
+      forumPortlet.rederForumHome();
       event.getRequestContext().addUIComponentToUpdateByAjax(forumPortlet);
     }
   }
