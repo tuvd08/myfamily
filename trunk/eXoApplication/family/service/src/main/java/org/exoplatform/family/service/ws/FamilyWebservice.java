@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.family.service.FamilyService;
-import org.exoplatform.family.service.Utils;
+import org.exoplatform.ks.common.CommonUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -33,7 +33,7 @@ public class FamilyWebservice implements ResourceContainer {
     cacheControl.setNoCache(true);
     cacheControl.setNoStore(true);
     FamilyService familyService = (FamilyService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(FamilyService.class);
-    if (!Utils.isEmpty(familyId)) {
+    if (!CommonUtils.isEmpty(familyId)) {
       try {
        
       } catch (Exception e) {

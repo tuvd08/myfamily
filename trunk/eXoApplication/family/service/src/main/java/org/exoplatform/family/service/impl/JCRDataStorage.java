@@ -79,7 +79,24 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
   	return null;
   }
   
-  
+  private Node getNode(Node nodeApp, String ids) throws Exception {
+    Node node = null;
+    if(ids.indexOf("/") < 0) node = nodeApp.addNode(ids);
+    else {
+      String []ar = ids.split("/");
+      for (int i = 0; i < ar.length; i++) {
+        try {
+          node = nodeApp.getNode(ar[i]);
+        } catch (PathNotFoundException e) {
+          node = nodeApp.addNode(ar[i], NT_UNSTRUCTURED);
+        }
+        nodeApp = node;
+      }
+      if(nodeApp.isNew()) nodeApp.getSession().save();
+      else nodeApp.getParent().save();
+    }
+    return node;
+  }
   
 	public Family getFamily(String familyId) throws Exception {
 		SessionProvider sProvider = SessionProvider.createSystemProvider();
@@ -154,25 +171,6 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 		return family;
 	}
 
-	private Node getNode(Node nodeApp, String ids) throws Exception {
-		Node node = null;
-		if(ids.indexOf("/") < 0) node = nodeApp.addNode(ids);
-		else {
-			String []ar = ids.split("/");
-			for (int i = 0; i < ar.length; i++) {
-				try {
-					node = nodeApp.getNode(ar[i]);
-				} catch (PathNotFoundException e) {
-					node = nodeApp.addNode(ar[i], NT_UNSTRUCTURED);
-				}
-				nodeApp = node;
-			}
-			if(nodeApp.isNew()) nodeApp.getSession().save();
-			else nodeApp.getParent().save();
-		}
-		return node;
-	}
-	
 	public void saveFamily(Family family, boolean isNew) throws Exception {
 		SessionProvider sProvider = SessionProvider.createSystemProvider();
 		try {

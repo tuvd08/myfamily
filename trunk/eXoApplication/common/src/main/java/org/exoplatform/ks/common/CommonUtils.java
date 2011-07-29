@@ -24,6 +24,7 @@ import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.internet.AddressException;
@@ -248,6 +249,16 @@ public class CommonUtils {
     return true;
   }
 
+  public static boolean isEmpty(List<String> list) {
+    if (list == null || list.size() <= 0)
+      return true;
+    for (String string : list) {
+      if (!isEmpty(string))
+        return false;
+    }
+    return true;
+  }
+  
   /**
    * Encode special character, use for input search
    * @param String s, the string input
