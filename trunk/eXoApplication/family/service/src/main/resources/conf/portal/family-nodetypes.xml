@@ -1,6 +1,6 @@
 <nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
 
-	<nodeType name="exo:famylyAttachment" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+	<nodeType name="exo:familyAttachment" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
 		<supertypes>
 			<supertype>nt:file</supertype>
 		</supertypes>
@@ -30,9 +30,9 @@
 			</propertyDefinition>
 		</propertyDefinitions>
 		<childNodeDefinitions>
-			<childNodeDefinition name="*" defaultPrimaryType="exo:famylyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
 				<requiredPrimaryTypes>
-					<requiredPrimaryType>exo:famylyAttachment</requiredPrimaryType>
+					<requiredPrimaryType>exo:familyAttachment</requiredPrimaryType>
 				</requiredPrimaryTypes>
 			</childNodeDefinition>
 		</childNodeDefinitions>
@@ -112,15 +112,15 @@
 			<propertyDefinition name="exo:citeDate" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
 				<valueConstraints />
 			</propertyDefinition>
-			<propertyDefinition name="exo:citeNote" requiredType="Date" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
+			<propertyDefinition name="exo:citeNote" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="true">
 				<valueConstraints />
 			</propertyDefinition>
 			<propertyDefinition name="exo:citeAllValues" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
 				<valueConstraints />
 			</propertyDefinition>
-			<propertyDefinition name="exo:note" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+			<!--propertyDefinition name="exo:note" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
 				<valueConstraints />
-			</propertyDefinition>
+			</propertyDefinition -->
 		</propertyDefinitions>
 	</nodeType>
 
@@ -172,9 +172,9 @@
 			</propertyDefinition>
 		</propertyDefinitions>
 		<childNodeDefinitions>
-			<childNodeDefinition name="*" defaultPrimaryType="exo:famylyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
+			<childNodeDefinition name="*" defaultPrimaryType="exo:familyAttachment" autoCreated="false" mandatory="false" onParentVersion="VERSION" protected="false" sameNameSiblings="false">
 				<requiredPrimaryTypes>
-					<requiredPrimaryType>exo:famylyAttachment</requiredPrimaryType>
+					<requiredPrimaryType>exo:familyAttachment</requiredPrimaryType>
 				</requiredPrimaryTypes>
 			</childNodeDefinition>
 		</childNodeDefinitions>

@@ -88,7 +88,7 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
         try {
           node = nodeApp.getNode(ar[i]);
         } catch (PathNotFoundException e) {
-          node = nodeApp.addNode(ar[i], NT_UNSTRUCTURED);
+          node = nodeApp.addNode(ar[i], JCRTYPE.NT_UNSTRUCTURED);
         }
         nodeApp = node;
       }
@@ -110,8 +110,8 @@ public class JCRDataStorage implements	DataStorage, FamilyNodeTypes {
 
 	private Node getNodeById(SessionProvider sProvider, String familyId) throws Exception {
 		QueryManager qm = getSession(sProvider).getWorkspace().getQueryManager();
-		StringBuffer queryString = new StringBuffer(JCR_ROOT);
-		queryString.append("//element(*,").append(EXO_POLL).append(")").append("[fn:name() = '").append(familyId).append("']");
+		StringBuffer queryString = new StringBuffer(JCRTYPE.JCR_ROOT);
+		queryString.append("//element(*,").append(EXO_FAMILY).append(")").append("[fn:name() = '").append(familyId).append("']");
 		Query query = qm.createQuery(queryString.toString(), Query.XPATH);
 		QueryResult result = query.execute();
 		NodeIterator iter = result.getNodes();
