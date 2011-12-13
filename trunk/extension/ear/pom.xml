@@ -22,11 +22,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.ext.social-integration</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.eXoApplication.common</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -223,11 +218,6 @@
             <jarModule>
               <groupId>com.google.gwt</groupId>
               <artifactId>gwt-servlet</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <jarModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.ext.social-integration</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
           </modules>

@@ -54,8 +54,6 @@ import org.exoplatform.ks.common.webui.UIPopupContainer;
 import org.exoplatform.ks.common.webui.WebUIUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiApplication;
@@ -212,32 +210,11 @@ public class UIForumPortlet extends UIPortletApplication {
       return;
 
     if (url.equals(old)) {
-      if (getForumIdOfSpace() != null)
-        url = getForumIdOfSpace();
-      else
         return;
     }
 
     calculateRenderComponent(url, context);
     context.addUIComponentToUpdateByAjax(this);
-  }
-
-  private String getForumIdOfSpace() {
-
-    try {
-      PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-      PortletPreferences pref = pcontext.getRequest().getPreferences();
-      if (pref.getValue("SPACE_URL", null) != null) {
-        String url = pref.getValue("SPACE_URL", null);
-        SpaceService sService = (SpaceService) PortalContainer.getInstance().getComponentInstanceOfType(SpaceService.class);
-        Space space = sService.getSpaceByUrl(url);
-        String forumId = Utils.FORUM_SPACE_ID_PREFIX + space.getId();
-        return forumId;
-      }
-      return null;
-    } catch (Exception e) {
-      return null;
-    }
   }
 
   public void updateIsRendered(String selected) throws Exception {

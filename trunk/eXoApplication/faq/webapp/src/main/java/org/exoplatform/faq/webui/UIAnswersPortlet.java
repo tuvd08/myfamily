@@ -19,16 +19,9 @@ package org.exoplatform.faq.webui;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.faq.service.FAQService;
 import org.exoplatform.faq.service.FAQSetting;
-import org.exoplatform.faq.service.Utils;
 import org.exoplatform.faq.webui.popup.UISettingForm;
 import org.exoplatform.ks.common.webui.UIPopupAction;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -68,28 +61,6 @@ public class UIAnswersPortlet extends UIPortletApplication {
     uiPopup.setId("UIAnswersPopupAction");
     uiPopup.getChild(UIPopupWindow.class).setId("UIAnswersPopupWindow");
   }
-
-  public String getSpaceCategoryId() {
-
-    try {
-      PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-      PortletPreferences pref = pcontext.getRequest().getPreferences();
-      if (pref.getValue("SPACE_URL", null) != null) {
-        String url = pref.getValue("SPACE_URL", null);
-        SpaceService sService = (SpaceService) PortalContainer.getInstance().getComponentInstanceOfType(SpaceService.class);
-        Space space = sService.getSpaceByUrl(url);
-        String categoryId = Utils.CATE_SPACE_ID_PREFIX + space.getId();
-        FAQService fService = (FAQService) PortalContainer.getInstance().getComponentInstanceOfType(FAQService.class);
-        if (fService.getCategoryById(categoryId) != null)
-          return categoryId;
-      }
-      return null;
-    } catch (Exception e) {
-      return null;
-    }
-
-  }
-
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
     if (portletReqContext.getApplicationMode() == PortletMode.VIEW) {
@@ -101,7 +72,6 @@ public class UIAnswersPortlet extends UIPortletApplication {
         }
         addChild(UIAnswersContainer.class, null, null);
       }
-      renderPortletById();
     } else if (portletReqContext.getApplicationMode() == PortletMode.EDIT) {
       try {
         changeModeMessage.setValue(context.getApplicationResourceBundle().getString("UIAnswersPortlet.label.deny-access-edit-mode"));
@@ -128,24 +98,6 @@ public class UIAnswersPortlet extends UIPortletApplication {
     }
 
     super.processRender(app, context);
-  }
-
-  private void renderPortletById() throws Exception {
-    try {
-      String cateId = getSpaceCategoryId();
-      PortalRequestContext context = Util.getPortalRequestContext();
-      if (!FAQUtils.isFieldEmpty(cateId) && context.getRequestParameter(OBJECTID) == null && !("true".equals("" + context.getRequestParameter("ajaxRequest")))) {
-        UIBreadcumbs uiBreadcums = findFirstComponentOfType(UIBreadcumbs.class);
-        UIQuestions uiQuestions = findFirstComponentOfType(UIQuestions.class);
-        UICategories categories = findFirstComponentOfType(UICategories.class);
-        uiBreadcums.setUpdataPath(Utils.CATEGORY_HOME + "/" + cateId);
-        uiBreadcums.setRenderSearch(true);
-        uiQuestions.setCategoryId(Utils.CATEGORY_HOME + "/" + cateId);
-        categories.setPathCategory(Utils.CATEGORY_HOME + "/" + cateId);
-      }
-    } catch (Exception e) {
-      log.error("can not render the selected category", e);
-    }
   }
 
   public void renderPopupMessages() throws Exception {
