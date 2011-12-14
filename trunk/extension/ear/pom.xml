@@ -27,39 +27,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.faq.service</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.faq.webapp</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.forum.webapp</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.poll.service</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
-      <artifactId>exo.ks.eXoApplication.poll.webapp</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ks</groupId>
       <artifactId>exo.ks.eXoApplication.family.service</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -150,39 +117,6 @@
               <artifactId>exo.ks.eXoApplication.common</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
-            <jarModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.faq.service</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <webModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.faq.webapp</artifactId>
-              <contextRoot>faq</contextRoot>
-              <bundleFileName>faq.war</bundleFileName>
-            </webModule>
-            <jarModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.forum.service</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <webModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.forum.webapp</artifactId>
-              <contextRoot>forum</contextRoot>
-              <bundleFileName>forum.war</bundleFileName>
-            </webModule>
-            <jarModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.poll.service</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <webModule>
-              <groupId>org.exoplatform.ks</groupId>
-              <artifactId>exo.ks.eXoApplication.poll.webapp</artifactId>
-              <contextRoot>poll</contextRoot>
-              <bundleFileName>poll.war</bundleFileName>
-            </webModule>
             <jarModule>
               <groupId>org.exoplatform.ks</groupId>
               <artifactId>exo.ks.eXoApplication.family.service</artifactId>

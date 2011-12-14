@@ -46,10 +46,7 @@ function getProduct(version) {
   product.addDependencies(ks.component.rendering);
   product.addDependencies(ks.component.bbcode);
   product.addDependencies(ks.eXoApplication.common);
-  product.addDependencies(ks.eXoApplication.faq);
-  product.addDependencies(ks.eXoApplication.forum);
   product.addDependencies(ks.eXoApplication.family);
-  product.addDependencies(ks.eXoApplication.poll);
   product.addDependencies(ks.web.ksResources);  
   product.addDependencies(ks.extension.webapp);
 
@@ -59,7 +56,6 @@ function getProduct(version) {
   product.addDependencies(ks.demo.rest);
   
   product.addServerPatch("tomcat", ks.server.tomcat.patch) ;
-  //product.addServerPatch("jboss",  ks.server.jboss.patch) ;
   product.addServerPatch("jbossear",  ks.server.jboss.patchear) ;
 
   /* cleanup duplicated lib */

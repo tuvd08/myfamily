@@ -34,9 +34,6 @@
 	      <values-param>
 	        <name>autoCreatedInNewRepository</name>
 	        <description>Node types configuration file</description>
-	        <value>jar:/conf/portal/forum-nodetypes.xml</value>
-	        <value>jar:/conf/portal/faq-nodetypes.xml</value>
-	        <value>jar:/conf/portal/poll-nodetypes.xml</value>
 	        <value>jar:/conf/portal/family-nodetypes.xml</value>
 	      </values-param>
 	    </init-params>

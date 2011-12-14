@@ -37,30 +37,11 @@ function getModule(params) {
   module.eXoApplication = {};
   module.eXoApplication.common = new Project("org.exoplatform.ks", "exo.ks.eXoApplication.common", "jar", module.version);
   
-  // FAQ
-  module.eXoApplication.faq =
-    new Project("org.exoplatform.ks", "exo.ks.eXoApplication.faq.webapp", "war", module.version).
-    addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.faq.service", "jar",  module.version));
-  module.eXoApplication.faq.deployName = "faq";
-
-  // FORUM
-  module.eXoApplication.forum = 
-    new Project("org.exoplatform.ks", "exo.ks.eXoApplication.forum.webapp", "war", module.version).
-    addDependency(ws.frameworks.json).
-    addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.forum.service", "jar",  module.version));
-  module.eXoApplication.forum.deployName = "forum";
-
   //FAMILY
   module.eXoApplication.family = 
     new Project("org.exoplatform.ks", "exo.ks.eXoApplication.family.webapp", "war", module.version).
     addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.family.service", "jar",  module.version));
   module.eXoApplication.family.deployName = "family";
-
-  // POLL
-  module.eXoApplication.poll = 
-    new Project("org.exoplatform.ks", "exo.ks.eXoApplication.poll.webapp", "war", module.version) .
-    addDependency(new Project("org.exoplatform.ks", "exo.ks.eXoApplication.poll.service", "jar",  module.version));
-  module.eXoApplication.poll.deployName = "poll";
 
   // KS we resources and services
   module.web = {}
