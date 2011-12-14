@@ -1,7 +1,8 @@
 package org.exoplatform.ks.common.jcr;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -10,14 +11,12 @@ import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.Value;
 
-
 /**
- * Created by the Yen Tu
- * Author : Vu Duy Tu
- *          duytucntt@gmail.com
- * 10:13:28 PM-Apr 4, 2011  
+ * A simple util wrapper to read JCR Nodes properties easily.
+ * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
+ * @version $Revision$
+ *
  */
-
 public class PropertyReader {
 
   Node node = null;
@@ -58,18 +57,6 @@ public class PropertyReader {
     return string(name, null);
   }
 
-  public Calendar calendar(String name) {
-    return calendar(name, null);
-  }
-
-  public Calendar calendar(String name, Calendar defaultValue) {
-    try {
-      return node.getProperty(name).getDate();
-    } catch (Exception e) {
-      return defaultValue;
-    }
-  }
-
   public Date date(String name) {
     return date(name, null);
   }
@@ -91,6 +78,14 @@ public class PropertyReader {
       return node.getProperty(name).getBoolean();
     } catch (Exception e) {
       return defaultValue;
+    }
+  }
+  
+  public InputStream stream(String name) {
+    try {
+      return node.getProperty(name).getStream();
+    } catch (Exception e) {
+      return new ByteArrayInputStream("".getBytes());
     }
   }
 
@@ -154,4 +149,30 @@ public class PropertyReader {
     return list;
   }
 
+  public Object readProperty(String propertyName, Class returnedType) {
+    Object value = null;
+    if (returnedType.isArray()) {
+      if (returnedType.equals(String[].class)) {
+        value = strings(propertyName);
+      } else {
+        throw new UnsupportedOperationException("Couldn't cast " + returnedType.getName() + " to String[]!");
+      }
+    } else {
+      if (returnedType == Boolean.class) {
+        value = bool(propertyName);
+      } else if (returnedType == Date.class) {
+        value = date(propertyName);
+      } else if (returnedType == Double.class) {
+        value = d(propertyName);
+      } else if (returnedType == Long.class) {
+        value = l(propertyName);
+      } else if (returnedType == String.class) {
+        value = string(propertyName);
+      } else {
+        throw new UnsupportedOperationException(returnedType.getName() + " is not supported in return value.");
+      }
+    }     
+    return value;
+  }
+  
 }
