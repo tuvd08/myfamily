@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
@@ -30,6 +30,9 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.organization.impl.GroupImpl;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.MembershipEntry;
 
 /**
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
@@ -38,7 +41,8 @@ import org.exoplatform.services.organization.impl.GroupImpl;
 public class UserHelper {
   
   public static OrganizationService getOrganizationService() {
-    OrganizationService organizationService = (OrganizationService) PortalContainer.getComponent(OrganizationService.class);
+    OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
+                                                                                       .getComponentInstanceOfType(OrganizationService.class);
     return organizationService;
   }
   
@@ -185,23 +189,41 @@ public class UserHelper {
     return getOrganizationService().getMembershipHandler().findMembershipsByUser(userId);
   }
 
+  /**
+   * 
+   * @param userId username
+   * @return list of groups an user belong, and memberships of the user in each group. If userId is null, groups and memberships of the current
+   * user will be returned.
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
-  public static List<String> getAllGroupAndMembershipOfUser(String userId) throws Exception{
+  public static List<String> getAllGroupAndMembershipOfUser(String userId) throws Exception {
     List<String> listOfUser = new ArrayList<String>();
     if (userId == null) {
-      return listOfUser; // should we throw an IllegalArgumentException instead ?
-    }
-
-    listOfUser.add(userId); //himself
-    String value = "";
-    Collection<Membership> memberships = findMembershipsByUser(userId);
-    for (Membership membership : memberships) {
-       value = membership.getGroupId();
+      ConversationState conversionState = ConversationState.getCurrent();
+      Identity identity = conversionState.getIdentity();
+      userId = identity.getUserId();
+      if (userId != null) {
+        listOfUser.add(userId);
+        String value = "";
+        for (MembershipEntry membership : identity.getMemberships()) {
+          value = membership.getGroup();
+          listOfUser.add(value); // its groups
+          value = membership.getMembershipType() + ":" + value;
+          listOfUser.add(value); // its memberships
+        }
+      }
+    } else {
+      listOfUser.add(userId); // himself
+      String value = "";
+      Collection<Membership> memberships = findMembershipsByUser(userId);
+      for (Membership membership : memberships) {
+        value = membership.getGroupId();
         listOfUser.add(value); // its groups
         value = membership.getMembershipType() + ":" + value;
-        listOfUser.add(value);  // its memberships
+        listOfUser.add(value); // its memberships
+      }
     }
-    
     return listOfUser;
   }
 

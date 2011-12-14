@@ -21,10 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.internet.AddressException;
@@ -44,6 +47,8 @@ import org.exoplatform.ks.rendering.MarkupRenderingService;
 import org.exoplatform.ks.rendering.api.Renderer;
 import org.exoplatform.ks.rendering.core.SupportedSyntaxes;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.quartz.JobExecutionContext;
@@ -57,17 +62,46 @@ import org.w3c.dom.Document;
 public class CommonUtils {
   private static Log log = ExoLogger.getLogger(CommonUtils.class);
   
-  public static final String COMMA     = ",".intern();
+  public static final String         COMMA        = ",".intern();
 
-  public static final String SLASH     = "/".intern();
+  public static final String         SLASH        = "/".intern();
 
-  public static final String EMPTY_STR = "".intern();
+  public static final String         EMPTY_STR    = "".intern();
 
-  public static final String COLON     = ":".intern();
+  public static final String         COLON        = ":".intern();
 
-  public static final String SEMICOLON = ";".intern();
+  public static final String         SEMICOLON    = ";".intern();
 
-  public static final String SPACE     = " ".intern();
+  public static final String         SPACE        = " ".intern();
+
+  public static final String         AMP_NUMBER   = "&#".intern();
+
+  public static final String         LESS_THAN    = "&lt;".intern();
+
+  public static final String         GREATER_THAN = "&gt;".intern();
+
+  public static final String         QUOT         = "&quot;".intern();
+
+  public static final String         AMP_SPACE    = "&nbsp;".intern();
+
+  public static final String         AMP_HEX      = "&#x26;".intern();
+
+  public static final String         AMP          = "&amp;".intern();
+
+  public static final String         DOMAIN_KEY   = "gatein.email.domain.url".intern();
+
+  public static final String         FROM_KEY     = "gatein.email.smtp.from".intern();
+
+  private static List<String>        tokens     = new ArrayList<String>();
+
+  private static Map<String, String> charcodes  = new HashMap<String, String>();
+  /*
+   *  The distance code number content special character.
+   *  Ex: from ' '(32) to '0'(48): ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/'
+   *  See: http://www.ascii.cl/htmlcodes.htm
+  */
+  private static int[] CHAR_CODES = new int[] { 48, 32, 65, 57, 97, 90, 127, 122, 39 };// '0', ' ', 'A', '9', 'a', 'Z', '~', 'z', '\''
+  
   
   static public String generateCheckSum(byte[] b) throws Exception {
     try{
@@ -173,7 +207,7 @@ public class CommonUtils {
     if (from == null)
       return null;
     Properties props = new Properties(System.getProperties());
-    String mailAddr = props.getProperty("gatein.email.smtp.from");
+    String mailAddr = props.getProperty(FROM_KEY);
     if (mailAddr == null || mailAddr.length() == 0)
       mailAddr = props.getProperty("mail.from");
     if (mailAddr != null) {
@@ -188,6 +222,12 @@ public class CommonUtils {
     } else {
       return null;
     }
+  }
+
+  public static String getDomainURL() {
+    Properties props = new Properties(System.getProperties());
+    String domain = props.getProperty(DOMAIN_KEY);
+    return isEmpty(domain) ? EMPTY_STR : domain;
   }
 
   public static String processBBCode(String s) {
@@ -249,16 +289,6 @@ public class CommonUtils {
     return true;
   }
 
-  public static boolean isEmpty(List<String> list) {
-    if (list == null || list.size() <= 0)
-      return true;
-    for (String string : list) {
-      if (!isEmpty(string))
-        return false;
-    }
-    return true;
-  }
-  
   /**
    * Encode special character, use for input search
    * @param String s, the string input
@@ -330,13 +360,6 @@ public class CommonUtils {
       return EMPTY_STR;
     }
     int i = 0;
-    /*
-     *  The distance code number content special character.
-     *  Ex: from ' '(32) to '0'(48): ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/'
-     *  See: http://www.ascii.cl/htmlcodes.htm
-    */
-    int[] charCodes = new int[] { 48, 32, 65, 57, 97, 90, 127, 122, 39 };// '0', ' ', 'A', '9', 'a', 'Z', '~', 'z', '\''
-    String apos = "&apos;", str1 = "&#", str2 = "&lt;", str3 = "&gt;";
     StringBuilder builder = new StringBuilder();
     while (i < s.length()) {
       char c = s.charAt(i);
@@ -344,17 +367,16 @@ public class CommonUtils {
         builder.append(c);
       } else {
         int t = s.codePointAt(i);
-        if (t == charCodes[8]) {
-          builder.append(apos);
-        } else if (t < charCodes[0] && t > charCodes[1] || t < charCodes[2] && t > charCodes[3] || t < charCodes[4] && t > charCodes[5] || t < charCodes[6] && t > charCodes[7]) {
+        if (t < CHAR_CODES[0] && t > CHAR_CODES[1] || t < CHAR_CODES[2] && t > CHAR_CODES[3] ||
+            t < CHAR_CODES[4] && t > CHAR_CODES[5] || t < CHAR_CODES[6] && t > CHAR_CODES[7]) {
           if (isTitle && (t == 60 || t == 62)) {
             if (t == 60) {
-              builder.append(str2);
+              builder.append(LESS_THAN);
             } else if (t == 62) {
-              builder.append(str3);
+              builder.append(GREATER_THAN);
             }
           } else {
-            builder.append(str1).append(t).append(SEMICOLON);
+            builder.append(AMP_NUMBER).append(t).append(SEMICOLON);
           }
         } else {
           builder.append(c);
@@ -365,6 +387,54 @@ public class CommonUtils {
     return builder.toString();
   }
 
+  public static String decodeSpecialCharToHTMLnumber(String s, List<String> lIgnore) {
+    if (isEmpty(s)){
+      return s;
+    }
+    getValueTokens();
+    for (String token : tokens) {
+      if (lIgnore.contains(token)){
+        continue;
+      }
+      while (s.indexOf(token) >= 0) {
+        s = StringUtils.replace(s, token, charcodes.get(token));
+      }
+    }
+    return s;
+  }
+  
+  private static void getValueTokens() {
+    if(tokens.size() <= 0) {
+      String token;
+      // Tokens by HTML(Decimal) code.
+      for (int t = Character.MIN_CODE_POINT; t < Character.MAX_CODE_POINT; t++) {
+        if (t < CHAR_CODES[0] && t > CHAR_CODES[1] || t < CHAR_CODES[2] && t > CHAR_CODES[3] || 
+            t < CHAR_CODES[4] && t > CHAR_CODES[5] || t < CHAR_CODES[6] && t > CHAR_CODES[7]) {
+          token = new StringBuilder(AMP_NUMBER).append(t).append(SEMICOLON).toString();
+          tokens.add(token);
+          charcodes.put(token, String.valueOf(Character.toChars(t)[0]));
+        }
+      }
+      // Tokens by Entity code.
+      tokens.add(LESS_THAN);
+      charcodes.put(LESS_THAN, ">");
+      tokens.add(GREATER_THAN);
+      charcodes.put(GREATER_THAN, "<");
+      tokens.add(QUOT);
+      charcodes.put(QUOT, "\"");
+      tokens.add(AMP_SPACE);
+      charcodes.put(AMP_SPACE, SPACE);
+      tokens.add(AMP_HEX);
+      charcodes.put(AMP_HEX, "&");
+      tokens.add(AMP);
+      charcodes.put(AMP, "&");
+    }
+  }
+
+  public static String decodeSpecialCharToHTMLnumber(String s) {
+    return decodeSpecialCharToHTMLnumber(s, new ArrayList<String>());
+  }
+  
   /**
    * Get current time GMT/Zulu or UTC,(zone time is 0+GMT)
    * @return Calendar 
@@ -376,4 +446,10 @@ public class CommonUtils {
     calendar.setTimeInMillis(System.currentTimeMillis() - gmtoffset);
     return calendar;
   }
+
+  public static SessionProvider createSystemProvider() {
+    SessionProviderService sessionProviderService = (SessionProviderService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);
+    return sessionProviderService.getSystemSessionProvider(null);
+  }
+
 }
