@@ -160,6 +160,11 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
+      <artifactId>exo.platform.commons.component.product</artifactId>
+      <version>${org.exoplatform.commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
       <artifactId>exo.platform.commons.comet.service</artifactId>
       <version>${org.exoplatform.commons.version}</version>
     </dependency>
@@ -182,6 +187,12 @@
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>exo.platform.commons.fck</artifactId>
+      <version>${org.exoplatform.commons.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>exo.platform.commons.extension.webapp</artifactId>
       <version>${org.exoplatform.commons.version}</version>
       <type>war</type>
     </dependency>
@@ -286,11 +297,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>gatein.portal.component.wsrp</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.starter.war</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>war</type>
@@ -300,6 +306,26 @@
       <groupId>org.exoplatform.tool</groupId>
       <artifactId>exo.tool.framework.junit</artifactId>
       <version>${exo.tool.framework.junit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jsecurity</groupId>
+      <artifactId>jsecurity</artifactId>
+      <version>${org.jsecurity.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>${ehcache.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel-api</artifactId>
+      <version>${juel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel-impl</artifactId>
+      <version>${juel.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -357,9 +383,9 @@
       <version>${xml-apis.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.quartz-scheduler</groupId>
+      <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
-      <version>${org.quartz-scheduler.version}</version>
+      <version>${quartz.version}</version>
     </dependency>
     <dependency>
       <groupId>picocontainer</groupId>
@@ -370,6 +396,21 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons-io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${org.apache.httpcomponents.httpclient.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${com.google.guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+      <version>${rome.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -422,7 +463,7 @@
     </dependency>
     <dependency>
       <groupId>org.gatein.wci</groupId>
-      <artifactId>wci-tomcat</artifactId>
+      <artifactId>wci-tomcat6</artifactId>
       <version>${org.gatein.wci.version}</version>
     </dependency>
 
@@ -520,6 +561,11 @@
       <groupId>org.jboss</groupId>
       <artifactId>jboss-common-core</artifactId>
       <version>${org.jboss.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jbossxb</artifactId>
+      <version>${org.jbossxb.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -679,17 +725,11 @@
       <artifactId>xercesImpl</artifactId>
       <version>${xerces.version}</version>
       <type>jar</type>
-    </dependency><!-- 2.9.1-->
-    <dependency>
-      <groupId>bouncycastle</groupId>
-      <artifactId>bcmail-jdk14</artifactId>
-      <version>${bouncycastle.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>bouncycastle</groupId>
-      <artifactId>bcprov-jdk14</artifactId>
-      <version>${bouncycastle.version}</version>
+    </dependency><!-- 2.9.1-->    
+	<dependency>
+      <groupId>caja</groupId>
+      <artifactId>json_simple</artifactId>
+      <version>${caja.version}</version>
       <type>jar</type>
     </dependency>
   </dependencies>
