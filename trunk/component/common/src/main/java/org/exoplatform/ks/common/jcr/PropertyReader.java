@@ -3,6 +3,7 @@ package org.exoplatform.ks.common.jcr;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -11,12 +12,14 @@ import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.Value;
 
+
 /**
- * A simple util wrapper to read JCR Nodes properties easily.
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
- * @version $Revision$
- *
+ * Created by the Yen Tu
+ * Author : Vu Duy Tu
+ *          duytucntt@gmail.com
+ * 10:13:28 PM-Apr 4, 2011  
  */
+
 public class PropertyReader {
 
   Node node = null;
@@ -55,6 +58,18 @@ public class PropertyReader {
 
   public String string(String name) {
     return string(name, null);
+  }
+
+  public Calendar calendar(String name) {
+    return calendar(name, null);
+  }
+
+  public Calendar calendar(String name, Calendar defaultValue) {
+    try {
+      return node.getProperty(name).getDate();
+    } catch (Exception e) {
+      return defaultValue;
+    }
   }
 
   public Date date(String name) {
