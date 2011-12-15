@@ -24,57 +24,7 @@
       <show-application-mode>false</show-application-mode>
     </portlet-application>
   </page>
-  <page>
-    <name>forum</name>
-    <title>Forum</title>
-    <access-permissions>Everyone</access-permissions>
-    <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>forum</application-ref>
-        <portlet-ref>ForumPortlet</portlet-ref>
-      </portlet>
-      <title>Forum Portlet</title>
-      <access-permissions>Everyone</access-permissions>
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
-  <page>
-    <name>answers</name>
-    <title>Answers</title>
-    <access-permissions>Everyone</access-permissions>
-    <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>faq</application-ref>
-        <portlet-ref>AnswersPortlet</portlet-ref>
-      </portlet>
-      <title>Answers Portlet</title>
-      <access-permissions>Everyone</access-permissions>      
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
-  <page>
-    <name>poll</name>
-    <title>Poll</title>
-    <access-permissions>Everyone</access-permissions>
-    <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>poll</application-ref>
-        <portlet-ref>PollPortlet</portlet-ref>
-      </portlet>
-      <title>Poll Portlet</title>
-      <access-permissions>Everyone</access-permissions>      
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
+  
   <page>
     <name>family</name>
     <title>Family</title>
@@ -92,23 +42,7 @@
       <show-application-mode>false</show-application-mode>
     </portlet-application>
   </page>
-  <page>
-    <name>faq</name>
-    <title>FAQ</title>
-    <access-permissions>Everyone</access-permissions>
-    <edit-permission>*:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>faq</application-ref>
-        <portlet-ref>FAQPortlet</portlet-ref>
-      </portlet>
-      <title>FAQ Portlet</title>
-      <access-permissions>Everyone</access-permissions>      
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
+
   <page>
     <name>tour</name>
     <title>KS Tour</title>

@@ -27,7 +27,7 @@
   
   <nodeType name="exo:forumBBCodeHome" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>nt:base</supertype>
+      <supertype>nt:unstructured</supertype>
     </supertypes> 
     <childNodeDefinitions>
       <childNodeDefinition name="*" defaultPrimaryType="exo:forumBBCode" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
