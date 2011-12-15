@@ -334,7 +334,17 @@
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>exo.platform.commons.testing</artifactId>
         <version>${org.exoplatform.commons.version}</version>
-      </dependency>     
+      </dependency>
+      <dependency>
+        <groupId>net.sourceforge.nekohtml</groupId>
+        <artifactId>nekohtml</artifactId>
+        <version>${nekohtml.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>caja</groupId>
+        <artifactId>json_simple</artifactId>
+        <version>${caja.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
