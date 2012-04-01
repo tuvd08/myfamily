@@ -55,9 +55,9 @@ import org.picocontainer.Startable;
 @ManagedDescription("BBCodes management")
 public class BBCodeServiceImpl implements Startable, BBCodeService, ManagementAware {
 
-  public final static String BBCODE_NODE_TYPE      = "exo:forumBBCode".intern();
+  public final static String BBCODE_NODE_TYPE      = "exo:BBCode".intern();
 
-  public final static String BBCODE_HOME_NODE_TYPE = "exo:forumBBCodeHome".intern();
+  public final static String BBCODE_HOME_NODE_TYPE = "exo:BBCodeHome".intern();
 
   private List<BBCodePlugin> plugins;
 

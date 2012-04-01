@@ -18,8 +18,6 @@ package org.exoplatform.ks.common.jcr;
 
 import junit.framework.TestCase;
 
-import org.exoplatform.ks.common.jcr.KSDataLocation.Locations;
-
 /**
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
@@ -31,12 +29,12 @@ public class TestKSDataLocation extends TestCase {
   }
 
   public void testGetUserSubscriptionLocation() {
-
+/*
     KSDataLocation location = new KSDataLocation("");
-    String expected = Locations.USER_PROFILE_HOME + "/FOO/forumSubscriptionFOO";
+    String expected = Locations.BBCODE_HOME + "/FOO/bbcode";
 
-    assertEquals(expected, location.getUserSubscriptionLocation("FOO"));
-
+    assertEquals(expected, location.getBBCodesLocation());
+*/
   }
 
 }
